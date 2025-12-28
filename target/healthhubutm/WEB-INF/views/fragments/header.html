@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+    <div th:fragment="header">
+        <header style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; position: sticky; top: 0; z-index: 1000;">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+                
+                <a th:href="@{/login}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-heartbeat" style="color: #2ecc71; font-size: 28px;"></i>
+                    <span style="font-size: 24px; font-weight: 800; color: #2c3e50; letter-spacing: -0.5px;">HealthHubUTM</span>
+                </a>
+
+                <nav style="display: flex; align-items: center; gap: 25px;">
+                    
+                    <th:block th:unless="${session.role != null}">
+                        <a th:href="@{/login}" style="text-decoration: none; color: #2c3e50; font-weight: 700; font-size: 15px;">Login</a>
+                    </th:block>
+
+                    <th:block th:if="${session.role != null}">
+                        
+                        <a th:if="${session.role == 'MEMBER'}" th:href="@{/member/dashboard}" 
+                           style="text-decoration: none; color: #555; font-weight: 600; font-size: 15px;">
+                           <i class="fas fa-columns"></i> Dashboard
+                        </a>
+                        
+                        <a th:if="${session.role == 'TRAINER'}" th:href="@{/trainer/dashboard}" 
+                           style="text-decoration: none; color: #555; font-weight: 600; font-size: 15px;">
+                           <i class="fas fa-columns"></i> Trainer Panel
+                        </a>
+
+                        <a th:if="${session.role == 'ADMIN'}" th:href="@{/admin/dashboard}" 
+                           style="text-decoration: none; color: #555; font-weight: 600; font-size: 15px;">
+                           <i class="fas fa-tachometer-alt"></i> Admin Panel
+                        </a>
+
+                        <a th:href="@{/logout}" style="text-decoration: none; color: #e74c3c; font-weight: 600; font-size: 15px; margin-left: 10px; display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </th:block>
+
+                </nav>
+            </div>
+        </header>
+    </div>
+
+</body>
+</html>

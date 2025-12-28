@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Results | HealthHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { min-height: 100vh; background-color: #f4f6f9; color: #2c3e50; display: flex; flex-direction: column; }
+        .main-content { flex: 1; max-width: 1200px; margin: 0 auto; padding: 40px 20px; width: 100%; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 32px; color: #2c3e50; margin-bottom: 10px; font-weight: 700; }
+        .page-header p { color: #7f8c8d; font-size: 16px; max-width: 600px; margin: 0 auto; }
+        
+        /* CARDS */
+        .current-result-card {
+            background: white; border-radius: 12px; padding: 40px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05); margin-bottom: 40px; border: 1px solid #e1e4e8;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .current-result-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; border-bottom: 1px solid #ecf0f1; padding-bottom: 20px;
+        }
+        .current-result-header h2 { font-size: 24px; color: #2c3e50; }
+        .timestamp { color: #7f8c8d; font-size: 14px; }
+        
+        /* BMI DISPLAY */
+        .bmi-main-display { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        /* LEFT BOX: BMI SCORE */
+        .bmi-value-box {
+            text-align: center; padding: 40px; background-color: #fafafa;
+            border-radius: 12px; border: 1px solid #ecf0f1;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100%;
+        }
+        .bmi-value-label { font-size: 16px; color: #7f8c8d; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .bmi-value-number { font-size: 80px; font-weight: 800; margin-bottom: 15px; color: #2c3e50; line-height: 1; }
+        .bmi-category { font-size: 20px; font-weight: 600; padding: 10px 30px; border-radius: 50px; display: inline-block; color: white; }
+        
+        /* RIGHT BOX: USER DETAILS */
+        .user-details { display: flex; flex-direction: column; justify-content: center; }
+        .user-details h3 { font-size: 18px; color: #2c3e50; margin-bottom: 25px; font-weight: 700; border-bottom: 2px solid #f4f6f9; padding-bottom: 10px; display: inline-block; }
+        
+        .detail-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 30px;
+        }
+        
+        .detail-item { display: flex; flex-direction: column; }
+        .detail-label { font-size: 12px; color: #95a5a6; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .detail-value { font-size: 18px; font-weight: 600; color: #34495e; line-height: 1.4; }
+        .thymeleaf-data { color: #2ecc71; }
+
+        /* BUTTONS */
+        .btn-new-calculation {
+            background-color: #2ecc71; color: white; border: none; padding: 14px 30px; /* Bigger button */
+            border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: background 0.3s;
+        }
+        .btn-new-calculation:hover { background-color: #27ae60; transform: translateY(-2px); }
+        
+        .btn-recalculate {
+            margin-top: 30px;
+            background-color: white; border: 2px solid #2ecc71; color: #2ecc71;
+            width: 100%; justify-content: center; padding: 12px;
+        }
+        .btn-recalculate:hover { background-color: #2ecc71; color: white; }
+
+        /* COLORS */
+        .category-underweight { background-color: #f1c40f; }
+        .category-normal { background-color: #2ecc71; }
+        .category-overweight { background-color: #e67e22; }
+        .category-obese { background-color: #e74c3c; }
+
+        /* --- UPDATED EMPTY STATE STYLES --- */
+        .empty-state { 
+            text-align: center; 
+            padding: 80px 30px; /* Increased top/bottom padding */
+        }
+        .empty-state i { 
+            font-size: 64px; 
+            color: #bdc3c7; 
+            margin-bottom: 30px; 
+        }
+        .empty-state h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        /* Specific styling for the paragraph you asked about */
+        .empty-state p {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 40px; /* More space before button */
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Helper for Full Width Items */
+        .full-width { grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1>BMI Results</h1>
+            <p>Track your wellness journey and monitor your progress.</p>
+        </div>
+        
+        <div class="current-result-card" th:if="${currentBmi != null}">
+            <div class="current-result-header">
+                <h2>Latest Calculation</h2>
+                <div class="timestamp">
+                    <i class="far fa-calendar-alt"></i> 
+                    <span th:text="${#dates.format(currentBmi.calculatedDate, 'MMMM dd, yyyy')}"></span>
+                </div>
+            </div>
+            
+            <div class="bmi-main-display">
+                <div class="bmi-value-box">
+                    <div class="bmi-value-label">Your BMI Score</div>
+                    <div class="bmi-value-number" th:text="${currentBmi.bmiValue}"></div>
+                    <div class="bmi-category" 
+                         th:classappend="'category-' + ${currentBmi.category.toLowerCase().replace(' ', '')}"
+                         th:text="${currentBmi.category}">
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <h3>Personal Metrics</h3>
+                    <div class="detail-grid">
+                        
+                        <div class="detail-item full-width">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" th:text="${currentBmi.name}"></span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Age</span>
+                            <span class="detail-value" th:text="${currentBmi.age} + ' years'"></span>
+                        </div>
+                        
+                        <div class="detail-item"></div> 
+
+                        <div class="detail-item">
+                            <span class="detail-label">Height</span>
+                            <span class="detail-value thymeleaf-data" 
+                                  th:text="${currentBmi.height} + ' ' + ${currentBmi.heightUnit}">
+                            </span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Weight</span>
+                            <span class="detail-value thymeleaf-data" 
+                                  th:text="${currentBmi.weight} + ' ' + ${currentBmi.weightUnit}">
+                            </span>
+                        </div>
+                        
+                        <div class="detail-item full-width">
+                            <span class="detail-label">Interests</span>
+                            <span class="detail-value" style="font-weight: normal; color: #7f8c8d; font-size: 16px;"
+                                  th:text="${#strings.listJoin(currentBmi.interests, ', ')}">
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <a th:href="@{/member/bmi}" class="btn-new-calculation btn-recalculate">
+                        <i class="fas fa-redo"></i> Recalculate BMI
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="current-result-card" th:unless="${currentBmi != null}">
+            <div class="empty-state">
+                <i class="fas fa-heartbeat"></i>
+                <h3>No Recent Calculation</h3>
+                <p>You haven't calculated your BMI yet. Let's get started on your health journey.</p>
+                <a th:href="@{/member/bmi}" class="btn-new-calculation">
+                    <i class="fas fa-calculator"></i> Calculate BMI Now
+                </a>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            
+            <a th:href="@{/member/plans}" style="text-decoration: none; color: inherit;">
+                <div style="background: white; padding: 30px; border-radius: 12px; border: 1px solid #e1e4e8; text-align: center; transition: transform 0.2s; cursor: pointer; height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.03);"
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'">
+                    <div style="width: 60px; height: 60px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <i class="fas fa-dumbbell" style="font-size: 24px; color: #2ecc71;"></i>
+                    </div>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px; font-size: 18px;">My Programs</h3>
+                    <p style="color: #7f8c8d; font-size: 14px;">View your active enrollments and fitness plans.</p>
+                </div>
+            </a>
+
+            <a th:href="@{/member/programs}" style="text-decoration: none; color: inherit;">
+                <div style="background: white; padding: 30px; border-radius: 12px; border: 1px solid #e1e4e8; text-align: center; transition: transform 0.2s; cursor: pointer; height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.03);"
+                     onmouseover="this.style.transform='translateY(-5px)'" 
+                     onmouseout="this.style.transform='translateY(0)'">
+                    <div style="width: 60px; height: 60px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <i class="fas fa-search" style="font-size: 24px; color: #3498db;"></i>
+                    </div>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px; font-size: 18px;">Browse Programs</h3>
+                    <p style="color: #7f8c8d; font-size: 14px;">Find new classes and training sessions.</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
