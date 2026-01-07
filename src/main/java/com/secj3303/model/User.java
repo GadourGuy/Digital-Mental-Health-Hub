@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-// ============ User Entity ============
+
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,13 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<ForumPost> forumPosts = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<PostComment> comments = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<CompletedContent> completedContents = new HashSet<>();
 
     // Constructors
