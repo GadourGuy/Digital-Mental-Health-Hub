@@ -1,6 +1,3 @@
--- Create database
-CREATE DATABASE IF NOT EXISTS dmhlh;
-USE dmhlh;
 
 -- User table
 CREATE TABLE users (
@@ -36,7 +33,7 @@ CREATE TABLE completed_content (
     PRIMARY KEY (contentID, userID),
     FOREIGN KEY (contentID) REFERENCES sub_contents(contentID) ON DELETE CASCADE,
     FOREIGN KEY (contentCategoryID) REFERENCES content_category(categoryID) ON DELETE CASCADE,
-    FOREIGN KEY (userID) REFERENCES user(userID) ON DELETE CASCADE
+    FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
 );
 
 -- Forum Post table
@@ -45,7 +42,7 @@ CREATE TABLE forum_post (
     userID INT NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userID) REFERENCES user(userID) ON DELETE CASCADE
+    FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
 );
 
 -- Post Likes table
@@ -55,7 +52,7 @@ CREATE TABLE post_likes (
     liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (postID, userID),
     FOREIGN KEY (postID) REFERENCES forum_post(postID) ON DELETE CASCADE,
-    FOREIGN KEY (userID) REFERENCES user(userID) ON DELETE CASCADE
+    FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
 );
 
 -- Post Comments table
@@ -66,7 +63,7 @@ CREATE TABLE post_comments (
     comment TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (postID) REFERENCES forum_post(postID) ON DELETE CASCADE,
-    FOREIGN KEY (userID) REFERENCES user(userID) ON DELETE CASCADE
+    FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
 );
 
 -- Quiz Questions table
@@ -74,7 +71,7 @@ CREATE TABLE quiz_questions (
     quizID INT PRIMARY KEY AUTO_INCREMENT,
     content TEXT NOT NULL,
     userID INT NOT NULL,
-    FOREIGN KEY (userID) REFERENCES user(userID) ON DELETE CASCADE
+    FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
 );
 
 -- Quiz Answers table
@@ -87,9 +84,9 @@ CREATE TABLE quiz_answers (
 );
 
 -- Insert sample data
-INSERT INTO user (name, email, role, password) VALUES
+INSERT INTO users (name, email, role, password) VALUES
 ('John Doe', 'john@example.com', 'student', 'password123'),
-('Jane Smith', 'jane@example.com', 'instructor', 'password456');
+('Jane Smith', 'jane@example.com', 'admin', 'password456');
 
 INSERT INTO content_category (content_title) VALUES
 ('Java Programming'),
