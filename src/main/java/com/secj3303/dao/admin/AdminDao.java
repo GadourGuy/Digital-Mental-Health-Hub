@@ -8,9 +8,6 @@ public interface AdminDao {
     // get users from db for the admin, excluding the admins user info
     public List<User> getAllUsers();
 
-    // retrieve user info by id
-    public User getUser(int id);
-
     // approve the professional request, based on professional id
     public void updateProfessionalStatus(int id);
 
