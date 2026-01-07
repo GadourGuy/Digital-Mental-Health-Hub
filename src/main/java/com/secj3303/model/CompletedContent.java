@@ -1,8 +1,7 @@
 package com.secj3303.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "completed_content")
