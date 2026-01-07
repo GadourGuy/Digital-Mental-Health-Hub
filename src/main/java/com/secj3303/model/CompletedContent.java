@@ -18,7 +18,7 @@ public class CompletedContent {
     
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private User users;
     
     @Column(name = "completion_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -27,10 +27,10 @@ public class CompletedContent {
     // Constructors
     public CompletedContent() {}
     
-    public CompletedContent(int contentID, int contentCategoryID, User user) {
+    public CompletedContent(int contentID, int contentCategoryID, User users) {
         this.contentID = contentID;
         this.contentCategoryID = contentCategoryID;
-        this.user = user;
+        this.users = users;
         this.completionDate = new java.util.Date();
     }
 
@@ -46,8 +46,8 @@ public class CompletedContent {
         this.contentCategoryID = contentCategoryID; 
     }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUsers() { return users; }
+    public void setUsers(User users) { this.users = users; }
     
     public java.util.Date getCompletionDate() { return completionDate; }
     public void setCompletionDate(java.util.Date completionDate) { 

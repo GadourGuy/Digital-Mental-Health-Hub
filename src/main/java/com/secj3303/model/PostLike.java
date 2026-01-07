@@ -18,7 +18,7 @@ public class PostLike {
     
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private User users;
     
     @Column(name = "liked_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -29,9 +29,9 @@ public class PostLike {
         this.likedAt = new java.util.Date();
     }
     
-    public PostLike(ForumPost post, User user) {
+    public PostLike(ForumPost post, User users) {
         this.post = post;
-        this.user = user;
+        this.users = users;
         this.likedAt = new java.util.Date();
     }
 
@@ -42,8 +42,8 @@ public class PostLike {
     public ForumPost getPost() { return post; }
     public void setPost(ForumPost post) { this.post = post; }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUsers() { return users; }
+    public void setUsers(User users) { this.users = users; }
     
     public java.util.Date getLikedAt() { return likedAt; }
     public void setLikedAt(java.util.Date likedAt) { this.likedAt = likedAt; }

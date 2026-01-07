@@ -14,7 +14,7 @@ public class ForumPost {
     
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private User users;
     
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -34,8 +34,8 @@ public class ForumPost {
         this.createdAt = new java.util.Date();
     }
     
-    public ForumPost(User user, String content) {
-        this.user = user;
+    public ForumPost(User users, String content) {
+        this.users = users;
         this.content = content;
         this.createdAt = new java.util.Date();
     }
@@ -44,8 +44,8 @@ public class ForumPost {
     public int getPostID() { return postID; }
     public void setPostID(int postID) { this.postID = postID; }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUsers() { return users; }
+    public void setUsers(User users) { this.users = users; }
     
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }

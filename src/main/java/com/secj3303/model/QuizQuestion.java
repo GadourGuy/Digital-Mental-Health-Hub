@@ -17,7 +17,7 @@ public class QuizQuestion {
     
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private User users;
     
     @OneToMany(mappedBy = "quizQuestion", cascade = CascadeType.ALL)
     private Set<QuizAnswer> answers = new HashSet<>();
@@ -25,9 +25,9 @@ public class QuizQuestion {
     // Constructors
     public QuizQuestion() {}
     
-    public QuizQuestion(String content, User user) {
+    public QuizQuestion(String content, User users) {
         this.content = content;
-        this.user = user;
+        this.users = users;
     }
 
     // Getters and Setters
@@ -37,8 +37,8 @@ public class QuizQuestion {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUsers() { return users; }
+    public void setUsers(User users) { this.users = users; }
     
     public Set<QuizAnswer> getAnswers() { return answers; }
     public void setAnswers(Set<QuizAnswer> answers) { this.answers = answers; }

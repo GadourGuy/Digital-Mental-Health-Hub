@@ -17,7 +17,7 @@ public class PostComment {
     
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private User users;
     
     @Column(name = "comment", nullable = false, columnDefinition = "TEXT")
     private String comment;
@@ -31,9 +31,9 @@ public class PostComment {
         this.createdAt = new java.util.Date();
     }
     
-    public PostComment(ForumPost post, User user, String comment) {
+    public PostComment(ForumPost post, User users, String comment) {
         this.post = post;
-        this.user = user;
+        this.users = users;
         this.comment = comment;
         this.createdAt = new java.util.Date();
     }
@@ -45,8 +45,8 @@ public class PostComment {
     public ForumPost getPost() { return post; }
     public void setPost(ForumPost post) { this.post = post; }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUsers() { return users; }
+    public void setUsers(User users) { this.users = users; }
     
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
