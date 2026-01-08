@@ -12,19 +12,19 @@ public class ProfessionalController {
 
     @GetMapping("/home")
     public String showHome(HttpSession session) {
-        if (!isProfessional(session)) return "redirect:/login";
+        // if (!isProfessional(session)) return "redirect:/login";
         return "Professional-home"; // Maps to Professional-home.html
     }
 
     @GetMapping("/forum")
     public String showForum(HttpSession session) {
-        if (!isProfessional(session)) return "redirect:/login";
+        // if (!isProfessional(session)) return "redirect:/login";
         return "Professional-forum"; 
     }
 
     @GetMapping("/resources/upload")
     public String showUploadResources(HttpSession session) {
-        if (!isProfessional(session)) return "redirect:/login";
+        // if (!isProfessional(session)) return "redirect:/login";
         return "Professional-upload-Resuorces"; 
     }
 
