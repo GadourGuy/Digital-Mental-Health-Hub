@@ -68,4 +68,11 @@ public class UserDaoHibernate implements UserDao {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
     }
+
+    @Override
+    public void insertUser(User user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'insertUser'");
+    }
+    
 }

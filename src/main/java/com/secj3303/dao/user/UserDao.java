@@ -17,6 +17,12 @@ public interface UserDao {
 
     // when signing up, insert the user to the database
     public void insertUser(User user);
-    // getting user info by email
-    User getUserByEmail(String email);
+
+
+
+    // get user by email
+    public User getUserByEmail(String email);
+
+    public int getTotalUsers();
+
 }
