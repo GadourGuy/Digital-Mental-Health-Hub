@@ -1,3 +1,24 @@
-<h1>professional home
-    
-</h1>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Digital Mental Health Literacy Hub</title>
+    </head>
+
+
+    <body>
+        <div>Hello</div>
+        <div th:text="${professional.getName()}">0</div>
+        
+        <div>role</div>
+        <div th:text="${professional.getRole()}">0</div>
+        
+        <div th:text="${pendingContent}">0</div>
+        <div>pendingContent</div>\
+        
+        <div>Enagement rate</div>
+        <div th:text="${completedPercentage}">0%</div>
+        
+
+    </body>
+</html>

@@ -71,6 +71,23 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public int getTotalUsers() {
-        throw new UnsupportedOperationException("Unimplemented method 'getTotalUsers'");
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            // Select total count of rows from the 'users' table
+            String sql = "SELECT COUNT(*) FROM users";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
     }
 }
