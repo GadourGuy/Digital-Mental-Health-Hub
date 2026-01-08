@@ -17,22 +17,19 @@ public class ContentDaoHibernate implements ContentDao{
     @Autowired
     private SessionFactory sessionFactory;
 
-    // For the time being/beginning: we explicitly open/close session
-    private Session openSession() {
-        return sessionFactory.openSession();
-    }
+    
     @Override
     public List<Category> getContentCategories() {
-        Session session = openSession();
-        List<Category> categories = session.createQuery("from Category").list();
+        Session session = sessionFactory.openSession();
+        List<Category> categories = session.createQuery("from Category", Category.class).list();
         session.close();
         return categories;
     }
 
     @Override
     public List<SubContent> getAllSubContents() {
-        Session session = openSession();
-        List<SubContent> subContents = session.createQuery("from SubContent").list();
+        Session session = sessionFactory.openSession();
+        List<SubContent> subContents = session.createQuery("from SubContent", SubContent.class).list();
         session.close();
         return subContents;
     }
@@ -57,15 +54,31 @@ public class ContentDaoHibernate implements ContentDao{
 
     @Override
     public int GetProfessionalCompletedContent(int professionalID) {
-        Session session = openSession();
-        Long count = (Long) session.createQuery("select count(*) from CompletedContent where users.userID in (select userID from User where role = 'STUDENT') and contentID in (select contentID from SubContent where professional.userID = :professionalID)").setParameter("professionalID", professionalID).uniqueResult();
-        session.close();
-        return count.intValue();
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            
+            String sql = "SELECT COUNT(*) FROM completed_contents WHERE contentID IN " +
+                         "(SELECT contentID FROM sub_contents WHERE professionalID = :profId)";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .setParameter("profId", professionalID)
+                                            .getSingleResult();
+            
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
     }
 
     @Override
     public void uploadContent(SubContent uploadedContent) {
-        Session session = openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         session.persist(uploadedContent);
         tx.commit();
@@ -74,15 +87,30 @@ public class ContentDaoHibernate implements ContentDao{
 
     @Override
     public int getPendingContent(int professionalID) {
-        Session session = openSession();
-        Long count = (Long) session.createQuery("select count(*) from SubContent where status = false and professional.userID = :professionalID").setParameter("professionalID", professionalID).uniqueResult();
-        session.close();
-        return count.intValue();
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            
+            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = false";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .setParameter("profId", professionalID)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
     }
 
     @Override
     public int getCategoryID(String category) {
-        Session session = openSession();
+        Session session = sessionFactory.openSession();
         int categoryID = (int) session.createQuery("select categoryID from Category where content_title = :category").setParameter("category", category).uniqueResult();
         session.close();
         return categoryID;
