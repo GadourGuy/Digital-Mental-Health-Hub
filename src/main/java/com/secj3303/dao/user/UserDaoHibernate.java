@@ -70,9 +70,7 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public void insertUser(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insertUser'");
+    public int getTotalUsers() {
+        throw new UnsupportedOperationException("Unimplemented method 'getTotalUsers'");
     }
-    
 }
