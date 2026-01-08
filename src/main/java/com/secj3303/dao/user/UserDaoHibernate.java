@@ -50,5 +50,12 @@ public class UserDaoHibernate implements UserDao {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserByEmail'");
     }
+
+
+    @Override
+    public int getTotalUsers() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTotalUsers'");
+    }
     
 }
