@@ -32,28 +32,27 @@ public class ProfessionalController {
 
     // along with engagement rate that shows out of all the students in the system, how many of them engaged in the content uploaded by the professional
     @GetMapping("/home")
-    public String showHome(HttpSession session) {
-        // if (!isProfessional(session)) return "redirect:/login";
+    public String showHome(HttpSession session, Model model) {
+        if (!isProfessional(session)) return "redirect:/login";
         // get the info from the session
-        // String name = (String) session.getAttribute("name");
-        // String email = (String) session.getAttribute("email");
-        // String role = (String) session.getAttribute("role");
-        // int id = (Integer) session.getAttribute("id");
+        String name = (String) session.getAttribute("name");
+        String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
+        int id = (Integer) session.getAttribute("id");
+        User professional = new User(id, name, email, role);
 
-        // int pendingContent = contentDao.getPendingContent(id);
-        // int contentCompleted = contentDao.GetProfessionalCompletedContent(id);
-        // int numOfStudents = UserDao.getTotalUsers();
+        int pendingContent = contentDao.getPendingContent(id);
+        int contentCompleted = contentDao.GetProfessionalCompletedContent(id);
+        int numOfStudents = userDao.getTotalUsers();
 
-        // double contentCompletedPercentage = ((contentCompleted * 1.0) / numOfStudents) * 100;
+        double contentCompletedPercentage = ((contentCompleted * 1.0) / numOfStudents) * 100;
 
         // to return:
-        // professional (id, name, email) in session no need to return
+        model.addAttribute("professional", professional);
         // pending content
+        model.addAttribute("pendingContent", pendingContent);
         // contentCompletedPercentage
-
-
-
-
+        model.addAttribute("completedPercentage", contentCompletedPercentage);
         return "Professional-home"; // Maps to Professional-home.html
     }
 
