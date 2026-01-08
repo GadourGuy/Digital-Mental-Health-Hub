@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="navbar" class="sidebar">
+        
+        <div class="sidebar-header">
+            <div class="brand-name">Mental Health Hub</div>
+            <div class="user-welcome" th:text="'Welcome, ' + ${session.user.name}">Welcome, User</div>
+            <div class="user-role-badge">
+                <span th:text="${session.role}">Student</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/student/home" class="nav-item active">
+                <div style="font-size: 18px;">🏠</div>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div style="font-size: 18px;">📚</div>
+                <span>Resources</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div style="font-size: 18px;">❤️</div>
+                <span>Mood Tracker</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div style="font-size: 18px;">📝</div>
+                <span>Assessment</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div style="font-size: 18px;">🤖</div>
+                <span>AI Chatbot</span>
+            </a>
+            <a href="#" class="nav-item item-danger">
+                <div style="font-size: 18px;">🚨</div>
+                <span>Emergency</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn">
+                <span>🚪 Logout</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,6 +12,7 @@ com\secj3303\model\SubContent.class
 com\secj3303\dao\professional\ProfessionalDaoHibernate.class
 com\secj3303\model\User.class
 com\secj3303\model\QuizAnswer.class
+com\secj3303\controller\StudentController$ActivityDTO.class
 com\secj3303\model\PostComment.class
 com\secj3303\model\QuizQuestion.class
 com\secj3303\dao\content\ContentDao.class
