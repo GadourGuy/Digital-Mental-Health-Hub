@@ -23,14 +23,23 @@ public class SubContent {
     @Column(name = "contentURL")
     private String contentURL;
 
+    @Column(name = "status")
+    private boolean status;
+
+    @ManyToOne
+    @JoinColumn(name = "professionalID", nullable = false)
+    private User professional;
+
     // Constructors
     public SubContent() {}
     
-    public SubContent(String contentTitle, Category contentCategory, String description, String contentURL) {
+    public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional) {
         this.contentTitle = contentTitle;
         this.contentCategory = contentCategory;
         this.description = description;
         this.contentURL = contentURL;
+        this.status = false;
+        this.professional = professional;
     }
 
     // Getters and Setters
@@ -50,4 +59,10 @@ public class SubContent {
     
     public String getContentURL() { return contentURL; }
     public void setContentURL(String contentURL) { this.contentURL = contentURL; }
+
+    public boolean getStatus() { return status; }
+    public void setStatus(boolean status) { this.status = status; }
+
+    public User getProfessional() { return professional; }
+    public void setProfessional(User professional) { this.professional = professional; }
 }

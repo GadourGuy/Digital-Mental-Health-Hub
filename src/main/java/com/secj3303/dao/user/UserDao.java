@@ -20,4 +20,6 @@ public interface UserDao {
 
     // get user by email
     public User getUserByEmail(String email);
+
+    public int getTotalUsers();
 }
