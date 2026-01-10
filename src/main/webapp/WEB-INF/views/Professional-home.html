@@ -262,41 +262,14 @@
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="brand-name">Mental Health Hub</div>
-            <div class="user-welcome">Welcome, Othman Ali</div>
-            <div class="user-role-badge">
-                <span>Professional</span>
-            </div>
-        </div>
-
-        <div class="nav-links">
-            <a href="/student/home" class="nav-item active">
-                <div>🏠</div>
-                <span>Home</span>
-            </a>
-            <a href="#" class="nav-item">
-                <div>📚</div>
-                <span>Forum</span>
-            </a>
-            <a href="#" class="nav-item">
-                <div>📤</div>
-                <span>Upload Resources</span>
-            </a>
-        </div>
-
-        <div class="sidebar-footer">
-            <a href="/logout" class="logout-btn">
-                <span>← Logout</span>
-            </a>
-        </div>
+        <div th:replace="fragments/Student-navbar :: navbar"></div>
     </div>
 
     <main>
         <div id="header">
             <div id="greeting">
                 <h3>Welcome back, </h3>
-                <div th:text="${professional.getName()}">Othman Ali! 👋</div>
+                <div> <span th:text="${professional.name}"></span>!👋</div>
             </div>
             <p>Support students on their wellness journey</p>
         </div>

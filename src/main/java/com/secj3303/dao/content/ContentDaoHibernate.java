@@ -21,9 +21,15 @@ public class ContentDaoHibernate implements ContentDao{
     @Override
     public List<Category> getContentCategories() {
         Session session = sessionFactory.openSession();
-        List<Category> categories = session.createQuery("from Category", Category.class).list();
-        session.close();
-        return categories;
+        List<Category> list = null;
+        try {
+            list = session.createQuery("from Category", Category.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
     }
 
     @Override
@@ -92,6 +98,29 @@ public class ContentDaoHibernate implements ContentDao{
         try {
             
             String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = false";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .setParameter("profId", professionalID)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
+    }
+
+    @Override
+    public int getApprovedContent(int professionalID) {
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            
+            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = true";
 
             Number result = (Number) session.createNativeQuery(sql)
                                             .setParameter("profId", professionalID)

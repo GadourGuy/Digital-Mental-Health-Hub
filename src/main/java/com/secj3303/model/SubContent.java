@@ -31,7 +31,6 @@ public class SubContent {
     private User professional;
 
     // Constructors
-    public SubContent() {}
     
     public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional) {
         this.contentTitle = contentTitle;

@@ -30,6 +30,9 @@ public interface ContentDao {
     // get the number of contents where status is false based on the professional id
     public int getPendingContent(int professionalID);
 
+    // get the number of content where status is true based on profession id
+    public int getApprovedContent(int professionalID);
+
 
     // for the professional to upload resources.
     public void uploadContent(SubContent uploadedContent);

@@ -1,7 +1,10 @@
 package com.secj3303.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 // import java.util.Locale.Category;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/professional")
@@ -62,39 +66,106 @@ public class ProfessionalController {
 
     @GetMapping("/forum")
     public String showForum(HttpSession session) {
-        // if (!isProfessional(session)) return "redirect:/login";
-        return "Professional-forum"; 
+        if (!isProfessional(session)) return "redirect:/login";
+        return "student-forum"; 
     }
 
     @GetMapping("/resources/upload")
     public String showUploadResources(HttpSession session, Model model) {
-        // if (!isProfessional(session)) return "redirect:/login";
+        if (!isProfessional(session)) return "redirect:/login";
         
         // return the list of categories to the page
         List<Category> categories = contentDao.getContentCategories();
+        User professional = (User) session.getAttribute("user");
+        int id = professional.getUserID();
+
+
+        int pendingContent = contentDao.getPendingContent(id);
+        int approvedContent = contentDao.getApprovedContent(id);
+
+        int totalContent = pendingContent + approvedContent;
+
         model.addAttribute("categories", categories);
-        
+        model.addAttribute("pendingContent", pendingContent);
+        model.addAttribute("approvedContent", approvedContent);
+        model.addAttribute("totalContent", totalContent);
+
+
         return "Professional-upload-Resuorces"; 
     }
 
     // where the professional will upload the content
     @PostMapping("/resources/upload")
-    public String uploadResources(@RequestParam("title") String title, @RequestParam("category") String category, @RequestParam("description") String description, @RequestParam("url") String url, HttpSession session) {
+    public String uploadResources(
+        @RequestParam("resourceType") String type,
+        @RequestParam("title") String title,
+        @RequestParam("category") String category,
+        @RequestParam("description") String description,
+        @RequestParam("url") String url,
+        HttpSession session,
+        Model model,
+        RedirectAttributes redirectAttributes
+            ) {
 
-        // if (!isProfessional(session)) return "redirect:/login";
+        if (!isProfessional(session)) return "redirect:/login";
+                
+        Map<String, String> errors = new HashMap<>();
+                
+        // Validate resourceType
+        if (type == null || type.trim().isEmpty()) {
+            errors.put("resourceType" , "Resource type is required");
+        } else if (!type.equals("pdf") && !type.equals("video")) {
+            errors.put("resourceType", "Invalid resource type");
+        }
         
-        int categoryID = contentDao.getCategoryID(category);
-        Category categoryObj = new Category();
-        categoryObj.setCategoryID(categoryID);
-        categoryObj.setContentTitle(category);
-
+        // Validate title
+        if (title == null || title.trim().isEmpty()) {
+            errors.put("title", "Title is required");
+        } else if (title.trim().length() < 3) {
+            errors.put("title", "Title must be at least 3 characters long");
+        }
+        
+        // Validate category
+        if (category == null || category.trim().isEmpty()) {
+            errors.put("category", "Category is required");
+        }
+        
+        // Validate description
+        if (description == null || description.trim().isEmpty()) {
+            errors.put("description", "Description is required");
+        } else if (description.trim().length() < 10) {
+            errors.put("description", "Description must be at least 10 characters long");
+        }
+        
+        // Validate URL
+        if (url == null || url.trim().isEmpty()) {
+            errors.put("url", "URL is required");
+        } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            errors.put("url", "URL must start with http:// or https://");
+        }
+        
+        // If there are any errors, return to the form
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            redirectAttributes.addFlashAttribute("title", title);
+            redirectAttributes.addFlashAttribute("category", category);
+            redirectAttributes.addFlashAttribute("description", description);
+            redirectAttributes.addFlashAttribute("url", url);
+            redirectAttributes.addFlashAttribute("resourceType", type);
+            return "redirect:/professional/resources/upload";
+        }
+        
         User professional = (User) session.getAttribute("user");
+        Category categoryObj = new Category();
+        categoryObj.setCategoryID(Integer.parseInt(category));
+        // int categoryID = contentDao.getCategoryID(category);
+        SubContent newSubContent = new SubContent(title, categoryObj, description, url, professional);
         
-        SubContent subContent = new SubContent(title, categoryObj, description, url, professional);
         
-        contentDao.uploadContent(subContent);
-        
-        return "redirect:/professional/resources/upload"; 
+        professionalDao.addContent(newSubContent);
+        redirectAttributes.addFlashAttribute("success", "Resource uploaded successfully!");
+        return "redirect:/professional/home";
+         
     }
 
     // Helper to secure professional routes

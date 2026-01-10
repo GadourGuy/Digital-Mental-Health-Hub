@@ -2,8 +2,6 @@ package com.secj3303.model;
 
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -16,9 +14,6 @@ public class Category {
     
     @Column(name = "content_title", nullable = false)
     private String contentTitle;
-    
-    @OneToMany(mappedBy = "contentCategory", cascade = CascadeType.ALL)
-    private Set<SubContent> subContents = new HashSet<>();
 
     // Constructors
     public Category() {}
@@ -33,7 +28,4 @@ public class Category {
     
     public String getContentTitle() { return contentTitle; }
     public void setContentTitle(String contentTitle) { this.contentTitle = contentTitle; }
-    
-    public Set<SubContent> getSubContents() { return subContents; }
-    public void setSubContents(Set<SubContent> subContents) { this.subContents = subContents; }
 }

@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.secj3303.model.SubContent;
+
 
 @Repository
 public class ProfessionalDaoHibernate implements ProfessionalDao{
@@ -32,6 +34,21 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
             session.close();
         }
         return count;
+    }
+
+    @Override
+    public void addContent(SubContent subContent) {
+        Session session = sessionFactory.openSession();
+        
+        try {
+            session.beginTransaction();
+            session.save(subContent);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
     
 }
