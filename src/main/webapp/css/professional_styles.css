@@ -1,0 +1,15 @@
+ * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+body {
+    font-family: 'Arimo', sans-serif;
+    background-color: var(--bg-body);
+    display: flex;
+    min-height: 100vh;
+    color: var(--text-dark);
+}
+
+main {
+    flex: 1;
+    padding: 32px 40px;
+    overflow-y: auto;
+}

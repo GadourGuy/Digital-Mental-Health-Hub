@@ -64,4 +64,5 @@
   <!-- 4. Configure static resource handling (CSS, JS, images, etc.) -->
   <!-- ============================================================ -->
   <mvc:resources mapping="/resources/**" location="/resources/" />
+  <mvc:resources mapping="/css/**" location="/css/" />
 </beans>

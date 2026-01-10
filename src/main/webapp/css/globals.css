@@ -1,0 +1,13 @@
+/* --- Global Variables --- */
+:root {
+    --primary: #155DFC;
+    --primary-light: #EFF6FF;
+    --bg-body: #F8FAFC;
+    --text-dark: #0A0A0A;
+    --text-gray: #6A7282;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #E7000B;
+    --border-color: #E5E7EB;
+    --sidebar-width: 260px;
+}
