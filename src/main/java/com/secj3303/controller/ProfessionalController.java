@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.secj3303.dao.content.ContentDao;
+import com.secj3303.dao.professional.ProfessionalDao;
 import com.secj3303.dao.user.UserDao;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
@@ -28,6 +29,9 @@ public class ProfessionalController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private ProfessionalDao professionalDao;
+
     // this route will return the home page that returns the professional object, along with number of pending resources to update..
 
     // along with engagement rate that shows out of all the students in the system, how many of them engaged in the content uploaded by the professional
@@ -35,15 +39,12 @@ public class ProfessionalController {
     public String showHome(HttpSession session, Model model) {
         if (!isProfessional(session)) return "redirect:/login";
         // get the info from the session
-        String name = (String) session.getAttribute("name");
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-        int id = (Integer) session.getAttribute("id");
-        User professional = new User(id, name, email, role);
+        User professional = (User) session.getAttribute("user");
+        int id = professional.getUserID();
 
         int pendingContent = contentDao.getPendingContent(id);
         int contentCompleted = contentDao.GetProfessionalCompletedContent(id);
-        int numOfStudents = userDao.getTotalUsers();
+        int numOfStudents = professionalDao.getStudents();
 
         double contentCompletedPercentage = ((contentCompleted * 1.0) / numOfStudents) * 100;
 
@@ -53,7 +54,10 @@ public class ProfessionalController {
         model.addAttribute("pendingContent", pendingContent);
         // contentCompletedPercentage
         model.addAttribute("completedPercentage", contentCompletedPercentage);
-        return "Professional-home"; // Maps to Professional-home.html
+        
+        // number of students
+        model.addAttribute("numberOfStudents", numOfStudents);
+        return "Professional-home";
     }
 
     @GetMapping("/forum")
