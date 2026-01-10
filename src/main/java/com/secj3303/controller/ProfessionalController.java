@@ -1,6 +1,5 @@
 package com.secj3303.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 // import java.util.Locale.Category;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpSession;
 
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
-import com.secj3303.dao.user.UserDao;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
 import com.secj3303.model.Category;
@@ -18,6 +16,7 @@ import com.secj3303.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +29,7 @@ public class ProfessionalController {
 
     @Autowired
     private ContentDao contentDao; 
-    @Autowired
-    private UserDao userDao;
+    
 
     @Autowired
     private ProfessionalDao professionalDao;
@@ -70,6 +68,43 @@ public class ProfessionalController {
         return "student-forum"; 
     }
 
+    @GetMapping("/my-resources")
+    public String showResources(HttpSession session, Model model) {
+        if (!isProfessional(session)) return "redirect:/login";
+        User professional = (User) session.getAttribute("user");
+        int id = professional.getUserID();
+        List<SubContent> professionalContent = professionalDao.getUploadedResources(id);
+        
+        model.addAttribute("uploadedContent", professionalContent);
+        return "Professional-resources";
+    }
+
+    @PostMapping("/my-resources/delete")
+    public String deleteContent(HttpSession session, Model model, @RequestParam("contentID") int contentID, RedirectAttributes redirectAttributes) {
+        if (!isProfessional(session)) return "redirect:/login";
+        User professional = (User) session.getAttribute("user");
+        SubContent subContent = contentDao.getSubContentByID(contentID);
+        if(subContent.getProfessional().getUserID() != professional.getUserID()) return "redirect:/professional/home";
+        contentDao.deleteContentByID(contentID);
+
+        redirectAttributes.addFlashAttribute("success", "Resource deleted successfully!");
+        return "redirect:/professional/my-resources";
+    }
+
+    @GetMapping("/my-resources/view")
+    public String showSingleContent (HttpSession session, Model model, @RequestParam("contentID") int contentID) {
+        if (!isProfessional(session)) return "redirect:/login";
+        
+        User professional = (User) session.getAttribute("user");
+        SubContent subContent = contentDao.getSubContentByID(contentID);
+
+        if(subContent.getProfessional().getUserID() != professional.getUserID()) return "redirect:/professional/home";
+
+        model.addAttribute("subContent", subContent);
+        return "professional-single-content";
+    }
+
+
     @GetMapping("/resources/upload")
     public String showUploadResources(HttpSession session, Model model) {
         if (!isProfessional(session)) return "redirect:/login";
@@ -91,7 +126,7 @@ public class ProfessionalController {
         model.addAttribute("totalContent", totalContent);
 
 
-        return "Professional-upload-Resuorces"; 
+        return "Professional-upload-Resources"; 
     }
 
     // where the professional will upload the content
@@ -159,7 +194,7 @@ public class ProfessionalController {
         Category categoryObj = new Category();
         categoryObj.setCategoryID(Integer.parseInt(category));
         // int categoryID = contentDao.getCategoryID(category);
-        SubContent newSubContent = new SubContent(title, categoryObj, description, url, professional);
+        SubContent newSubContent = new SubContent(title, categoryObj, description, url, professional, type);
         
         
         professionalDao.addContent(newSubContent);

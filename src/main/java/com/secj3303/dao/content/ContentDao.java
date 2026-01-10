@@ -18,7 +18,7 @@ public interface ContentDao {
     public List<SubContent> getSubContents(int categoryID);
     
     // return subcontent info from the db based on its id
-    public SubContent getSubContent(int contentID);
+    public SubContent getSubContentByID(int contentID);
     
     // returns the total number of contents that has been completed
     public int getCompletedContentNumbers();
@@ -37,5 +37,12 @@ public interface ContentDao {
     // for the professional to upload resources.
     public void uploadContent(SubContent uploadedContent);
 
+    // returning the category id from the name
     public int getCategoryID(String category);
+    
+    // returning the category title from its id
+    public String getCategoryTitleByID(int categoryID);
+
+    // delete the content based on its id
+    public void deleteContentByID(int contentID);
 }

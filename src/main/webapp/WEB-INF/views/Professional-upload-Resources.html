@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resources - Mental Health Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #155DFC;
+            --primary-light: #EFF6FF;
+            --bg-body: #F8FAFC;
+            --text-dark: #0A0A0A;
+            --text-gray: #6A7282;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #E7000B;
+            --sidebar-width: 260px;
+            --border-color: #E5E7EB;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Arimo', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid #E5E7EB; }
+        .brand-name { color: var(--primary); font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .user-welcome { color: var(--text-gray); font-size: 14px; margin-bottom: 8px; }
+        .user-role-badge span { background: #DBEAFE; color: #1447E6; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+
+        .nav-links { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            border-radius: 10px; text-decoration: none; color: #364153; font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover { background: #F3F4F6; transform: translateX(5px); }
+        .nav-item.active { background: #DBEAFE; color: #1447E6; }
+        .item-danger { background: #FEF2F2; color: var(--danger); }
+        .item-danger:hover { background: #FEE2E2; }
+
+        .sidebar-footer { padding: 16px; border-top: 1px solid #E5E7EB; }
+        .logout-btn { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0A0A0A; text-decoration: none; border: 1px solid #E5E7EB; border-radius: 8px; transition: 0.2s; }
+        .logout-btn:hover { background: #f9fafb; border-color: #d1d5db; }
+        
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+
+        .page-header { 
+            margin-bottom: 20px; 
+        }
+        
+        .page-title { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+        }
+        
+        .page-subtitle { 
+            color: var(--text-gray); 
+            font-size: 14px; 
+        }
+
+        /* Alert Box */
+        .alert-box {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #1E40AF;
+        }
+        
+        .alert-icon { 
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        /* Grid Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-bottom: 6px; 
+        }
+        
+        .card-subtitle { 
+            font-size: 13px; 
+            color: var(--text-gray); 
+            margin-bottom: 24px; 
+            display: block; 
+        }
+
+        /* Form Elements */
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .form-label { 
+            display: block; 
+            font-size: 14px; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: #374151; 
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .form-control:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(21, 93, 252, 0.1);
+        }
+        
+        textarea.form-control { 
+            resize: vertical; 
+            min-height: 90px; 
+        }
+
+        /* Resource Type Selector */
+        .resource-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .type-option {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            position: relative;
+        }
+        
+        .type-option:hover { 
+            border-color: #BFDBFE;
+            background: #F9FAFB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .type-option.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            box-shadow: 0 4px 16px rgba(21, 93, 252, 0.15);
+        }
+        
+        .type-icon { 
+            font-size: 28px; 
+            margin-bottom: 10px; 
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .type-option:hover .type-icon {
+            transform: scale(1.1);
+        }
+        
+        .type-text { 
+            font-size: 14px; 
+            font-weight: 600; 
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #FAFBFC;
+        }
+        
+        .upload-area:hover { 
+            border-color: var(--primary); 
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon { 
+            font-size: 40px; 
+            color: #9CA3AF; 
+            margin-bottom: 12px; 
+        }
+        
+        .upload-text { 
+            font-size: 14px; 
+            color: var(--primary); 
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .upload-sub { 
+            font-size: 12px; 
+            color: var(--text-gray); 
+        }
+
+        /* Video URL Input (hidden by default) */
+        .video-url-input {
+            display: none;
+        }
+
+        .video-url-input.active {
+            display: block;
+        }
+
+        /* External Link Input (hidden by default) */
+        .external-link-input {
+            display: none;
+        }
+
+        .external-link-input.active {
+            display: block;
+        }
+
+        /* PDF Upload Section */
+        .pdf-upload-section {
+            display: block;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-submit:hover { 
+            background: #1447E6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(21, 93, 252, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(21, 93, 252, 0.2);
+        }
+
+        /* Right Sidebar Sections */
+        .info-sidebar .card {
+            margin-bottom: 20px;
+        }
+
+        .info-section-title { 
+            font-weight: 600; 
+            font-size: 14px; 
+            margin-bottom: 6px; 
+            margin-top: 20px;
+            color: var(--text-dark);
+        }
+        
+        .info-section-title:first-of-type { 
+            margin-top: 0; 
+        }
+        
+        .guideline-item { 
+            font-size: 13px; 
+            color: var(--text-gray); 
+            line-height: 1.6; 
+        }
+
+        .type-option input[type="radio"] {
+            display: none;
+        }
+
+        /* Process Steps */
+        .process-step { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 16px; 
+            align-items: flex-start; 
+        }
+        
+        .step-num {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .step-num.inactive {
+            background: #DBEAFE;
+            color: var(--primary);
+        }
+        
+        .step-text { 
+            font-size: 13px; 
+            color: var(--primary);
+            line-height: 1.8;
+        }
+
+        .step-text.inactive {
+            color: var(--text-dark);
+        }
+
+        /* Stats */
+        .stat-row { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 14px; 
+            margin-bottom: 10px; 
+            color: var(--text-gray); 
+        }
+        
+        .stat-val { 
+            font-weight: 600; 
+            color: var(--text-dark); 
+        }
+        
+        .stat-val.green { 
+            color: var(--success); 
+        }
+
+        .stat-divider {
+            border-top: 1px solid var(--border-color);
+            margin: 12px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-sidebar {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+            }
+
+            main {
+                padding: 20px;
+            }
+            
+            .resource-types {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        .form-control.error {
+            border-color: #dc3545;
+        }
+        
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Student-navbar :: navbar"></div>
+    </div>
+
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">Upload Resources</h1>
+            <p class="page-subtitle">Share educational materials with students</p>
+        </div>
+
+        <div class="alert-box">
+            <i class="fas fa-info-circle alert-icon"></i>
+            <span>All uploaded resources will be reviewed by administrators before being published to ensure quality and appropriateness.</span>
+        </div>
+
+        <div class="content-grid">
+            <div class="upload-form-container">
+                <form action="" method="POST">
+                    
+                    <div class="card">
+                        <h2 class="card-title">Upload New Resource</h2>
+                        <span class="card-subtitle">Provide educational content to support student mental health</span>
+
+                        <div class="form-group">
+                            <label class="form-label">Resource Type</label>
+                                <div class="resource-types">
+                                    <label class="type-option">
+                                        <input type="radio" name="resourceType" 
+                                        th:classappend="${resourceType == 'pdf' or resourceType == null} ? 'active' : ''"
+                                        value="pdf" th:checked="${resourceType == 'pdf' or resourceType == null}">
+                                        <i class="fas fa-file-alt type-icon"></i>
+                                        <div class="type-text">Article/PDF</div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="resourceType" 
+                                        th:classappend="${resourceType == 'video'} ? 'active' : ''"
+                                        value="video" th:checked="${resourceType == 'video'}">
+                                        <i class="fas fa-video type-icon"></i>
+                                        <div class="type-text">Video</div>
+                                    </label>
+                                </div>
+                                <span th:if="${errors != null and errors.containsKey('resourceType')}" 
+                                class="error-message" th:text="${errors.get('resourceType')}"></span>
+                            </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Title *</label>
+                            <input type="text" class="form-control" name="title" th:value="${title}" placeholder="e.g., Managing Exam Anxiety" required>
+                            <span th:if="${errors != null and errors.containsKey('title')}" 
+                                class="error-message" th:text="${errors.get('title')}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" name="category" required>
+                                <option value="" label="Select a category" disabled selected></option>
+                                <option th:each="category : ${categories}" 
+                                        th:value="${category.categoryID}" 
+                                        th:text="${category.contentTitle}"
+                                        >
+                                </option>
+                            </select>
+                            <span th:if="${errors != null and errors.containsKey('category')}" 
+                                class="error-message" th:text="${errors.get('category')}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-control" name="description" placeholder="Provide a brief description of the resource and what students will learn..."  th:text="${description}" required></textarea>
+                            <span th:if="${errors != null and errors.containsKey('description')}" 
+                                class="error-message" th:text="${errors.get('description')}"></span>
+                        </div>
+                        
+                        
+                        
+                        <div class="form-group">
+                            <label class="form-label">URL *</label>
+                            <input type="url" class="form-control" name="url" th:value="${url}" placeholder="Enter the link of the resource to upload, eg: https://youtube.com/watch?v=...">
+                            <span th:if="${errors != null and errors.containsKey('url')}" 
+                                    class="error-message" th:text="${errors.get('url')}"></span>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Submit for Review
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-sidebar">
+                <div class="card">
+                    <h3 class="card-title">Guidelines</h3>
+                    
+                    <div class="info-section-title">Quality Content</div>
+                    <div class="guideline-item">Ensure resources are evidence-based, accurate, and appropriate for students.</div>
+
+                    <div class="info-section-title">Clear Titles</div>
+                    <div class="guideline-item">Use descriptive titles that help students find relevant content.</div>
+
+                    <div class="info-section-title">Proper Citations</div>
+                    <div class="guideline-item">Include sources and references where applicable.</div>
+
+                    <div class="info-section-title">Accessibility</div>
+                    <div class="guideline-item">Make sure content is accessible and easy to understand.</div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Review Process</h3>
+                    
+                    <div class="process-step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">Submit your resource</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">2</div>
+                        <div class="step-text inactive">Admin reviews content</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">3</div>
+                        <div class="step-text inactive">Get approval notification</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">4</div>
+                        <div class="step-text inactive">Resource published to library</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Your Uploads</h3>
+                    
+                    <div class="stat-row">
+                        <span>Pending</span>
+                        <span class="stat-val" th:text="${pendingContent}">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Approved</span>
+                        <span class="stat-val green" th:text="${approvedContent}">0</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-row">
+                        <span>Total</span>
+                        <span class="stat-val" th:text="${totalContent}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Handle resource type selection
+        const typeOptions = document.querySelectorAll('.type-option');
+        const pdfSection = document.querySelector('.pdf-url-input');
+        const videoSection = document.querySelector('.video-url-input');
+
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                // Get the data type
+                const type = this.getAttribute('data-type');
+                
+                // Hide all sections first
+                pdfSection.style.display = 'none';
+                videoSection.classList.remove('active');
+                linkSection.classList.remove('active');
+                
+                // Show relevant section
+                if (type === 'pdf') {
+                    pdfSection.classList.add('active');
+                } else if (type === 'video') {
+                    videoSection.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

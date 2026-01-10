@@ -1,5 +1,7 @@
 package com.secj3303.dao.professional;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,25 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public List<SubContent> getUploadedResources(int professionalID) {
+        Session session = sessionFactory.openSession();
+        List<SubContent> list = null;
+        try {
+            String sql = "SELECT * FROM sub_contents WHERE professionalID = :profId";
+            
+            list = session.createNativeQuery(sql, SubContent.class)
+                          .setParameter("profId", professionalID)
+                          .list();
+                          
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
     }
     
 }

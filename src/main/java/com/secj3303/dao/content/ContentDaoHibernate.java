@@ -47,9 +47,17 @@ public class ContentDaoHibernate implements ContentDao{
     }
 
     @Override
-    public SubContent getSubContent(int contentID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSubContent'");
+    public SubContent getSubContentByID(int contentID) {
+        Session session = sessionFactory.openSession();
+        SubContent content = null;
+        try {
+            content = session.get(SubContent.class, contentID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return content;
     }
 
     @Override
@@ -143,6 +151,39 @@ public class ContentDaoHibernate implements ContentDao{
         int categoryID = (int) session.createQuery("select categoryID from Category where content_title = :category").setParameter("category", category).uniqueResult();
         session.close();
         return categoryID;
+    }
+
+    @Override
+    public String getCategoryTitleByID(int categoryID) {Session session = sessionFactory.openSession();
+        String title = null;
+        try {
+            Category category = session.get(Category.class, categoryID);
+            if (category != null) {
+                title = category.getContentTitle();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return title;
+    }
+
+    @Override
+    public void deleteContentByID(int contentID) {
+        Session session = sessionFactory.openSession();
+        try {
+            SubContent content = session.get(SubContent.class, contentID);
+            if (content != null) {
+                session.delete(content);
+            }
+            session.beginTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            
+            session.close();
+        }
     }
     
 }

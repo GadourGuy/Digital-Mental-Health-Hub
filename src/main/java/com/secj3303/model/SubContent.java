@@ -19,6 +19,9 @@ public class SubContent {
     
     @Column(name = "description")
     private String description;
+
+    @Column(name = "type")
+    private String type;
     
     @Column(name = "contentURL")
     private String contentURL;
@@ -31,14 +34,15 @@ public class SubContent {
     private User professional;
 
     // Constructors
-    
-    public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional) {
+    public SubContent() {}
+    public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional, String type) {
         this.contentTitle = contentTitle;
         this.contentCategory = contentCategory;
         this.description = description;
         this.contentURL = contentURL;
         this.status = false;
         this.professional = professional;
+        this.type = type;
     }
 
     // Getters and Setters
@@ -53,6 +57,9 @@ public class SubContent {
         this.contentCategory = contentCategory; 
     }
     
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     
