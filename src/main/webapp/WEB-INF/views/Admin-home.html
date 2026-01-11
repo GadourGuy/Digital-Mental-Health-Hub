@@ -50,7 +50,7 @@
 					<span>Monitor Students</span>
 				</a>
 
-				<a th:href="@{/admin/approve-content}" class="action-btn">
+				<a th:href="@{/admin/resources-requests}" class="action-btn">
 					<div class="icon-wrapper">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -86,7 +86,7 @@
                 <p class="subcontent">Total number of professionals in the system</p>
         	</div>
             
-            <div class="card pointer" th:onclick="|window.location.href='@{/professional/my-resources}'|">
+            <div class="card pointer" th:onclick="|window.location.href='@{/admin/resources-requests}'|">
                 <div class="title">
                     <P>Pending Approvals</P>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,7 +97,7 @@
                 <p class="subcontent">Resources awaiting review</p>
             </div>
 
-			<div class="card pointer" th:onclick="|window.location.href='@{/professional/my-resources}'|">
+			<div class="card pointer" th:onclick="|window.location.href='@{/admin/professional-requests}'|">
                 <div class="title">
                     <P>Professional Requests</P>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

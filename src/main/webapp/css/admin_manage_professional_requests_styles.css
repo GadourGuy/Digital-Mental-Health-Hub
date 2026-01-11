@@ -1,0 +1,213 @@
+.alert {
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.alert i {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-success i {
+    color: #28a745;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.alert-danger i {
+    color: #dc3545;
+}
+
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-title { 
+    font-size: 24px; 
+    font-weight: bold; 
+    margin-bottom: 4px; 
+}
+
+.page-subtitle { 
+    color: var(--text-gray); 
+    font-size: 14px; 
+}
+
+/* --- Layout --- */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+}
+.back-link:hover { color: var(--primary); }
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* Left col fixed width, Right col takes rest */
+    gap: 24px;
+    align-items: start;
+}
+
+/* --- Cards --- */
+.card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden; /* Keeps header inside curves */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+}
+
+.card-header {
+    background: #F8FAFC;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-body { padding: 20px; }
+
+/* --- Applicant Info --- */
+.info-group { margin-bottom: 16px; }
+.info-group:last-child { margin-bottom: 0; }
+.info-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-gray);
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.info-group p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* --- Form & Actions --- */
+.form-group { margin-bottom: 20px; }
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border 0.2s;
+}
+textarea:focus { border-color: var(--primary); }
+
+.error-text {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 6px;
+    display: none; /* Hidden by default */
+}
+
+.btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.btn {
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-approve {
+    background-color: var(--success);
+    color: white;
+}
+.btn-approve:hover { background-color: #16a34a; }
+
+.btn-reject {
+    background-color: white;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+}
+.btn-reject:hover {
+    background-color: #FEF2F2;
+}
+
+/* --- PDF Viewer --- */
+.cv-card { height: calc(100vh - 140px); /* Fill remaining height */ min-height: 600px; }
+.cv-viewer-container {
+    height: 100%;
+    width: 100%;
+    background: #525659; /* Standard PDF viewer bg color */
+}
+iframe {
+    width: 100%;
+    height: 100%; /* Important for internal viewer */
+    border: none;
+    display: block;
+}
+
+.external-link {
+    font-size: 13px;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+/* --- Badges --- */
+.badge-success { background: #DCFCE7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.badge-warning { background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.badge-danger  { background: #FEE2E2; color: #991B1B; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .details-grid { grid-template-columns: 1fr; }
+    .cv-card { height: 500px; }
+}
+
+

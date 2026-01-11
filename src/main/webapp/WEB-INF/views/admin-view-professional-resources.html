@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mental Health Literacy Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin_view_professional_resources.css}">
+    <link rel="stylesheet" th:href="@{/css/student_nav.css}">
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Student-navbar :: navbar"></div>
+    </div>
+    
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Pending Resources</h1>
+                <p class="page-subtitle">Approve or reject the uploaded resources</p>
+            </div>
+        </div>
+
+        <div class="resource-container">
+
+            <div th:if="${uploadedContent == null or uploadedContent.empty}" class="empty-state">
+                <i class="fas fa-folder-open empty-icon"></i>
+                <h3>No resources found</h3>
+                <p>No pending content yet.</p>
+            </div>
+
+            <div th:each="content : ${uploadedContent}" class="resource-item">
+                
+                <div class="resource-info">
+                    <div class="resource-icon-box" 
+                         th:classappend="${#strings.contains(content.type, 'video')} ? 'icon-video' : 'icon-pdf'">
+                        
+                        <i class="fas" 
+                           th:classappend="${#strings.contains(content.type, 'video')} ? 'fa-play' : 'fa-file-pdf'"></i>
+                    </div>
+
+                    <div class="resource-details">
+                        <div class="resource-title"><span class="resource-title" th:text="${content.contentTitle}">Resource Title</span>, By: <span class="resource-title" th:text="${content.professional.name}"></span></div>
+                        
+                        <div class="resource-meta">
+                            <span class="category-badge" 
+                                  th:text="${content.getContentCategory().getContentTitle()}">Category</span>
+                            
+                            <span>•</span>
+                            
+                            <span class="category-badge" th:text="${content.type}"></span>
+                            <span>•</span>
+                            <span th:text="${content.status}"class="pending-badge"></span>
+                            <span>•</span>
+                            <span th:classappend="${content.isEdited ? 'pending-badge': 'approved-badge'}" th:text="${content.isEdited ? 'Edited': 'Uploaded'}"></span>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    
+                    <a th:href="@{/admin/resources/manage(contentID=${content.contentID})}" class="btn btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>

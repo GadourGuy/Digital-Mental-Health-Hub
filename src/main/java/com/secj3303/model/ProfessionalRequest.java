@@ -36,6 +36,14 @@ public class ProfessionalRequest {
         this.rejectionReason = null;
     }
 
+    public ProfessionalRequest(int requestID, String cvLink, String status, String rejectionReason, User user) {
+        this.requestID = requestID;
+        this.cvLink = cvLink;
+        this.status = status;
+        this.rejectionReason = rejectionReason;
+        this.user = user; 
+    }
+
     // --- Getters and Setters ---
     public int getRequestID() { return requestID; }
     public void setRequestID(int requestID) { this.requestID = requestID; }

@@ -52,6 +52,12 @@ public class User {
         
     }
 
+    public User(int userID, String name, String email) {
+    this.userID = userID;
+    this.name = name;
+    this.email = email;
+}
+
     // Getters and Setters
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; }

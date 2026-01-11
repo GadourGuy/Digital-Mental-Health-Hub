@@ -163,18 +163,66 @@
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
+    
+    /* Hide Sidebar on mobile (assuming you have a top navbar for mobile) */
     .sidebar {
-        display: none; /* Or use the transform logic from previous files */
+        display: none; 
     }
-    main { padding: 20px; }
+    
+    /* Add padding to main content */
+    main { 
+        padding: 16px; 
+        margin-left: 0; /* Remove sidebar margin */
+    }
+
+    /* Stack the Flexbox Container */
     .resource-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
+        position: relative; /* For button positioning if needed */
     }
-    .resource-info { width: 100%; }
-    .action-buttons { width: 100%; justify-content: space-between; border-top: 1px solid #f3f4f6; padding-top: 16px; }
-    .btn { flex: 1; justify-content: center; }
+
+    /* Ensure the Info section takes full width */
+    .resource-info {
+        width: 100%;
+        align-items: flex-start; /* Align icon to top-left of text */
+    }
+
+    /* Adjust Icon Size slightly for mobile */
+    .resource-icon-box {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    /* Stack Meta Info (Category, Status) nicely */
+    .resource-meta {
+        flex-wrap: wrap; /* Allow badges to wrap to next line */
+        gap: 8px;
+        margin-top: 4px;
+    }
+    
+    /* Hide the little dots on mobile if they cause clutter */
+    .resource-meta span:not([class]) {
+        display: none; 
+    }
+
+    /* Make Action Buttons Full Width */
+    .action-buttons {
+        width: 100%;
+        display: flex;
+        border-top: 1px solid #f3f4f6;
+        padding-top: 12px;
+        margin-top: 4px;
+    }
+
+    /* Make the 'View' button stretch */
+    .btn {
+        flex: 1; /* Stretch to fill width */
+        justify-content: center;
+        padding: 10px;
+    }
 }
 
 .alert {
