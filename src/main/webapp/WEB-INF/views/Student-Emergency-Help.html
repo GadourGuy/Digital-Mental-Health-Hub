@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Help</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* 1. DEFINE VARIABLES (Crucial for the CSS to work) */
+        :root {
+            --primary: #1447e6;
+            --danger: #E7000B;
+            --text-dark: #0A0A0A;
+            --text-gray: #6A7282;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            --border: #e5e7eb;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Arimo", sans-serif;
+            background: #f8fafc;
+            height: 100%;
+        }
+
+        /* 2. LAYOUT ENGINE */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR STYLES (Matching your navbar fragment) */
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+        /* --- SIDEBAR HEADER SPECIFICS (Add this to fix the Welcome section) --- */
+    .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 4px; /* Spacing between lines */
+    }
+
+    .brand-name {
+        color: var(--primary);
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    .user-welcome {
+        color: var(--text-gray);
+        font-size: 14px;
+    }
+
+    .user-role-badge span {
+        display: inline-block;
+        background: #DBEAFE;       /* Light Blue Background */
+        color: #1447E6;            /* Dark Blue Text */
+        padding: 4px 12px;
+        border-radius: 20px;       /* Pill shape */
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 8px;
+        text-transform: uppercase;
+    }
+
+        /* MAIN CONTENT AREA */
+        .main-content {
+            flex: 1;
+            margin-left: 260px; /* This creates the space for the sidebar */
+            padding: 40px;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* 3. NAVBAR ITEM STYLES (To ensure fragment looks right) */
+        .nav-links {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #364153;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover { background: #f3f4f6; }
+        .nav-item.active { background: #dbeafe; color: var(--primary); font-weight: bold; }
+        /* --- SIDEBAR FOOTER & LOGOUT BUTTON --- */
+    .sidebar-footer {
+        margin-top: auto; /* This pushes the footer to the very bottom */
+        padding: 16px;
+        border-top: 1px solid var(--border);
+        background: #ffffff;
+    }
+
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: white;
+        box-sizing: border-box; /* Ensures padding doesn't break width */
+    }
+
+    .logout-btn:hover {
+        background: #F9FAFB;
+        border-color: #D1D5DB;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transform: translateY(-1px);
+    }
+
+    .logout-btn i {
+        font-size: 16px;
+        color: var(--text-gray);
+    }
+        .item-danger { color: var(--danger) !important; }
+
+        /* 4. EMERGENCY PAGE SPECIFIC STYLES */
+        .page-header { margin-bottom: 24px; }
+        .page-title { font-size: 28px; color: var(--danger); font-weight: bold; margin-bottom: 8px; }
+        .page-subtitle { color: var(--text-gray); font-size: 16px; }
+
+        .alert-box {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 12px;
+            padding: 20px;
+            color: #991b1b;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .section-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 32px 0 16px 0;
+            color: var(--text-dark);
+        }
+
+        /* Grid System */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+        .crisis-number { font-size: 20px; font-weight: bold; color: var(--primary); margin: 10px 0; }
+        
+        .call-btn {
+            background: var(--danger);
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 16px;
+        }
+
+        /* Professional Avatar */
+        .pro-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .specialization-box {
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin: 12px 0;
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+        .footer-banner {
+            margin-top: 50px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+        }
+        /* =========================================
+           2. SIDEBAR STYLING
+           ========================================= */
+      .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 100vh;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .brand-name {
+        color: var(--primary);
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .user-welcome {
+        color: var(--text-gray);
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .user-role-badge span {
+        background: #dbeafe;
+        color: #1447e6;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+
+      .nav-links {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Helper for Icon Alignment */
+      .icon-box {
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #364153;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .nav-item:hover {
+        background: #f3f4f6;
+        transform: translateX(5px);
+      }
+      .nav-item.active {
+        background: #dbeafe;
+        color: #1447e6;
+      }
+      .item-danger {
+        background: #fef2f2;
+        color: var(--danger);
+      }
+      .item-danger:hover {
+        background: #fee2e2;
+      }
+
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        color: #0a0a0a;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+      .logout-btn:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+      }
+
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div th:replace="fragments/Student-navbar :: navbar(activeTab='emergency')"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Emergency Help</h1>
+                <p class="page-subtitle">Immediate support and resources for crisis situations</p>
+            </div>
+
+            <div class="alert-box">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 28px"></i>
+                <div>
+                    <div style="font-weight: bold">If you're in immediate danger, call emergency services (999/911)</div>
+                    <div style="font-size: 14px; opacity: 0.9">Your safety is the top priority. Reach out for help immediately.</div>
+                </div>
+            </div>
+
+            <h2 class="section-header">24/7 Crisis Support</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-phone-volume" style="color: var(--primary)"></i>
+                            <span style="font-weight:bold">Suicide Prevention</span>
+                        </div>
+                        <div class="crisis-number">988</div>
+                        <p style="font-size:14px; color: var(--text-gray)">Free and confidential support available 24/7.</p>
+                    </div>
+                    <a href="tel:988" class="call-btn"><i class="fa-solid fa-phone"></i> Call Now</a>
+                </div>
+                </div>
+
+            <h2 class="section-header">Connect with Mental Health Professionals</h2>
+            <div class="grid-3">
+                <div class="card" th:each="doc : ${doctors}">
+                    <div>
+                        <div class="pro-avatar" th:style="'background:' + ${doc.gradient}" th:text="${doc.initials}">DR</div>
+                        <div style="font-weight:bold" th:text="${doc.name}">Dr. Name</div>
+                        <div style="font-size:13px; color:var(--text-gray)" th:text="${doc.role}">Specialist</div>
+                        <div class="specialization-box" th:text="${doc.role}">General</div>
+                        <div style="font-size:13px;">
+                            <span class="dot" th:style="${doc.isAvailable} ? 'background: #00C950' : 'background: #F59E0B'"></span>
+                            <span th:text="${doc.availability}">Available</span>
+                        </div>
+                    </div>
+                    <a href="#" class="call-btn" style="background: var(--primary)">Schedule</a>
+                </div>
+            </div>
+
+            <div class="footer-banner">
+                <h3>You Are Not Alone</h3>
+                <p>Reaching out for help is a sign of strength. Support is available whenever you need it.</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
