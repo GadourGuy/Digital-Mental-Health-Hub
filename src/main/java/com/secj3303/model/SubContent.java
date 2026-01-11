@@ -27,7 +27,25 @@ public class SubContent {
     private String contentURL;
 
     @Column(name = "status")
-    private boolean status;
+    private String status;
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+    public boolean isEdited() {
+        return isEdited;
+    }
+    public void setEdited(boolean isEdited) {
+        this.isEdited = isEdited;
+    }
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+
+    @Column(name = "isEditied")
+    private boolean isEdited;
 
     @ManyToOne
     @JoinColumn(name = "professionalID", nullable = false)
@@ -40,7 +58,7 @@ public class SubContent {
         this.contentCategory = contentCategory;
         this.description = description;
         this.contentURL = contentURL;
-        this.status = false;
+        this.status = "pending";
         this.professional = professional;
         this.type = type;
     }
@@ -66,8 +84,8 @@ public class SubContent {
     public String getContentURL() { return contentURL; }
     public void setContentURL(String contentURL) { this.contentURL = contentURL; }
 
-    public boolean getStatus() { return status; }
-    public void setStatus(boolean status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public User getProfessional() { return professional; }
     public void setProfessional(User professional) { this.professional = professional; }
