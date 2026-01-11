@@ -63,7 +63,8 @@
                             
                             <span class="category-badge" th:text="${content.type}"></span>
                             <span>•</span>
-                            <span th:text="${content.status ? 'Approved' : 'Pending'}" th:classappend="${content.status}? 'approved-badge' : 'pending-badge'"></span>
+                            <span th:text="${content.status == 'approved' ? 'Approved' : (content.status == 'pending' ? 'Pending' : 'Rejected')}"
+                                    th:classappend="${content.status == 'approved' ? 'approved-badge' : (content.status == 'pending' ? 'pending-badge' : 'rejected-badge')}"></span>
 
                         </div>
                     </div>

@@ -105,7 +105,7 @@ public class ContentDaoHibernate implements ContentDao{
         int count = 0;
         try {
             
-            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = false";
+            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = 'pending'";
 
             Number result = (Number) session.createNativeQuery(sql)
                                             .setParameter("profId", professionalID)
@@ -128,7 +128,7 @@ public class ContentDaoHibernate implements ContentDao{
         int count = 0;
         try {
             
-            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = true";
+            String sql = "SELECT COUNT(*) FROM sub_contents WHERE professionalID = :profId AND status = 'approved'";
 
             Number result = (Number) session.createNativeQuery(sql)
                                             .setParameter("profId", professionalID)

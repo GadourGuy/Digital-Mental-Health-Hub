@@ -53,6 +53,8 @@ public class SubContent {
 
     // Constructors
     public SubContent() {}
+    
+    // to send the data with default values to the db
     public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional, String type) {
         this.contentTitle = contentTitle;
         this.contentCategory = contentCategory;
@@ -61,6 +63,21 @@ public class SubContent {
         this.status = "pending";
         this.professional = professional;
         this.type = type;
+        this.isEdited = false;
+        this.rejectionReason = null;
+    }
+
+    // to retireve all data from db
+    public SubContent(String contentTitle, Category contentCategory, String description, String contentURL, User professional, String type, String status, boolean isEdited, String rejectionReason) {
+        this.contentTitle = contentTitle;
+        this.contentCategory = contentCategory;
+        this.description = description;
+        this.contentURL = contentURL;
+        this.status = status;
+        this.professional = professional;
+        this.type = type;
+        this.isEdited = isEdited;
+        this.rejectionReason = rejectionReason;
     }
 
     // Getters and Setters

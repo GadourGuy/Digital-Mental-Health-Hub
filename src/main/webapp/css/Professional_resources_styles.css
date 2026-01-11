@@ -102,6 +102,15 @@
     font-weight: 600;
 }
 
+.rejected-badge {
+    background-color: #F8D7DA;
+    color: #721C24;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 /* Right Side: Actions */
 .action-buttons {
     display: flex;
