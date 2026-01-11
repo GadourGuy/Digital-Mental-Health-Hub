@@ -185,5 +185,27 @@ public class ContentDaoHibernate implements ContentDao{
             session.close();
         }
     }
+
+    @Override
+    public int getAllPendingContent() {
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            
+            String sql = "SELECT COUNT(*) FROM sub_contents WHERE status = 'pending'";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
+    }
     
 }

@@ -14,4 +14,10 @@ public interface AdminDao {
     // approve professional's content based on content id
     public void changeProfessionalContentStatus(int id);
 
+    // get number of professionals in the system
+    public int getAllProfessionals();
+
+    // get the number of users request for being professional
+    public int getProfessionalRequests();
+
 }

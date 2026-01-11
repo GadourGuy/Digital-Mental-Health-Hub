@@ -1,11 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mental Health Literacy Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin_home_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student_nav.css}">
+
+    
 </head>
+
 <body>
-	<h1>Admin Home</h1>
+    <div class="sidebar">
+        <div th:replace="fragments/Student-navbar :: navbar"></div>
+    </div>
+
+    <main>
+        <div id="header">
+            <div id="greeting">
+                <h3>Welcome back, </h3>
+                <div> <span th:text="${admin.name}"></span>!👋</div>
+            </div>
+            <p>Monitor and manage the platform</p>
+        </div>
+
+        <div id="slogan">
+            <p>💙 Your mental health is a priority, not a luxury.</p>
+        </div>
+
+        <div id="actions">
+            <h4>Quick Actions</h4>
+        </div>
+		<div  class="management-tools card">
+			<div class="tool-header">
+				<h4>Management Tools</h4>
+				<p>Quick access to admin features</p>
+			</div>
+
+			<div class="tool-actions">
+				<a th:href="@{/admin/students}" class="action-btn">
+					<div class="icon-wrapper">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+						</svg>
+					</div>
+					<span>Monitor Students</span>
+				</a>
+
+				<a th:href="@{/admin/approve-content}" class="action-btn">
+					<div class="icon-wrapper">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</div>
+					<span>Approve Content</span>
+				</a>
+			</div>
+		</div>
+        
+        <div id="information">
+
+            <div class="card">
+                <div class="title">
+                    <P>Active Students</P>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <p class="number" th:text="${numberOfStudents}">0</p>
+                <p class="subcontent">Total number of students in the system</p>
+            </div>
+
+			
+         <div class="card">
+                <div class="title">
+                    <P>Active Professionals</P>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <p class="number"> <span th:text="${numberOfProfessionals}">0</span></p>
+                <p class="subcontent">Total number of professionals in the system</p>
+        	</div>
+            
+            <div class="card pointer" th:onclick="|window.location.href='@{/professional/my-resources}'|">
+                <div class="title">
+                    <P>Pending Approvals</P>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="number" th:text="${pendingContent}">0</p>
+                <p class="subcontent">Resources awaiting review</p>
+            </div>
+
+			<div class="card pointer" th:onclick="|window.location.href='@{/professional/my-resources}'|">
+                <div class="title">
+                    <P>Professional Requests</P>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="number" th:text="${pendingProfessional}">0</p>
+                <p class="subcontent">Users want to become professionals in the system</p>
+            </div>
+         </div>
+
+    
+    </main>
 </body>
 </html>
