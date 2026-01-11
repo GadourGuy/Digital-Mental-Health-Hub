@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resources - Mental Health Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/professional_upload_resources_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student_nav.css}">
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Student-navbar :: navbar"></div>
+    </div>
+
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">Edit Resources</h1>
+            <p class="page-subtitle">Share educational materials with students</p>
+        </div>
+
+        <div class="alert-box">
+            <i class="fas fa-info-circle alert-icon"></i>
+            <span>All Edited resources will be reviewed by administrators before being published to ensure quality and appropriateness.</span>
+        </div>
+
+        <div class="content-grid">
+            <div class="upload-form-container">
+                <form th:action="@{/professional/resources/edit}" method="POST">
+                    <input type="hidden" name="contentID" th:value="${contentToEdit.contentID}" />
+                    <div class="card">
+                        <h2 class="card-title">Edit Resource</h2>
+                        <span class="card-subtitle">Provide educational content to support student mental health</span>
+
+                        <div class="form-group">
+                            <label class="form-label">Resource Type</label>
+                                <div class="resource-types">
+                                    <label class="type-option">
+                                        <input type="radio" name="resourceType" 
+                                        th:classappend="${contentToEdit.type == 'pdf' or contentToEdit.type == null} ? 'active' : ''"
+                                        value="pdf" th:checked="${contentToEdit.type == 'pdf' or contentToEdit.type == null}">
+                                        <i class="fas fa-file-alt type-icon"></i>
+                                        <div class="type-text">Article/PDF</div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="resourceType" 
+                                        th:classappend="${contentToEdit.type == 'video'} ? 'active' : ''"
+                                        value="video" th:checked="${contentToEdit.type == 'video'}">
+                                        <i class="fas fa-video type-icon"></i>
+                                        <div class="type-text">Video</div>
+                                    </label>
+                                </div>
+                                <span th:if="${errors != null and errors.containsKey('resourceType')}" 
+                                class="error-message" th:text="${errors.get('resourceType')}"></span>
+                            </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Title *</label>
+                            <input type="text" class="form-control" name="title" th:value="${contentToEdit.contentTitle}" placeholder="e.g., Managing Exam Anxiety" required>
+                            <span th:if="${errors != null and errors.containsKey('title')}" 
+                                class="error-message" th:text="${errors.get('title')}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" name="category" required>
+                                <option value="" label="Select a category" disabled selected></option>
+                                <option th:each="category : ${categories}" 
+                                        th:value="${category.categoryID}" 
+                                        th:text="${category.contentTitle}"
+                                        >
+                                </option>
+                            </select>
+                            <span th:if="${errors != null and errors.containsKey('category')}" 
+                                class="error-message" th:text="${errors.get('category')}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-control" name="description" placeholder="Provide a brief description of the resource and what students will learn..."  th:text="${contentToEdit.description}" required></textarea>
+                            <span th:if="${errors != null and errors.containsKey('description')}" 
+                                class="error-message" th:text="${errors.get('description')}"></span>
+                        </div>
+                        
+                        
+                        
+                        <div class="form-group">
+                            <label class="form-label">URL *</label>
+                            <input type="url" class="form-control" name="url" th:value="${contentToEdit.contentURL}" placeholder="Enter the link of the resource to upload, eg: https://youtube.com/watch?v=...">
+                            <span th:if="${errors != null and errors.containsKey('url')}" 
+                                    class="error-message" th:text="${errors.get('url')}"></span>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Update Resource
+                        </button>
+                        <a th:href="@{/professional/my-resources}" class="btn-cancel" style="display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 14px;">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-sidebar">
+                <div class="card">
+                    <h3 class="card-title">Guidelines</h3>
+                    
+                    <div class="info-section-title">Quality Content</div>
+                    <div class="guideline-item">Ensure resources are evidence-based, accurate, and appropriate for students.</div>
+
+                    <div class="info-section-title">Clear Titles</div>
+                    <div class="guideline-item">Use descriptive titles that help students find relevant content.</div>
+
+                    <div class="info-section-title">Proper Citations</div>
+                    <div class="guideline-item">Include sources and references where applicable.</div>
+
+                    <div class="info-section-title">Accessibility</div>
+                    <div class="guideline-item">Make sure content is accessible and easy to understand.</div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Review Process</h3>
+                    
+                    <div class="process-step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">Submit your resource</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">2</div>
+                        <div class="step-text inactive">Admin reviews content</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">3</div>
+                        <div class="step-text inactive">Get approval notification</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num inactive">4</div>
+                        <div class="step-text inactive">Resource published to library</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Your Uploads</h3>
+                    
+                    <div class="stat-row">
+                        <span>Pending</span>
+                        <span class="stat-val" th:text="${pendingContent}">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Approved</span>
+                        <span class="stat-val green" th:text="${approvedContent}">0</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-row">
+                        <span>Total</span>
+                        <span class="stat-val" th:text="${totalContent}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Handle resource type selection
+        const typeOptions = document.querySelectorAll('.type-option');
+        const pdfSection = document.querySelector('.pdf-url-input');
+        const videoSection = document.querySelector('.video-url-input');
+
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                // Get the data type
+                const type = this.getAttribute('data-type');
+                
+                // Hide all sections first
+                pdfSection.style.display = 'none';
+                videoSection.classList.remove('active');
+                linkSection.classList.remove('active');
+                
+                // Show relevant section
+                if (type === 'pdf') {
+                    pdfSection.classList.add('active');
+                } else if (type === 'video') {
+                    videoSection.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

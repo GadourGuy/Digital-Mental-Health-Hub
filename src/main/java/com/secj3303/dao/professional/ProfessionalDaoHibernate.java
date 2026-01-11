@@ -71,5 +71,31 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
         }
         return list;
     }
+
+    @Override
+    public void editContent(SubContent subContent) {
+        Session session = sessionFactory.openSession();
+    try {
+        SubContent existingContent = session.get(SubContent.class, subContent.getContentID());
+
+        if (existingContent != null) {
+            // 2. Update ONLY the fields allowed to be edited
+            existingContent.setContentTitle(subContent.getContentTitle());
+            existingContent.setContentURL(subContent.getContentURL());
+            existingContent.setType(subContent.getType());
+            existingContent.setContentCategory(subContent.getContentCategory());
+            existingContent.setDescription(subContent.getDescription()); 
+            existingContent.setStatus("pending");            
+            existingContent.setEdited(true); 
+            
+            session.update(existingContent);
+            session.beginTransaction().commit();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        session.close();
+    }
+    }
     
 }

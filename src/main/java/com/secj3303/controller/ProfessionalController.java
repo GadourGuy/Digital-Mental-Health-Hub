@@ -202,6 +202,108 @@ public class ProfessionalController {
          
     }
 
+
+    // editing the resources
+    @GetMapping("/resources/edit")
+    public String showEditResources(HttpSession session, Model model, @RequestParam("contentID") int contentID) {
+        if (!isProfessional(session)) return "redirect:/login";
+        
+        // return the list of categories to the page
+        List<Category> categories = contentDao.getContentCategories();
+        User professional = (User) session.getAttribute("user");
+        SubContent subContent = contentDao.getSubContentByID(contentID);
+        if(subContent.getProfessional().getUserID() != professional.getUserID()) return "redirect:/professional/home";
+        
+        int id = professional.getUserID();
+        int pendingContent = contentDao.getPendingContent(id);
+        int approvedContent = contentDao.getApprovedContent(id);
+
+        int totalContent = pendingContent + approvedContent;
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("pendingContent", pendingContent);
+        model.addAttribute("approvedContent", approvedContent);
+        model.addAttribute("totalContent", totalContent);
+        model.addAttribute("contentToEdit", subContent);
+
+
+        return "Professional-edit-resources"; 
+    }
+
+    @PostMapping("/resources/edit")
+    public String editResources(
+        @RequestParam("resourceType") String type,
+        @RequestParam("title") String title,
+        @RequestParam("category") String category,
+        @RequestParam("description") String description,
+        @RequestParam("url") String url,
+        @RequestParam("contentID") String contentID,
+        HttpSession session,
+        Model model,
+        RedirectAttributes redirectAttributes
+            ) {
+
+        if (!isProfessional(session)) return "redirect:/login";
+                
+        Map<String, String> errors = new HashMap<>();
+                
+        // Validate resourceType
+        if (type == null || type.trim().isEmpty()) {
+            errors.put("resourceType" , "Resource type is required");
+        } else if (!type.equals("pdf") && !type.equals("video")) {
+            errors.put("resourceType", "Invalid resource type");
+        }
+        
+        // Validate title
+        if (title == null || title.trim().isEmpty()) {
+            errors.put("title", "Title is required");
+        } else if (title.trim().length() < 3) {
+            errors.put("title", "Title must be at least 3 characters long");
+        }
+        
+        // Validate category
+        if (category == null || category.trim().isEmpty()) {
+            errors.put("category", "Category is required");
+        }
+        
+        // Validate description
+        if (description == null || description.trim().isEmpty()) {
+            errors.put("description", "Description is required");
+        } else if (description.trim().length() < 10) {
+            errors.put("description", "Description must be at least 10 characters long");
+        }
+        
+        // Validate URL
+        if (url == null || url.trim().isEmpty()) {
+            errors.put("url", "URL is required");
+        } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            errors.put("url", "URL must start with http:// or https://");
+        }
+        
+        // If there are any errors, return to the form
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            redirectAttributes.addFlashAttribute("title", title);
+            redirectAttributes.addFlashAttribute("category", category);
+            redirectAttributes.addFlashAttribute("description", description);
+            redirectAttributes.addFlashAttribute("url", url);
+            redirectAttributes.addFlashAttribute("resourceType", type);
+            return "redirect:/professional/resources/edit?contentID=" + contentID;
+        }
+        
+        User professional = (User) session.getAttribute("user");
+        Category categoryObj = new Category();
+        categoryObj.setCategoryID(Integer.parseInt(category));
+        // int categoryID = contentDao.getCategoryID(category);
+        SubContent updatedSubContent = new SubContent(title, categoryObj, description, url, professional, type, "pending", true, null);
+        updatedSubContent.setContentID(Integer.parseInt(contentID));
+        
+        professionalDao.editContent(updatedSubContent);
+        redirectAttributes.addFlashAttribute("success", "Resource updated successfully!");
+        return "redirect:/professional/my-resources";
+         
+    }
+
     // Helper to secure professional routes
     private boolean isProfessional(HttpSession session) {
         String role = (String) session.getAttribute("role");
