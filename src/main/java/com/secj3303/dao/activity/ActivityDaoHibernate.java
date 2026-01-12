@@ -1,10 +1,12 @@
 package com.secj3303.dao.activity;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,9 +26,11 @@ public class ActivityDaoHibernate implements ActivityDao {
     @Override
     public long getWeeklyCompletedCount(int userId) {
         try (Session session = openSession()) {
-            String hql = "SELECT count(a) FROM ActivityLog a WHERE a.user.id = :uid AND a.status = 'COMPLETED'";
+            LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+            String hql = "SELECT count(a) FROM ActivityLog a WHERE a.user.id = :uid AND a.status = 'COMPLETED' AND a.date >= :startDate";
             Query<Long> query = session.createQuery(hql, Long.class);
             query.setParameter("uid", userId);
+            query.setParameter("startDate", sevenDaysAgo);
             Long result = query.uniqueResult();
             return (result != null) ? result : 0;
         } catch (Exception e) {
@@ -38,7 +42,6 @@ public class ActivityDaoHibernate implements ActivityDao {
     @Override
     public List<ActivityLog> getRecentActivities(int userId) {
         try (Session session = openSession()) {
-            // Fetch latest 3 activities
             String hql = "FROM ActivityLog a WHERE a.user.id = :uid ORDER BY a.date DESC";
             Query<ActivityLog> query = session.createQuery(hql, ActivityLog.class);
             query.setParameter("uid", userId);
@@ -47,6 +50,33 @@ public class ActivityDaoHibernate implements ActivityDao {
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    // --- NEW METHOD: Get ALL logs for the week (needed for the checklist) ---
+    @Override
+    public List<ActivityLog> getWeeklyLogs(int userId) {
+        try (Session session = openSession()) {
+            LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+            String hql = "FROM ActivityLog a WHERE a.user.id = :uid AND a.date >= :startDate";
+            Query<ActivityLog> query = session.createQuery(hql, ActivityLog.class);
+            query.setParameter("uid", userId);
+            query.setParameter("startDate", sevenDaysAgo);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+    
+    // --- Helper to save logs (if not using a separate service) ---
+    public void save(ActivityLog log) {
+        try (Session session = openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.save(log);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

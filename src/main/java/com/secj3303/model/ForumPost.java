@@ -1,8 +1,20 @@
 package com.secj3303.model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "forum_post")
@@ -19,6 +31,10 @@ public class ForumPost {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
     
+    // --- NEW FIELD ---
+    @Column(name = "category")
+    private String category; // e.g., "General", "Support", "Success Story"
+    
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date createdAt;
@@ -34,9 +50,10 @@ public class ForumPost {
         this.createdAt = new java.util.Date();
     }
     
-    public ForumPost(User users, String content) {
+    public ForumPost(User users, String content, String category) {
         this.users = users;
         this.content = content;
+        this.category = category;
         this.createdAt = new java.util.Date();
     }
 
@@ -49,6 +66,9 @@ public class ForumPost {
     
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
     
     public java.util.Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(java.util.Date createdAt) { this.createdAt = createdAt; }
