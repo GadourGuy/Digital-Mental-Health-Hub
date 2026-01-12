@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ModelAttribute; // Import this
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.PostComment;
@@ -38,23 +39,16 @@ public class ForumController {
         if (currentUser == null) return "redirect:/login";
 
         try (Session hibernateSession = sessionFactory.openSession()) {
-            // Inside showForum method...
+            // A. Fetch All Posts
+            Query<ForumPost> qAll = hibernateSession.createQuery(
+                "FROM ForumPost p WHERE p.users IS NOT NULL ORDER BY p.createdAt DESC", ForumPost.class);
+            List<ForumPost> allPosts = qAll.list();
 
-// A. Fetch All Posts - Filter out posts where user is null!
-Query<ForumPost> qAll = hibernateSession.createQuery(
-    "FROM ForumPost p WHERE p.users IS NOT NULL ORDER BY p.createdAt DESC", 
-    ForumPost.class
-);
-	List<ForumPost> allPosts = qAll.list();
-
-	// B. Fetch My Posts
-	Query<ForumPost> qMy = hibernateSession.createQuery(
-    	"FROM ForumPost p WHERE p.users.userID = :uid ORDER BY p.createdAt DESC", 
-    	ForumPost.class
-	);
-		qMy.setParameter("uid", currentUser.getUserID());
-		List<ForumPost> myPosts = qMy.list();
-
+            // B. Fetch My Posts
+            Query<ForumPost> qMy = hibernateSession.createQuery(
+                "FROM ForumPost p WHERE p.users.userID = :uid ORDER BY p.createdAt DESC", ForumPost.class);
+            qMy.setParameter("uid", currentUser.getUserID());
+            List<ForumPost> myPosts = qMy.list();
 
             initializePosts(allPosts);
             initializePosts(myPosts); 
@@ -65,87 +59,68 @@ Query<ForumPost> qAll = hibernateSession.createQuery(
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
         return "forum_page"; 
     }
 
-    /**
-     * Helper method to handle Deep Lazy Initialization.
-     * Prevents LazyInitializationException when Thymeleaf tries to access:
-     * post.comments.users.name
-     */
     private void initializePosts(List<ForumPost> posts) {
         for (ForumPost p : posts) {
-            Hibernate.initialize(p.getUsers()); // The post author
-            
-            Hibernate.initialize(p.getLikes()); // The list of likes
-            // Load the USER who liked the post
+            Hibernate.initialize(p.getUsers());
+            Hibernate.initialize(p.getLikes());
             p.getLikes().forEach(like -> Hibernate.initialize(like.getUsers())); 
-
-            Hibernate.initialize(p.getComments()); // The list of comments
-            // Load the USER who wrote the comment
+            Hibernate.initialize(p.getComments());
             p.getComments().forEach(comment -> Hibernate.initialize(comment.getUsers())); 
         }
     }
 
-    // 2. CREATE POST
+    // 2. CREATE POST (Added Category param)
     @PostMapping("/create")
-    public String createPost(@RequestParam("content") String content, HttpSession session) {
+    public String createPost(@RequestParam("content") String content, 
+                             @RequestParam("category") String category, 
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
 
         try (Session hibernateSession = sessionFactory.openSession()) {
             Transaction tx = hibernateSession.beginTransaction();
-
-            // --- FIX: Re-attach User ---
-            // The 'currentUser' from session is "detached". We must load it into the current Hibernate session.
             User dbUser = hibernateSession.load(User.class, currentUser.getUserID());
             
             ForumPost newPost = new ForumPost();
             newPost.setContent(content);
-            newPost.setUsers(dbUser); // Use the attached user
+            newPost.setCategory(category); // Set Category
+            newPost.setUsers(dbUser);
             
             hibernateSession.save(newPost);
             tx.commit();
+            redirectAttributes.addFlashAttribute("successMessage", "Post created successfully!");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return "redirect:/forum";
     }
 
-    // 3. HANDLE LIKES (Toggle Logic)
+    // 3. HANDLE LIKES
     @PostMapping("/like/{postId}")
     public String likePost(@PathVariable("postId") int postId, HttpSession session) {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
-
         try (Session hibernateSession = sessionFactory.openSession()) {
             Transaction tx = hibernateSession.beginTransaction();
-            
-            // Re-attach user
             User dbUser = hibernateSession.load(User.class, currentUser.getUserID());
             ForumPost post = hibernateSession.get(ForumPost.class, postId);
-            
             Query<PostLike> query = hibernateSession.createQuery(
                 "FROM PostLike WHERE post.postID = :pid AND users.userID = :uid", PostLike.class);
             query.setParameter("pid", postId);
             query.setParameter("uid", currentUser.getUserID());
             PostLike existingLike = query.uniqueResult();
-
             if (existingLike != null) {
-                // Already liked -> Unlike (Delete)
                 hibernateSession.delete(existingLike);
             } else {
-                // Not liked -> Like (Insert)
-                PostLike newLike = new PostLike(dbUser, post); // Use attached dbUser
+                PostLike newLike = new PostLike(dbUser, post);
                 hibernateSession.save(newLike);
             }
             tx.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // Redirect back to the same page to refresh data
+        } catch (Exception e) { e.printStackTrace(); }
         return "redirect:/forum";
     }
 
@@ -154,44 +129,35 @@ Query<ForumPost> qAll = hibernateSession.createQuery(
     public String addComment(@PathVariable("postId") int postId, @RequestParam("content") String content, HttpSession session) {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
-
         try (Session hibernateSession = sessionFactory.openSession()) {
             Transaction tx = hibernateSession.beginTransaction();
-            
-            // Re-attach user
             User dbUser = hibernateSession.load(User.class, currentUser.getUserID());
             ForumPost post = hibernateSession.get(ForumPost.class, postId);
-            
-            PostComment comment = new PostComment(content, dbUser, post); // Use attached dbUser
+            PostComment comment = new PostComment(content, dbUser, post);
             hibernateSession.save(comment);
-            
             tx.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
         return "redirect:/forum";
     }
 
-    // 5. UPDATE POST
+    // 5. UPDATE POST (Added RedirectAttributes)
     @PostMapping("/update")
-    public String updatePost(@ModelAttribute ForumPost updatedPost, HttpSession session) {
+    public String updatePost(@ModelAttribute ForumPost updatedPost, HttpSession session, RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
 
         try (Session hibernateSession = sessionFactory.openSession()) {
             Transaction tx = hibernateSession.beginTransaction();
-            
             ForumPost existingPost = hibernateSession.get(ForumPost.class, updatedPost.getPostID());
 
             if (existingPost != null) {
-                // Permission Check: Author
-                
                 boolean isAuthor = currentUser.getUserID() == existingPost.getUsers().getUserID();
-
                 if (isAuthor) {
                     existingPost.setContent(updatedPost.getContent());
+                    // Optionally update category too if you add it to the edit form
                     hibernateSession.update(existingPost);
                     tx.commit();
+                    redirectAttributes.addFlashAttribute("successMessage", "Post updated successfully!");
                 }
             }
         } catch (Exception e) {
@@ -200,9 +166,9 @@ Query<ForumPost> qAll = hibernateSession.createQuery(
         return "redirect:/forum"; 
     }
 
-    // 6. DELETE POST
+    // 6. DELETE POST (Added RedirectAttributes)
     @GetMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") int id, HttpSession session) {
+    public String deletePost(@PathVariable("id") int id, HttpSession session, RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
         
@@ -211,27 +177,18 @@ Query<ForumPost> qAll = hibernateSession.createQuery(
             ForumPost post = hibernateSession.get(ForumPost.class, id);
 
             if (post != null) {
-                // 1. Re-fetch current user from DB to ensure role is accurate
                 User dbUser = hibernateSession.get(User.class, currentUser.getUserID());
                 String currentRole = dbUser.getRole();
                 
-                // Debugging: Print to console to see what the role actually is
-                System.out.println("User ID: " + dbUser.getUserID() + " | Role: " + currentRole);
-
-                // 2. Robust Permission Check
-                // Check if role contains "ADMIN" (case insensitive) to handle "Admin", "ADMIN ", etc.
                 boolean isAdmin = currentRole != null && currentRole.trim().equalsIgnoreCase("ADMIN");
-                
-                // Check if user is the author
-                // (Use Safe Navigation in case post.getUsers() is null)
                 boolean isAuthor = post.getUsers() != null && dbUser.getUserID() == post.getUsers().getUserID();
 
                 if (isAdmin || isAuthor) {
                     hibernateSession.delete(post);
                     tx.commit();
-                    System.out.println("Post deleted successfully.");
+                    redirectAttributes.addFlashAttribute("successMessage", "Post deleted successfully.");
                 } else {
-                    System.out.println("Delete failed: User is neither Admin nor Author.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "You are not authorized to delete this post.");
                 }
             }
         } catch (Exception e) {
