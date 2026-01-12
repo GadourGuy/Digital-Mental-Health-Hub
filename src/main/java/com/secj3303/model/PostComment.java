@@ -1,56 +1,61 @@
 package com.secj3303.model;
 
-import javax.persistence.*;
+import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "post_comments")
 public class PostComment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commentID")
     private int commentID;
-    
-    @ManyToOne
-    @JoinColumn(name = "postID", nullable = false)
-    private ForumPost post;
-    
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
-    private User users;
-    
-    @Column(name = "comment", nullable = false, columnDefinition = "TEXT")
-    private String comment;
-    
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date createdAt;
 
-    // Constructors
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    // IMPORTANT: Must be named 'users' to match User.java mappedBy="users"
+    @ManyToOne
+    @JoinColumn(name = "userID")
+    private User users;
+
+    @ManyToOne
+    @JoinColumn(name = "postID")
+    private ForumPost post;
+
     public PostComment() {
-        this.createdAt = new java.util.Date();
+        this.createdAt = new Date();
     }
-    
-    public PostComment(ForumPost post, User users, String comment) {
-        this.post = post;
+
+    public PostComment(String content, User users, ForumPost post) {
+        this.content = content;
         this.users = users;
-        this.comment = comment;
-        this.createdAt = new java.util.Date();
+        this.post = post;
+        this.createdAt = new Date();
     }
 
     // Getters and Setters
     public int getCommentID() { return commentID; }
     public void setCommentID(int commentID) { this.commentID = commentID; }
-    
-    public ForumPost getPost() { return post; }
-    public void setPost(ForumPost post) { this.post = post; }
-    
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     public User getUsers() { return users; }
     public void setUsers(User users) { this.users = users; }
-    
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
-    
-    public java.util.Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(java.util.Date createdAt) { this.createdAt = createdAt; }
+    public ForumPost getPost() { return post; }
+    public void setPost(ForumPost post) { this.post = post; }
 }

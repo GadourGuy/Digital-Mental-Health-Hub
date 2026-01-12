@@ -1,50 +1,41 @@
 package com.secj3303.model;
 
-
-import javax.persistence.*;
-
-
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "post_likes")
 public class PostLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
+    private int likeID;
+
+    // IMPORTANT: Must be named 'users' here too
     @ManyToOne
-    @JoinColumn(name = "postID", nullable = false)
-    private ForumPost post;
-    
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID")
     private User users;
-    
-    @Column(name = "liked_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date likedAt;
 
-    // Constructors
-    public PostLike() {
-        this.likedAt = new java.util.Date();
-    }
-    
-    public PostLike(ForumPost post, User users) {
-        this.post = post;
+    @ManyToOne
+    @JoinColumn(name = "postID")
+    private ForumPost post;
+
+    public PostLike() {}
+
+    public PostLike(User users, ForumPost post) {
         this.users = users;
-        this.likedAt = new java.util.Date();
+        this.post = post;
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    
-    public ForumPost getPost() { return post; }
-    public void setPost(ForumPost post) { this.post = post; }
-    
+    public int getLikeID() { return likeID; }
+    public void setLikeID(int likeID) { this.likeID = likeID; }
     public User getUsers() { return users; }
     public void setUsers(User users) { this.users = users; }
-    
-    public java.util.Date getLikedAt() { return likedAt; }
-    public void setLikedAt(java.util.Date likedAt) { this.likedAt = likedAt; }
+    public ForumPost getPost() { return post; }
+    public void setPost(ForumPost post) { this.post = post; }
 }
