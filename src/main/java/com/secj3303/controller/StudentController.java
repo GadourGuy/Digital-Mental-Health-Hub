@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.secj3303.dao.Mood.MoodDaoHibernate;
 import com.secj3303.dao.activity.ActivityDaoHibernate;
 import com.secj3303.dao.content.ContentDaoHibernate;
+import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.user.UserDaoHibernate;
 import com.secj3303.model.ActivityLog;
 import com.secj3303.model.Feedback;
@@ -37,7 +38,7 @@ public class StudentController {
     @Autowired private MoodDaoHibernate moodDao;
     @Autowired private ActivityDaoHibernate activityDao;
     @Autowired private ContentDaoHibernate contentDao; 
-
+    @Autowired private FeedbackDao feedbackDao;
     // --- DASHBOARD ---
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
@@ -243,6 +244,7 @@ public class StudentController {
         feedback.setComments(comments);
         feedback.setDateSubmitted(LocalDateTime.now());
         redirectAttributes.addFlashAttribute("successMessage", "Thank you! Your feedback helps us improve.");
+        feedbackDao.saveFeedback(feedback);
         return "redirect:/student/feedback";
     }
 
