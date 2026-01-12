@@ -89,7 +89,7 @@ public class SubContent {
     }
 
     public String getContentDescription() {
-        return contentDescription;
+        return description;
     }
     public Category getContentCategory() {
         return contentCategory;
@@ -105,10 +105,6 @@ public class SubContent {
     public String getContentTitle() { return contentTitle; }
     public void setContentTitle(String contentTitle) { this.contentTitle = contentTitle; }
     
-    public Category getContentCategory() { return contentCategory; }
-    public void setContentCategory(Category contentCategory) { 
-        this.contentCategory = contentCategory; 
-    }
     
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
