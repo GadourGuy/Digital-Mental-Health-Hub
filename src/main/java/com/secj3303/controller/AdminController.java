@@ -64,7 +64,7 @@ public class AdminController {
         model.addAttribute("pendingProfessional", pendingProfessional);
 
 
-        return "Admin-home"; // Maps to Admin-home.html
+        return "admin-home"; // Maps to Admin-home.html
     }
 
 

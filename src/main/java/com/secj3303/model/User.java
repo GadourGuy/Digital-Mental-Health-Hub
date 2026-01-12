@@ -24,6 +24,9 @@ public class User {
     
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "isProfessional", nullable = false)
+    private boolean isProfessional;
     
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<ForumPost> forumPosts = new HashSet<>();
@@ -35,13 +38,16 @@ public class User {
     private Set<CompletedContent> completedContents = new HashSet<>();
 
     // Constructors
-    public User() {}
+    public User() {
+        isProfessional = false;
+    }
     
     public User(String name, String email, String role, String password) {
         this.name = name;
         this.email = email;
         this.role = role;
         this.password = password;
+        isProfessional = false;
     }
 
     public User(int id, String name, String email, String role) {
@@ -83,5 +89,13 @@ public class User {
     public Set<CompletedContent> getCompletedContents() { return completedContents; }
     public void setCompletedContents(Set<CompletedContent> completedContents) { 
         this.completedContents = completedContents; 
+    }
+
+    public boolean isProfessional() {
+        return isProfessional;
+    }
+
+    public void setProfessional(boolean isProfessional) {
+        this.isProfessional = isProfessional;
     }
 }
