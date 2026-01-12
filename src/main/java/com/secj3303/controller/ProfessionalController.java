@@ -303,25 +303,7 @@ public class ProfessionalController {
          
     }
 
-    // where the professional will upload the content
-    @PostMapping("/resources/upload")
-    public String uploadResources(@RequestParam("title") String title, @RequestParam("category") String category, @RequestParam("description") String description, @RequestParam("url") String url, HttpSession session) {
-
-        // if (!isProfessional(session)) return "redirect:/login";
-        
-        int categoryID = contentDao.getCategoryID(category);
-        Category categoryObj = new Category();
-        categoryObj.setCategoryID(categoryID);
-        categoryObj.setContentTitle(category);
-
-        User professional = (User) session.getAttribute("user");
-        
-        //SubContent subContent = new SubContent(title, categoryObj, description, url, professional);
-        
-       // contentDao.uploadContent(subContent);
-        
-        return "redirect:/professional/resources/upload"; 
-    }
+   
 
     // Helper to secure professional routes
     private boolean isProfessional(HttpSession session) {
