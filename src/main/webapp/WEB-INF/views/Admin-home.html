@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Mental Health Literacy Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/globals.css}">
     <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
     <link rel="stylesheet" th:href="@{/css/admin_home_styles.css}">
@@ -15,7 +16,7 @@
 
 <body>
     <div class="sidebar">
-        <div th:replace="fragments/Student-navbar :: navbar"></div>
+        <div th:replace="fragments/Admin-navbar :: navbar(activeTab='home')"></div>
     </div>
 
     <main>

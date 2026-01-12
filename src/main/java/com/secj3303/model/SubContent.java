@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "sub_content")
+@Table(name = "sub_contents")
 public class SubContent {
 
     @Id

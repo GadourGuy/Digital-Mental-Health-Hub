@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="navbar(activeTab)" class="sidebar">
+        
+        <div class="sidebar-header">
+            <div class="brand-name">Mental Health Hub</div>
+            <div class="user-welcome" th:text="'Welcome, ' + ${session.user?.name}">Welcome, User</div>
+            <div class="user-role-badge">
+                <span th:text="${session.role}"></span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a th:href="@{/professional/home}" 
+               class="nav-item" 
+               th:classappend="${activeTab == 'home'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-house"></i></div>
+                <span>Home</span>
+            </a>
+
+            <a th:href="@{/professional/my-resources}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'myResources'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-file-circle-question"></i></div>
+                <span>My Resources</span>
+            </a>
+
+            <a th:href="@{/professional/resources/upload}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'upload'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-user-doctor"></i></div>
+                <span>Upload Resources</span>
+            </a>
+
+
+            <a th:href="@{/professional/chatbot}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'chatbot'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
+                <span>AI Chatbot</span>
+            </a>
+
+            <a th:href="@{/forum}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'forum'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
+                <span>Forum</span>
+            </a>
+
+            <a th:href="@{/student/emergency}" 
+               class="nav-item item-danger"
+               th:classappend="${activeTab == 'emergency'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <span>Emergency</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
