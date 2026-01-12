@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.secj3303.model.Feedback;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
@@ -216,7 +217,7 @@ public class AdminDaoHibernate implements AdminDao {
         Session session = sessionFactory.openSession();
         List<ForumPost> list = null;
         try {
-            String hql = "FROM forum_post fp WHERE fp.user.userID = :uid ORDER BY fp.createdAt DESC";
+            String hql = "FROM ForumPost fp WHERE fp.users.userID = :uid ORDER BY fp.createdAt DESC";
             list = session.createQuery(hql, ForumPost.class)
                           .setParameter("uid", userID)
                           .list();
@@ -276,6 +277,41 @@ public class AdminDaoHibernate implements AdminDao {
                           .setParameter("uid", studentID)
                           .list();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks() {
+        Session session = sessionFactory.openSession();
+        List<Feedback> list = null;
+        try {
+            // ORDER BY dateSubmitted DESC ensures the newest feedback is first
+            String hql = "FROM Feedback f JOIN FETCH f.user ORDER BY f.dateSubmitted DESC";
+            list = session.createQuery(hql, Feedback.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Feedback> getUserFeedback(int userID) {
+        Session session = sessionFactory.openSession();
+        List<Feedback> list = null;
+        try {
+            // Fetch feedback where user.userID matches the parameter
+            String hql = "FROM Feedback f WHERE f.user.userID = :uid ORDER BY f.dateSubmitted DESC";
+
+            list = session.createQuery(hql, Feedback.class)
+                          .setParameter("uid", userID)
+                          .list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

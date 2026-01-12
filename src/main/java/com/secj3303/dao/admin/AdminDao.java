@@ -2,6 +2,7 @@ package com.secj3303.dao.admin;
 
 import java.util.List;
 
+import com.secj3303.model.Feedback;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
@@ -48,5 +49,13 @@ public interface AdminDao {
 
     // get all mood entries of a user by id
     public List<MoodEntry> getUserMoodsByID(int studentID);
+
+
+    // feedback
+    public List<Feedback> getAllFeedbacks();
+
+    // user specific feedbacks
+    public List<Feedback> getUserFeedback(int userID);
+
 
 }

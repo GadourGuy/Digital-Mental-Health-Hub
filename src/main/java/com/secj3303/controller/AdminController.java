@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.mysql.cj.Session;
 import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
@@ -25,6 +24,7 @@ import com.secj3303.model.ForumPost;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.User;
+import com.secj3303.model.Feedback;
 import com.secj3303.model.SubContent;
 
 @Controller
@@ -200,21 +200,27 @@ public class AdminController {
         List<ForumPost> userPosts = adminDao.getUserPostByID(studentID);
         int completedResoucesCount = adminDao.getCompletedResourcesCount(studentID);
         List<MoodEntry> userMood = adminDao.getUserMoodsByID(studentID);
+        List<Feedback> sutdentFeedbacks = adminDao.getUserFeedback(studentID);
 
         model.addAttribute("student", student);
         model.addAttribute("userPosts", userPosts);
         model.addAttribute("userMood", userMood);
         model.addAttribute("completedResoucesCount", completedResoucesCount);
+        model.addAttribute("feedbacks", sutdentFeedbacks);
 
         return "admin-manage-students";
     }
 
 
     
-    @GetMapping("/forum")
-    public String showForum(HttpSession session) {
+    @GetMapping("/feedback")
+    public String showfeedbacks(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
-        return "Admin-Forum"; 
+
+        List<Feedback> feedbacks = adminDao.getAllFeedbacks();
+        model.addAttribute("feedbacks", feedbacks);
+
+        return "admin-feedback"; 
     }
 
 

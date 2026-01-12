@@ -1,0 +1,89 @@
+.page-header { margin-bottom: 30px; }
+.page-title { font-size: 24px; font-weight: bold; color: #1F2937; }
+.page-subtitle { color: #6B7280; font-size: 14px; margin-top: 4px; }
+
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.feedback-card {
+    background: white;
+    border-radius: 12px;
+            padding: 24px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+.feedback-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+ /* Card Header: User Info & Date */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #F3F4F6;
+    padding-bottom: 16px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: #EFF6FF;
+        color: #2563EB;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    font-size: 18px;
+}
+.user-name { font-weight: bold; color: #111827; font-size: 16px; }
+.user-role { font-size: 12px; color: #6B7280; }
+
+.feedback-date {
+    font-size: 13px;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Rating Stars */
+.rating-stars { color: #FBBF24; font-size: 14px; margin-bottom: 8px; }
+.star-empty { color: #E5E7EB; }
+
+/* Content */
+.feedback-category {
+    display: inline-block;
+    background: #F3F4F6;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+.feedback-comment {
+    color: #4B5563;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Empty State */
+.empty-state { text-align: center; padding: 60px; color: #9CA3AF; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .feedback-date { align-self: flex-start; }
+}

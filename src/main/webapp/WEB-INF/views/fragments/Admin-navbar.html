@@ -40,13 +40,6 @@
                 <span>Monitor Student</span>
             </a>
 
-            <a th:href="@{/admin/chatbot}" 
-               class="nav-item"
-               th:classappend="${activeTab == 'chatbot'} ? 'active' : ''">
-                <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
-                <span>AI Chatbot</span>
-            </a>
-
             <a th:href="@{/forum}" 
                class="nav-item"
                th:classappend="${activeTab == 'forum'} ? 'active' : ''">
@@ -54,18 +47,11 @@
                 <span>Forum</span>
             </a>
 
-            <!-- <a th:href="@{/student/feedback}" 
+            <a th:href="@{/admin/feedback}" 
                class="nav-item"
                th:classappend="${activeTab == 'feedback'} ? 'active' : ''">
                 <div class="icon-box"><i class="fa-solid fa-pen-to-square"></i></div>
                 <span>Feedback</span>
-            </a> -->
-
-            <a th:href="@{/student/emergency}" 
-               class="nav-item item-danger"
-               th:classappend="${activeTab == 'emergency'} ? 'active' : ''">
-                <div class="icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <span>Emergency</span>
             </a>
         </div>
 
