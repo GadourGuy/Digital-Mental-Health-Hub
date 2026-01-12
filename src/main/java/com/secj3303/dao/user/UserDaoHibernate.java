@@ -1,5 +1,8 @@
 package com.secj3303.dao.user;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -49,6 +52,19 @@ public class UserDaoHibernate implements UserDao {
             e.printStackTrace();
         }
     }
+    // --- IIMPLEMENTED: Required for fetching users using the role.
+    @Override
+    public List<User> findUsersByRole(String role) {
+    try (Session session = sessionFactory.openSession()) {
+        String hql = "FROM User u WHERE u.role = :role";
+        Query<User> query = session.createQuery(hql, User.class);
+        query.setParameter("role", role);
+        return query.list();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Collections.emptyList();
+    }
+}
 
     // --- Unimplemented Stubs ---
     @Override

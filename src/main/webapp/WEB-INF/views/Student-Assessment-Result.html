@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ============================
+           1. CRITICAL NAVBAR STYLES
+           ============================ */
+        :root {
+            --primary: #155DFC;
+            --primary-bg: #EFF6FF;
+            --primary-border: #BEDBFF;
+            --text-dark: #0A0A0A;
+            --text-gray: #4A5565;
+            --border: #E5E7EB;
+            --bg-gradient: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 100%);
+            --danger: #E7000B;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Arimo', sans-serif; background: var(--bg-gradient); height: 100%; }
+        
+        .dashboard-container { display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styling */
+        .sidebar { 
+            width: 260px; background: white; border-right: 1px solid var(--border); 
+            position: fixed; height: 100vh; z-index: 100; display: flex; flex-direction: column;
+        }
+
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .brand-name { color: var(--primary); font-size: 18px; font-weight: bold; margin-bottom: 4px; }
+        .user-welcome { color: var(--text-gray); font-size: 14px; }
+        .user-role-badge span {
+            display: inline-block; background: #DBEAFE; color: #1447E6; 
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px;
+        }
+
+        .nav-links { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            border-radius: 10px; text-decoration: none; color: #364153; font-size: 14px; transition: 0.2s;
+        }
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: #DBEAFE; color: var(--primary); font-weight: bold; }
+        .item-danger { color: var(--danger); }
+        
+        .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); margin-top: auto; }
+        .logout-btn {
+            display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 16px;
+            color: var(--text-dark); text-decoration: none; border: 1px solid var(--border);
+            border-radius: 8px; transition: 0.2s; box-sizing: border-box; background: white;
+        }
+        .logout-btn:hover { background: #F9FAFB; }
+
+        /* ============================
+           2. RESULTS PAGE CONTENT
+           ============================ */
+        .main-content { flex: 1; margin-left: 260px; padding: 40px; overflow-y: auto; }
+        .page-header { margin-bottom: 24px; }
+        .page-title { font-size: 24px; color: var(--text-dark); margin-bottom: 8px; font-weight: bold; }
+        .page-subtitle { color: var(--text-gray); font-size: 16px; }
+
+        /* Result Card */
+        .result-card {
+            background: var(--primary-bg); border: 1px solid var(--primary-border);
+            border-radius: 14px; padding: 24px; margin-bottom: 32px; max-width: 900px;
+        }
+        .result-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .result-icon {
+            width: 48px; height: 48px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px;
+            border: 2px solid var(--primary);
+        }
+        .result-title { font-size: 16px; font-weight: bold; color: var(--primary); margin-bottom: 4px; }
+        .result-desc { color: var(--text-gray); font-size: 14px; }
+
+        /* Score Bar */
+        .score-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: var(--text-gray); }
+        .score-val { color: var(--primary); font-weight: bold; }
+        .progress-track { width: 100%; height: 12px; background: rgba(21, 93, 252, 0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #030213; border-radius: 10px; transition: width 1.5s ease; }
+
+        /* Breakdown Card */
+        .breakdown-card {
+            background: white; border: 1px solid var(--border); border-radius: 14px;
+            padding: 24px; margin-bottom: 32px; max-width: 900px;
+        }
+        .card-title { font-size: 16px; font-weight: bold; color: var(--text-dark); margin-bottom: 4px; }
+        .card-sub { font-size: 14px; color: var(--text-gray); margin-bottom: 24px; }
+
+        .breakdown-item { margin-bottom: 20px; }
+        .breakdown-label-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .breakdown-name { display: flex; align-items: center; gap: 8px; color: var(--text-dark); }
+        .breakdown-name i { color: var(--primary); font-size: 12px; }
+        .sm-track { width: 100%; height: 8px; background: rgba(0,0,0, 0.05); border-radius: 10px; overflow: hidden; }
+        .sm-fill { height: 100%; background: #030213; border-radius: 10px; }
+
+        /* Footer */
+        .footer-banner {
+            background: linear-gradient(90deg, #EFF6FF 0%, #EEF2FF 100%);
+            border: 1px solid var(--primary-border); border-radius: 14px; padding: 24px;
+            max-width: 900px; text-align: center;
+        }
+        .disclaimer-text { color: var(--text-gray); font-size: 14px; margin-bottom: 16px; line-height: 1.5; }
+        .action-buttons { display: flex; justify-content: center; gap: 12px; }
+        
+        .btn-outline { 
+            background: white; border: 1px solid rgba(0,0,0,0.1); padding: 10px 20px; border-radius: 8px; 
+            text-decoration: none; color: var(--text-dark); font-size: 14px; transition: 0.2s; 
+        }
+        .btn-outline:hover { background: #F9FAFB; }
+
+        .btn-dark { 
+            background: #030213; color: white; padding: 10px 20px; border-radius: 8px; 
+            text-decoration: none; font-size: 14px; transition: 0.2s; 
+        }
+        .btn-dark:hover { background: #1F2937; }
+        /* =========================================
+           2. SIDEBAR STYLING
+           ========================================= */
+      .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 100vh;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .brand-name {
+        color: var(--primary);
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .user-welcome {
+        color: var(--text-gray);
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .user-role-badge span {
+        background: #dbeafe;
+        color: #1447e6;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+
+      .nav-links {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Helper for Icon Alignment */
+      .icon-box {
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #364153;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .nav-item:hover {
+        background: #f3f4f6;
+        transform: translateX(5px);
+      }
+      .nav-item.active {
+        background: #dbeafe;
+        color: #1447e6;
+      }
+      .item-danger {
+        background: #fef2f2;
+        color: var(--danger);
+      }
+      .item-danger:hover {
+        background: #fee2e2;
+      }
+
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        color: #0a0a0a;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+      .logout-btn:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+      }
+
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div th:replace="fragments/Student-navbar :: navbar(activeTab='assessment')"></div>
+
+    <main class="main-content">
+        
+        <div class="page-header">
+            <div class="page-title">Self-Assessment Results</div>
+            <div class="page-subtitle">Based on your responses, here's your wellness evaluation</div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-header">
+                <div class="result-icon"><i class="fa-solid fa-medal"></i></div>
+                <div>
+                    <div class="result-title" th:text="${severityTitle}">Good Wellness Level</div>
+                    <div class="result-desc" th:text="${severityDesc}">You're doing well, with some areas for improvement.</div>
+                </div>
+            </div>
+            <div>
+                <div class="score-row">
+                    <span>Overall Score</span>
+                    <span class="score-val" th:text="${score} + ' / ' + ${maxScore} + ' Points'">15 / 25 Points</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" th:style="'width: ' + ${percentage} + '%'"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="breakdown-card">
+            <div class="card-title">Wellness Areas Breakdown</div>
+            <div class="card-sub">Your scores across different wellness dimensions</div>
+            <div class="breakdown-item">
+                <div class="breakdown-label-row">
+                    <div class="breakdown-name"><i class="fa-solid fa-brain"></i> Stress Management</div>
+                    <div style="color: var(--text-gray);">Moderate</div>
+                </div>
+                <div class="sm-track"><div class="sm-fill" style="width: 60%"></div></div>
+            </div>
+            <div class="breakdown-item">
+                <div class="breakdown-label-row">
+                    <div class="breakdown-name"><i class="fa-solid fa-cloud-moon"></i> Sleep Quality</div>
+                    <div style="color: var(--text-gray);">Good</div>
+                </div>
+                <div class="sm-track"><div class="sm-fill" style="width: 80%"></div></div>
+            </div>
+        </div>
+
+        <div class="footer-banner">
+            <div class="disclaimer-text">
+                Remember: This is a self-assessment tool and not a clinical diagnosis. 
+            </div>
+            <div class="action-buttons">
+                <a th:href="@{/student/assessment}" class="btn-outline">Take Assessment Again</a>
+                <a th:href="@{/student/home}" class="btn-dark">Save Results</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

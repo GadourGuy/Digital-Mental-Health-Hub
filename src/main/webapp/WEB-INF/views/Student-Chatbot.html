@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* NAVBAR STYLES (Keep consistent) */
+        :root {
+            --primary: #155DFC;
+            --primary-light: #EFF6FF;
+            --bg-gradient: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 100%);
+            --border: #E5E7EB;
+            --text-dark: #0A0A0A;
+            --text-gray: #4A5565;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Arimo', sans-serif; background: var(--bg-gradient); height: 100%; }
+        .dashboard-container { display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: white; border-right: 1px solid var(--border); position: fixed; height: 100vh; z-index: 100; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .brand-name { color: var(--primary); font-size: 18px; font-weight: bold; margin-bottom: 4px; }
+        .user-welcome { color: var(--text-gray); font-size: 14px; }
+        .user-role-badge span { display: inline-block; background: #DBEAFE; color: #1447E6; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+        .nav-links { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; text-decoration: none; color: #364153; font-size: 14px; transition: 0.2s; }
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: #DBEAFE; color: var(--primary); font-weight: bold; }
+        .item-danger { color: #E7000B; }
+        .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); margin-top: auto; }
+        .logout-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 16px; color: var(--text-dark); text-decoration: none; border: 1px solid var(--border); border-radius: 8px; transition: 0.2s; box-sizing: border-box; background: white; }
+
+        /* CHATBOT SPECIFIC STYLES */
+        .main-content { flex: 1; margin-left: 260px; padding: 30px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
+        
+        .page-header { margin-bottom: 20px; }
+        .page-title { font-size: 24px; color: var(--text-dark); font-weight: bold; }
+        .page-subtitle { color: var(--text-gray); font-size: 14px; }
+
+        .disclaimer-banner {
+            background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E;
+            padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1; background: white; border: 1px solid var(--border); border-radius: 14px;
+            display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-header {
+            padding: 16px 24px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px; background: #F9FAFB;
+        }
+        .bot-avatar {
+            width: 32px; height: 32px; background: #DBEAFE; color: var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;
+        }
+
+        /* Messages Area */
+        .chat-messages {
+            flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        
+        .bot-message {
+            align-self: flex-start; background: #F3F4F6; color: var(--text-dark);
+            border-bottom-left-radius: 2px;
+        }
+        
+        .user-message {
+            align-self: flex-end; background: var(--primary); color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px; border-top: 1px solid var(--border); background: white;
+            display: flex; gap: 12px; align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+            font-family: 'Arimo', sans-serif; resize: none; height: 24px; max-height: 100px;
+            outline: none; transition: 0.2s;
+        }
+        .chat-input:focus { border-color: var(--primary); }
+
+        .send-btn {
+            width: 44px; height: 44px; background: var(--primary); color: white; border: none;
+            border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .send-btn:hover { background: #1447E6; }
+        .send-btn:disabled { background: #9CA3AF; cursor: not-allowed; }
+
+        /* Quick Topics */
+        .quick-topics { padding: 0 20px 20px 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .topic-pill {
+            padding: 8px 16px; background: white; border: 1px solid var(--border);
+            border-radius: 20px; font-size: 12px; color: var(--text-gray); cursor: pointer; transition: 0.2s;
+        }
+        .topic-pill:hover { background: #EFF6FF; color: var(--primary); border-color: #BEDBFF; }
+
+        /* Typing Indicator */
+        .typing-indicator { font-size: 12px; color: #9CA3AF; margin-left: 10px; display: none; }
+		/* =========================================
+           2. SIDEBAR STYLING
+           ========================================= */
+      .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 100vh;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .brand-name {
+        color: var(--primary);
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .user-welcome {
+        color: var(--text-gray);
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .user-role-badge span {
+        background: #dbeafe;
+        color: #1447e6;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+
+      .nav-links {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Helper for Icon Alignment */
+      .icon-box {
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #364153;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .nav-item:hover {
+        background: #f3f4f6;
+        transform: translateX(5px);
+      }
+      .nav-item.active {
+        background: #dbeafe;
+        color: #1447e6;
+      }
+      .item-danger {
+        background: #fef2f2;
+        color: var(--danger);
+      }
+      .item-danger:hover {
+        background: #fee2e2;
+      }
+
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        color: #0a0a0a;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+      .logout-btn:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+      }
+
+
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <div th:replace="fragments/Student-navbar :: navbar(activeTab='chatbot')"></div>
+
+    <main class="main-content">
+        
+        <div class="page-header">
+            <div class="page-title">AI Mental Health Chatbot</div>
+            <div class="page-subtitle">Get instant support and guidance anytime you need it</div>
+        </div>
+
+        <div class="disclaimer-banner">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>This AI chatbot provides supportive conversations but is not a replacement for professional mental health care. If you're experiencing a crisis, use the Emergency Button.</div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <div style="font-weight: bold; font-size: 14px;">Mental Health Assistant</div>
+                    <div style="font-size: 12px; color: #00C950;">• Always here to listen</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatBox">
+                <div class="message bot-message">
+                    Hello! I'm here to support you. How are you feeling today?
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">Assistant is typing...</div>
+
+            <div class="quick-topics">
+                <div class="topic-pill" onclick="sendQuickMessage('I am feeling very stressed about exams')">Exam Stress</div>
+                <div class="topic-pill" onclick="sendQuickMessage('I am having trouble sleeping')">Sleep Issues</div>
+                <div class="topic-pill" onclick="sendQuickMessage('I feel lonely lately')">Loneliness</div>
+                <div class="topic-pill" onclick="sendQuickMessage('Can you suggest a breathing exercise?')">Breathing Exercise</div>
+            </div>
+
+            <div class="input-area">
+                <textarea id="messageInput" class="chat-input" placeholder="Type your message..." onkeypress="handleEnter(event)"></textarea>
+                <button id="sendBtn" class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script th:inline="javascript">
+    const chatBox = document.getElementById('chatBox');
+    const input = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // --- NEW: Get the correct URL including your project name ---
+    const apiURL = /*[[@{/api/chat}]]*/ '/api/chat'; 
+
+    function handleEnter(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function sendQuickMessage(text) {
+        input.value = text;
+        sendMessage();
+    }
+
+    async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        // 1. Add User Message to UI
+        addMessage(text, 'user-message');
+        input.value = '';
+        sendBtn.disabled = true;
+        typingIndicator.style.display = 'block';
+
+        // 2. Send to Backend
+        try {
+            // --- UPDATED: Use the variable apiURL here ---
+            const response = await fetch(apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            // If the server returns 404 or 403, throw an error
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // 3. Add AI Response to UI
+            typingIndicator.style.display = 'none';
+            addMessage(data.reply, 'bot-message');
+
+        } catch (error) {
+            console.error('Error:', error);
+            typingIndicator.style.display = 'none';
+            addMessage("I apologize, but I'm having trouble connecting right now. Please try again later.", 'bot-message');
+        } finally {
+            sendBtn.disabled = false;
+        }
+    }
+
+    function addMessage(text, className) {
+        const div = document.createElement('div');
+        div.className = `message ${className}`;
+        div.innerText = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight; 
+    }
+</script>
+
+</body>
+</html>

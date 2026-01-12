@@ -1,10 +1,18 @@
 package com.secj3303.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "sub_contents")
+@Table(name = "sub_content")
 public class SubContent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contentID")
@@ -80,10 +88,20 @@ public class SubContent {
         this.rejectionReason = rejectionReason;
     }
 
-    // Getters and Setters
+    public String getContentDescription() {
+        return contentDescription;
+    }
+    public Category getContentCategory() {
+        return contentCategory;
+    }
+
+    public void setContentCategory(Category contentCategory) {
+        this.contentCategory = contentCategory;
+    }
+    // Other Getters and Setters
     public int getContentID() { return contentID; }
     public void setContentID(int contentID) { this.contentID = contentID; }
-    
+
     public String getContentTitle() { return contentTitle; }
     public void setContentTitle(String contentTitle) { this.contentTitle = contentTitle; }
     

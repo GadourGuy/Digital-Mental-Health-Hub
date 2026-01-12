@@ -1,6 +1,5 @@
 package com.secj3303.dao.admin;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;

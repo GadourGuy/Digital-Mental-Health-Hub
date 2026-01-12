@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Forum</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* =========================================
+         1. GLOBAL VARIABLES & RESET (MATCHING HOME)
+         ========================================= */
+      :root {
+        --primary: #155dfc;
+        --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%);
+        --text-dark: #0a0a0a;
+        --text-gray: #6a7282;
+        --danger: #e7000b;
+      }
+
+      body, html {
+        margin: 0; padding: 0;
+        font-family: "Arimo", sans-serif;
+        background: var(--bg-gradient);
+        height: 100%;
+      }
+
+      /* Layout */
+      .dashboard-container { display: flex; height: 100vh; overflow: hidden; }
+      
+      /* Sidebar (Structure only - content comes from fragment) */
+      .sidebar { width: 260px; background: white; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; }
+
+      /* Main Content */
+      .main-content { flex: 1; padding: 32px; overflow-y: auto; position: relative; }
+
+      /* =========================================
+         2. FORUM SPECIFIC STYLES
+         ========================================= */
+      
+      /* Page Header */
+      .forum-header-section {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        margin-bottom: 24px;
+      }
+      .page-title { font-size: 24px; margin-bottom: 8px; font-weight: bold; color: var(--text-dark); }
+      .page-subtitle { color: var(--text-gray); font-size: 14px; }
+
+      /* Primary Button (Matches Home Theme) */
+      .btn-primary {
+        background: var(--primary); color: white; border: none; padding: 12px 24px;
+        border-radius: 10px; cursor: pointer; font-weight: bold; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;
+        box-shadow: 0 4px 6px rgba(21, 93, 252, 0.2);
+      }
+      .btn-primary:hover { background: #1447e6; transform: translateY(-2px); }
+
+      /* Forum Feed */
+      .forum-feed { display: flex; flex-direction: column; gap: 20px; padding-bottom: 80px; }
+
+      /* Post Card (Matches content-card style) */
+      .post-card {
+        background: white; border-radius: 14px; padding: 24px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .post-card:hover { border-color: #BEDBFF; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+      .post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+      
+      /* User Info */
+      .user-meta { display: flex; gap: 12px; align-items: center; }
+      .user-avatar {
+        width: 40px; height: 40px; background: #eff6ff; color: var(--primary);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;
+      }
+      .user-details { display: flex; flex-direction: column; }
+      .user-name { font-weight: bold; color: var(--text-dark); font-size: 14px; }
+      
+      /* Role Badges */
+      .badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: bold; text-transform: uppercase; margin-left: 8px; vertical-align: middle; }
+      .badge-student { background: #DBEAFE; color: #155DFC; }
+      .badge-pro { background: #DCFCE7; color: #166534; }
+      .badge-admin { background: #FEE2E2; color: #991B1B; }
+
+      /* Content */
+      .post-title { font-size: 18px; font-weight: bold; color: var(--text-dark); margin: 0 0 8px 0; }
+      .post-body { color: var(--text-gray); font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+
+      /* Actions */
+      .post-actions { display: flex; gap: 8px; }
+      .action-btn {
+        width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent;
+        cursor: pointer; color: #9CA3AF; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+      }
+      .action-btn:hover { background: #F3F4F6; color: var(--primary); }
+      .btn-delete:hover { background: #FEE2E2; color: var(--danger); }
+
+      /* Floating Action Button (Matches Home) */
+      .fab {
+        position: fixed; bottom: 32px; right: 32px; width: 56px; height: 56px;
+        background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); color: white; cursor: pointer; transition: transform 0.2s; font-size: 24px; border: none;
+      }
+      .fab:hover { transform: scale(1.1); }
+
+      /* Modal Styles */
+      .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;
+        animation: fadeIn 0.2s ease-out;
+      }
+      .modal-box {
+        background: white; width: 500px; padding: 32px; border-radius: 14px;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      }
+      .form-group { margin-bottom: 20px; }
+      .form-label { display: block; font-size: 14px; font-weight: bold; color: var(--text-dark); margin-bottom: 8px; }
+      .form-input {
+        width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px;
+        font-family: inherit; box-sizing: border-box; outline: none; transition: 0.2s;
+      }
+      .form-input:focus { border-color: var(--primary); }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+      .btn-cancel { background: white; border: 1px solid #e5e7eb; color: var(--text-dark); padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+      
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+	  /* =========================================
+           2. SIDEBAR STYLING
+           ========================================= */
+      .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        height: 100vh;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .brand-name {
+        color: var(--primary);
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .user-welcome {
+        color: var(--text-gray);
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .user-role-badge span {
+        background: #dbeafe;
+        color: #1447e6;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+	  .nav-links {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Helper for Icon Alignment */
+      .icon-box {
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #364153;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .nav-item:hover {
+        background: #f3f4f6;
+        transform: translateX(5px);
+      }
+      .nav-item.active {
+        background: #dbeafe;
+        color: #1447e6;
+      }
+      .item-danger {
+        background: #fef2f2;
+        color: var(--danger);
+      }
+      .item-danger:hover {
+        background: #fee2e2;
+      }
+
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        color: #0a0a0a;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+      .logout-btn:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      
+      <div th:replace="fragments/Student-navbar :: navbar(activeTab='forum')"></div>
+
+      <main class="main-content">
+        
+        <div class="forum-header-section">
+          <div>
+            <div class="page-title">Community Forum</div>
+            <div class="page-subtitle">Connect, share experiences, and support one another.</div>
+          </div>
+          <button onclick="openModal()" class="btn-primary">
+            <i class="fa-solid fa-plus"></i> New Post
+          </button>
+        </div>
+
+        <div class="forum-feed">
+          
+          <div class="post-card" th:each="post : ${posts}">
+            <div class="post-header">
+              
+              <div class="user-meta">
+                <div class="user-avatar">
+                   <i class="fa-solid" th:classappend="${post.professional.role == 'PROFESSIONAL' ? 'fa-user-doctor' : 'fa-user'}"></i>
+                </div>
+                <div class="user-details">
+                  <div>
+                    <span class="user-name" th:text="${post.professional.name}">User Name</span>
+                    
+                    <span class="badge badge-student" th:if="${post.professional.role == 'STUDENT'}">Student</span>
+                    <span class="badge badge-pro" th:if="${post.professional.role == 'PROFESSIONAL'}">Professional</span>
+                    <span class="badge badge-admin" th:if="${post.professional.role == 'ADMIN'}">Admin</span>
+                  </div>
+                  <span style="font-size: 12px; color: var(--text-gray);">Posted recently</span>
+                </div>
+              </div>
+
+              <div class="post-actions">
+                
+                <button class="action-btn"
+                        th:if="${session.user.userID == post.professional.userID}"
+                        th:onclick="'openEditModal(' + ${post.contentID} + ', `' + ${post.contentTitle} + '`, `' + ${post.contentDescription} + '`)'"
+                        title="Edit Post">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <a class="action-btn btn-delete"
+                   th:if="${session.user.role == 'ADMIN' or session.user.userID == post.professional.userID}"
+                   th:href="@{/forum/delete/{id}(id=${post.contentID})}"
+                   onclick="return confirm('Are you sure you want to remove this post?')"
+                   title="Delete Post">
+                  <i class="fa-solid fa-trash"></i>
+                </a>
+              </div>
+            </div>
+
+            <h3 class="post-title" th:text="${post.contentTitle}">Post Title</h3>
+            <div class="post-body" th:text="${post.contentDescription}">Post content body...</div>
+          </div>
+
+          <div th:if="${#lists.isEmpty(posts)}" style="text-align: center; color: var(--text-gray); padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"><i class="fa-regular fa-comments"></i></div>
+            <div>No discussions yet. Start the conversation!</div>
+          </div>
+
+        </div>
+      </main>
+
+      <button onclick="openModal()" class="fab">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+
+    </div>
+
+    <div id="postModal" class="modal-overlay">
+      <div class="modal-box">
+        <h2 id="modalTitle" style="margin-top: 0; color: var(--text-dark);">Create New Post</h2>
+        
+        <form id="postForm" th:action="@{/forum/create}" method="post">
+          <input type="hidden" id="editContentId" name="contentID" value="0">
+          
+          <div class="form-group">
+            <label class="form-label">Topic Title</label>
+            <input type="text" name="title" id="inputTitle" class="form-input" placeholder="e.g., Managing Exam Stress" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea name="description" id="inputDesc" class="form-input" rows="5" placeholder="Share your thoughts..." required></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+            <button type="submit" class="btn-primary">Post</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const modal = document.getElementById('postModal');
+      const form = document.getElementById('postForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const inputTitle = document.getElementById('inputTitle');
+      const inputDesc = document.getElementById('inputDesc');
+      const editId = document.getElementById('editContentId');
+
+      // --- CRITICAL FIX: Get correct URLs with Project Name ---
+      const createUrl = /*[[@{/forum/create}]]*/ '/forum/create';
+      const editUrl = /*[[@{/forum/edit}]]*/ '/forum/edit';
+
+      function openModal() {
+        // Reset to Create Mode using the correct URL
+        form.action = createUrl; 
+        modalTitle.innerText = 'Create New Post';
+        inputTitle.value = '';
+        inputDesc.value = '';
+        editId.value = '0';
+        modal.style.display = 'flex';
+        inputTitle.focus();
+      }
+
+      function openEditModal(id, title, desc) {
+        // Switch to Edit Mode using the correct URL
+        form.action = editUrl;
+        modalTitle.innerText = 'Edit Post';
+        inputTitle.value = title;
+        inputDesc.value = desc;
+        editId.value = id;
+        modal.style.display = 'flex';
+      }
+
+      function closeModal() {
+        modal.style.display = 'none';
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          closeModal();
+        }
+      }
+    </script>
+  </body>
+</html>

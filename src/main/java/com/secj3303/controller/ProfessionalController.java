@@ -2,16 +2,9 @@ package com.secj3303.controller;
 
 import java.util.HashMap;
 import java.util.List;
-// import java.util.Locale.Category;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-
-import com.secj3303.dao.content.ContentDao;
-import com.secj3303.dao.professional.ProfessionalDao;
-import com.secj3303.model.SubContent;
-import com.secj3303.model.User;
-import com.secj3303.model.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.secj3303.dao.content.ContentDao;
+import com.secj3303.dao.professional.ProfessionalDao;
+import com.secj3303.model.Category;
+import com.secj3303.model.SubContent;
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/professional")
@@ -302,6 +301,26 @@ public class ProfessionalController {
         redirectAttributes.addFlashAttribute("success", "Resource updated successfully!");
         return "redirect:/professional/my-resources";
          
+    }
+
+    // where the professional will upload the content
+    @PostMapping("/resources/upload")
+    public String uploadResources(@RequestParam("title") String title, @RequestParam("category") String category, @RequestParam("description") String description, @RequestParam("url") String url, HttpSession session) {
+
+        // if (!isProfessional(session)) return "redirect:/login";
+        
+        int categoryID = contentDao.getCategoryID(category);
+        Category categoryObj = new Category();
+        categoryObj.setCategoryID(categoryID);
+        categoryObj.setContentTitle(category);
+
+        User professional = (User) session.getAttribute("user");
+        
+        //SubContent subContent = new SubContent(title, categoryObj, description, url, professional);
+        
+       // contentDao.uploadContent(subContent);
+        
+        return "redirect:/professional/resources/upload"; 
     }
 
     // Helper to secure professional routes
