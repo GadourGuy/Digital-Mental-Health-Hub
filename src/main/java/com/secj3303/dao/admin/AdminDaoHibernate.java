@@ -7,6 +7,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.secj3303.model.ForumPost;
+import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
@@ -135,12 +137,9 @@ public class AdminDaoHibernate implements AdminDao {
                      user.setRole("student");
                      session.update(user);
                 } else {
-                    // Clear message if approved
                     request.setRejectionReason(null); 
                 }
                 
-                // D. If Approved, you might want to update the User role automatically?
-                // Optional logic:
                 if ("approved".equalsIgnoreCase(status)) {
                      User user = request.getUser();
                      user.setRole("professional"); // Or set isProfessional=true
@@ -196,5 +195,92 @@ public class AdminDaoHibernate implements AdminDao {
     }
     return list;
     }
-    
+
+    @Override
+    public List<User> getAllStudents() {
+        Session session = sessionFactory.openSession();
+        List<User> list = null;
+        try {
+            String hql = "SELECT new User(u.userID, u.name, u.email) FROM User u WHERE u.role = 'student'";
+            list = session.createQuery(hql, User.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
+    @Override
+    public List<ForumPost> getUserPostByID(int userID) {
+        Session session = sessionFactory.openSession();
+        List<ForumPost> list = null;
+        try {
+            String hql = "FROM forum_post fp WHERE fp.user.userID = :uid ORDER BY fp.createdAt DESC";
+            list = session.createQuery(hql, ForumPost.class)
+                          .setParameter("uid", userID)
+                          .list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
+    @Override
+    public List<MoodEntry> getUsersMood() {
+        Session session = sessionFactory.openSession();
+        List<MoodEntry> list = null;
+        try {
+            String hql = "FROM MoodEntry m WHERE m.id IN " +
+                         "(SELECT MAX(m2.id) FROM MoodEntry m2 GROUP BY m2.user)";
+
+            list = session.createQuery(hql, MoodEntry.class).list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
+    @Override
+    public int getCompletedResourcesCount(int userID) {
+        Session session = sessionFactory.openSession();
+        long count = 0;
+        try {
+            
+            String hql = "SELECT COUNT(c) FROM CompletedContent c WHERE c.user.userID = :uid";
+            count = (Long) session.createQuery(hql)
+                                  .setParameter("uid", userID)
+                                  .uniqueResult();
+                                  
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return (int) count;
+    }
+
+    @Override
+    public List<MoodEntry> getUserMoodsByID(int studentID) {
+        Session session = sessionFactory.openSession();
+        List<MoodEntry> list = null;
+        try {
+            String hql = "FROM MoodEntry m WHERE m.user.userID = :uid ORDER BY m.date DESC";
+            list = session.createQuery(hql, MoodEntry.class)
+                          .setParameter("uid", studentID)
+                          .list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
 }

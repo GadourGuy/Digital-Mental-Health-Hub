@@ -69,8 +69,17 @@ public class UserDaoHibernate implements UserDao {
     // --- Unimplemented Stubs ---
     @Override
     public User getUser(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+        Session session = sessionFactory.openSession();
+        User user = null;
+        try {
+            
+            user = session.get(User.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return user;
     }
 
     @Override

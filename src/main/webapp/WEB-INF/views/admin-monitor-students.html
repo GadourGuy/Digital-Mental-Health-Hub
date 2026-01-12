@@ -18,4 +18,61 @@
     <div class="sidebar">
         <div th:replace="fragments/Admin-navbar :: navbar(activeTab='monitorSudents')"></div>
     </div>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Students</h1>
+                <p class="page-subtitle">Manage the students in the system</p>
+            </div>
+        </div>
+
+        <div class="resource-container">
+
+            <div th:if="${students == null or students.empty}" class="empty-state">
+                <i class="fas fa-folder-open empty-icon"></i>
+                <h3>No Results found</h3>
+                <p>There are no students in the system.</p>
+            </div>
+
+            <div th:each="student, iterStat : ${students}" class="resource-item">
+    
+                <div class="resource-info">
+
+                    <div class="resource-icon-box icon-user">
+                        <i class="fas fa-user"></i>
+                    </div>
+                
+                    <div class="resource-details">
+                        <div class="resource-title" th:text="${student.name}">User Name</div>
+                        <span>•</span>
+                        <span>Mood: </span> 
+                        <span>
+                            <div class="mood-section" th:with="mood=${studentMoods[iterStat.index]}">
+                                <div th:if="${mood != null}">
+                                    <span class="category-badge" th:text="${mood.mood}">Happy</span>
+                                    <span th:text="${#dates.format(mood.date, 'dd MMM')}"></span>
+                                </div>
+                                <div th:if="${mood == null}">
+                                    <span class="text-muted">No entries yet</span>
+                                </div>
+                            </div>
+                        </span>
+
+                        <div class="resource-meta">
+                            <span class="category-badge" th:text="${student.email}">email@example.com</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="action-buttons">
+                    <a th:href="@{/admin/manage-student(studentID=${student.userID})}" 
+                       class="btn btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
 </body>

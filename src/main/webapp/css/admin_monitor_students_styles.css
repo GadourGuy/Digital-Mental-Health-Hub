@@ -1,8 +1,243 @@
-main {
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-title { 
+    font-size: 24px; 
+    font-weight: bold; 
+    margin-bottom: 4px; 
+}
+
+.page-subtitle { 
+    color: var(--text-gray); 
+    font-size: 14px; 
+}
+
+/* --- Resource List Styling --- */
+.resource-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.icon-user {
+    background-color: #EFF6FF;
+    color: #3B82F6;
+}
+
+/* The Card/Row Item */
+.resource-item {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+}
+
+.resource-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    border-color: #BFDBFE;
+}
+
+/* Left Side: Icon + Info */
+.resource-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     flex: 1;
-    padding: 30px 40px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    align-content: start;
+    min-width: 0; /* Important for text truncation */
+}
+
+.resource-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+/* Icon Colors based on type */
+.icon-pdf { 
+    background-color: #FEF2F2; 
+    color: #EF4444; 
+}
+
+.icon-video { 
+    background-color: #EFF6FF; 
+    color: var(--primary); 
+}
+
+.resource-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.resource-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.resource-meta {
+    font-size: 13px;
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.category-badge {
+    background: #F3F4F6;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #374151;
+    font-weight: 600;
+}
+
+.approved-badge {
+    background-color: #d4edda;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #155724;
+    font-weight: 600;
+}
+
+.pending-badge {
+    background-color: #FFF3CD;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #856404;
+    font-weight: 600;
+}
+
+.rejected-badge {
+    background-color: #F8D7DA;
+    color: #721C24;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Right Side: Actions */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+/* View Button */
+.btn-view {
+    background-color: white;
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+.btn-view:hover {
+    background-color: #F9FAFB;
+    border-color: #9CA3AF;
+}
+
+/* Delete Button */
+.btn-delete {
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border: none;
+}
+
+.btn-delete:hover {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: var(--text-gray);
+}
+
+.empty-icon { 
+    font-size: 48px; 
+    margin-bottom: 16px; 
+    opacity: 0.5; 
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    
+    main { 
+        padding: 20px; 
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .resource-info { 
+        width: 100%; 
+    }
+    
+    .action-buttons { 
+        width: 100%; 
+        justify-content: space-between; 
+        border-top: 1px solid #f3f4f6; 
+        padding-top: 16px; 
+    }
+    
+    .btn { 
+        flex: 1; 
+        justify-content: center; 
+    }
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
