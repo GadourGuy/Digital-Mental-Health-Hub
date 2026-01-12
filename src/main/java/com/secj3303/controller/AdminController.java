@@ -158,18 +158,21 @@ public class AdminController {
         return "redirect:/admin/resources/manage?contentID=" + contentID;
     } 
 
+// Monitor students
+    @GetMapping("/monitor/students")
+    public String showMonitorStudents(HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        return "admin-monitor-students"; 
+    }
 
+
+    
     @GetMapping("/forum")
     public String showForum(HttpSession session) {
         if (!isAdmin(session)) return "redirect:/login";
         return "Admin-Forum"; 
     }
 
-    @GetMapping("/panel")
-    public String showAdminPanel(HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
-        return "Admin-adminPanel"; 
-    }
 
     // Helper to secure admin routes
     private boolean isAdmin(HttpSession session) {
