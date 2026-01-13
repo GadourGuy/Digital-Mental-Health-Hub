@@ -47,6 +47,13 @@
                 <span>Forum</span>
             </a>
 
+            <a th:href="@{/admin/resources}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'activities'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-book-open"></i></div>
+                <span>Resources</span>
+            </a>
+
             <a th:href="@{/admin/feedback}" 
                class="nav-item"
                th:classappend="${activeTab == 'feedback'} ? 'active' : ''">
