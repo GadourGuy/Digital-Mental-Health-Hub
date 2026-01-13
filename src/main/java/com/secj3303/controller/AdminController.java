@@ -1,6 +1,5 @@
 package com.secj3303.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,18 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.secj3303.controller.StudentController.WeeklyTaskDTO;
 import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
 import com.secj3303.dao.user.UserDao;
+import com.secj3303.model.Feedback;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
-import com.secj3303.model.User;
-import com.secj3303.model.ActivityLog;
-import com.secj3303.model.Feedback;
 import com.secj3303.model.SubContent;
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/admin")
@@ -234,19 +231,22 @@ public class AdminController {
         List<SubContent> allContent = contentDao.getAllSubContents(); 
         List<SubContent> articles = new ArrayList<>();
         List<SubContent> videos = new ArrayList<>();
+        List<SubContent> selfHelp = new ArrayList<>();
 
         if (allContent != null) {
             for (SubContent c : allContent) {
+                // Admin sees "Approved" content in the library view
                 if ("Approved".equalsIgnoreCase(c.getStatus())) {
                     String type = c.getType() != null ? c.getType().toLowerCase() : "";
                     if (type.contains("article")) articles.add(c);
                     else if (type.contains("video")) videos.add(c);
+                    else selfHelp.add(c);
                 }
             }
         }
-
         model.addAttribute("articles", articles);
         model.addAttribute("videos", videos);
+        model.addAttribute("selfHelp", selfHelp);
 
         return "Student-Activities";
     }
