@@ -1,5 +1,6 @@
 package com.secj3303.dao.Mood;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,15 +25,22 @@ public class MoodDaoHibernate implements MoodDao {
     @Override
     public long getWeeklyMoodCount(int userId) {
         try (Session session = openSession()) {
-            String hql = "SELECT count(m) FROM MoodEntry m WHERE m.user.id = :uid";
+            // FIX: Added date filter to only count moods from the last 7 days
+            String hql = "SELECT count(m) FROM MoodEntry m WHERE m.user.userID = :uid AND m.date > :sevenDaysAgo";
             Query<Long> query = session.createQuery(hql, Long.class);
             query.setParameter("uid", userId);
+            
+            // Calculate the date 7 days ago
+            LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+            query.setParameter("sevenDaysAgo", sevenDaysAgo);
+            
             Long result = query.uniqueResult();
             return (result != null) ? result : 0;
-        } catch (Exception e) { e.printStackTrace(); return 0; }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+            return 0; 
+        }
     }
-
-    // --- NEW METHODS ---
 
     @Override
     public void saveMood(MoodEntry entry) {
@@ -40,18 +48,24 @@ public class MoodDaoHibernate implements MoodDao {
             session.beginTransaction();
             session.save(entry);
             session.getTransaction().commit();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
     }
 
     @Override
     public List<MoodEntry> getRecentMoods(int userId) {
         try (Session session = openSession()) {
             // Get last 10 moods
-            String hql = "FROM MoodEntry m WHERE m.user.id = :uid ORDER BY m.date DESC";
+            // Note: Changed m.user.id to m.user.userID to match your User model usually
+            String hql = "FROM MoodEntry m WHERE m.user.userID = :uid ORDER BY m.date DESC";
             Query<MoodEntry> query = session.createQuery(hql, MoodEntry.class);
             query.setParameter("uid", userId);
             query.setMaxResults(10);
             return query.list();
-        } catch (Exception e) { e.printStackTrace(); return Collections.emptyList(); }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+            return Collections.emptyList(); 
+        }
     }
 }

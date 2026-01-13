@@ -2,6 +2,7 @@ package com.secj3303.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,17 +22,40 @@ public class AssessmentEntry {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "total_score")
     private int totalScore;
+
+    @Column(name = "severity")
     private String severity; // e.g., "Normal", "Mild", "Severe"
+
+    @Column(name = "date")
     private LocalDateTime date;
 
-    // Constructors, Getters, Setters
-    public AssessmentEntry() {}
-    
-    // ... generate getters and setters ...
+    // --- Constructors ---
+    public AssessmentEntry() {
+        this.date = LocalDateTime.now();
+    }
+
+    public AssessmentEntry(User user, int totalScore, String severity) {
+        this.user = user;
+        this.totalScore = totalScore;
+        this.severity = severity;
+        this.date = LocalDateTime.now();
+    }
+
+    // --- Getters and Setters ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
-    public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
-    public void setSeverity(String severity) { this.severity = severity; }
-    public void setDate(LocalDateTime date) { this.date = date; }
+
     public int getTotalScore() { return totalScore; }
+    public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public LocalDateTime getDate() { return date; }
+    public void setDate(LocalDateTime date) { this.date = date; }
 }
