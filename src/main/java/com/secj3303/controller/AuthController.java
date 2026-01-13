@@ -1,9 +1,8 @@
 package com.secj3303.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller; // Import added
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +15,10 @@ public class AuthController {
 
     @Autowired
     private UserDao userDao;
+    
+    // Inject PasswordEncoder defined in SecurityConfig
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // --- Login Routes ---
     @GetMapping("/login")
@@ -23,34 +26,9 @@ public class AuthController {
         return "login"; 
     }
 
-    @PostMapping("/login")
-    public String handleLogin(@RequestParam String email, 
-                              @RequestParam String password, 
-                              HttpSession session) {
-        
-        User user = userDao.getUserByEmail(email);
-
-        if (user != null && user.getPassword().equals(password)) {
-            session.setAttribute("user", user);
-            session.setAttribute("role", user.getRole());
-
-            if ("STUDENT".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/student/home";
-            } else if ("PROFESSIONAL".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/professional/home";
-            } else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/admin/home";
-            }
-            return "redirect:/home";
-        } 
-        return "redirect:/login?error=true";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
+    // REMOVED: @PostMapping("/login") 
+    // Reason: Spring Security's filter chain now intercepts POST /login requests automatically.
+    // It verifies the password using the PasswordEncoder and UserDetailsService.
 
     // --- NEW SIGNUP ROUTES ---
 
@@ -76,11 +54,13 @@ public class AuthController {
         }
 
         // 3. Create new User Object
-        // (Assuming your User model has setters for these fields)
         User newUser = new User();
-        newUser.setName(fullName); // Make sure your User model has this field
+        newUser.setName(fullName); 
         newUser.setEmail(email);
-        newUser.setPassword(password);
+        
+        // --- SECURITY CHANGE: Hash the password before saving ---
+        String encodedPassword = passwordEncoder.encode(password);
+        newUser.setPassword(encodedPassword);
         
         // 4. AUTOMATICALLY set role to STUDENT
         newUser.setRole("STUDENT");

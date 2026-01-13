@@ -57,7 +57,17 @@
   </head>
   <body>
     <div class="dashboard-container">
-      <div th:replace="~{fragments/Student-navbar :: navbar(activeTab='resources')}"></div>
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'STUDENT')}">
+          <div th:replace="~{fragments/Student-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
+
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'PROFESSIONAL')}">
+          <div th:replace="~{fragments/Professional-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
+
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'ADMIN')}">
+          <div th:replace="~{fragments/Admin-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
       <main class="main-content">
         <h2>Resources & Weekly Activities</h2>
         <p class="subtitle">Educational materials and wellness activities to support your mental health</p>

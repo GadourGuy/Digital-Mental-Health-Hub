@@ -367,28 +367,6 @@
                 </div>
                 </div>
 
-            <h2 class="section-header">Connect with Mental Health Professionals</h2>
-            <div class="grid-3">
-                <div class="card" th:each="doc : ${doctors}">
-                    <div>
-                        <div class="pro-avatar" th:style="'background:' + ${doc.gradient}" th:text="${doc.initials}">DR</div>
-                        <div style="font-weight:bold" th:text="${doc.name}">Dr. Name</div>
-                        <div style="font-size:13px; color:var(--text-gray)" th:text="${doc.role}">Specialist</div>
-                        <div class="specialization-box" th:text="${doc.role}">General</div>
-                        <div style="font-size:13px;">
-                            <span class="dot" th:style="${doc.isAvailable} ? 'background: #00C950' : 'background: #F59E0B'"></span>
-                            <span th:text="${doc.availability}">Available</span>
-                        </div>
-                    </div>
-                    <a href="#" class="call-btn" style="background: var(--primary)">Schedule</a>
-                </div>
-            </div>
-
-            <div class="footer-banner">
-                <h3>You Are Not Alone</h3>
-                <p>Reaching out for help is a sign of strength. Support is available whenever you need it.</p>
-            </div>
-        </main>
-    </div>
+            
 </body>
 </html>

@@ -21,10 +21,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.secj3303.dao.Mood.MoodDaoHibernate;
 import com.secj3303.dao.activity.ActivityDaoHibernate;
+import com.secj3303.dao.assessment.AssessmentDao;
+import com.secj3303.dao.content.CompletedContentDao;
 import com.secj3303.dao.content.ContentDaoHibernate;
 import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.user.UserDaoHibernate;
 import com.secj3303.model.ActivityLog;
+import com.secj3303.model.AssessmentEntry;
+import com.secj3303.model.CompletedContent;
 import com.secj3303.model.Feedback;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.SubContent;
@@ -39,6 +43,9 @@ public class StudentController {
     @Autowired private ActivityDaoHibernate activityDao;
     @Autowired private ContentDaoHibernate contentDao; 
     @Autowired private FeedbackDao feedbackDao;
+    @Autowired private AssessmentDao assessmentDao;
+    @Autowired private CompletedContentDao completedContentDao;
+
     // --- DASHBOARD ---
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
@@ -90,13 +97,13 @@ public class StudentController {
         model.addAttribute("totalTasks", weeklyTasks.size());
         int progress = weeklyTasks.size() > 0 ? (int)(((double)completedCount / weeklyTasks.size()) * 100) : 0;
         model.addAttribute("progressPercentage", progress);
+        
 
         // 2. Resource Library
         List<SubContent> allContent = contentDao.getAllSubContents(); 
         List<SubContent> articles = new ArrayList<>();
         List<SubContent> videos = new ArrayList<>();
         List<SubContent> selfHelp = new ArrayList<>();
-
         if (allContent != null) {
             for (SubContent c : allContent) {
                 if ("Approved".equalsIgnoreCase(c.getStatus())) {
@@ -108,6 +115,9 @@ public class StudentController {
             }
         }
 
+        List<Integer> completedIds = completedContentDao.getCompletedContentIds(user.getUserID());
+        model.addAttribute("completedIds", completedIds);
+        
         model.addAttribute("articles", articles);
         model.addAttribute("videos", videos);
         model.addAttribute("selfHelp", selfHelp);
@@ -133,6 +143,30 @@ public class StudentController {
         activityDao.save(log);
 
         return "redirect:/student/activities";
+    }
+    @GetMapping("/resources/view")
+    public String trackAndRedirect(HttpSession session, @RequestParam("id") int contentId) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        
+        // Fetch the content to get the URL and Category ID
+        SubContent content = contentDao.getSubContentByID(contentId);
+        if (content == null) return "redirect:/student/activities";
+
+        // Check if already completed to prevent duplicate entries
+        boolean alreadyDone = completedContentDao.hasUserCompleted(user.getUserID(), contentId);
+        
+        if (!alreadyDone) {
+            // Create using your specific Constructor: (int contentID, int contentCategoryID, User users)
+            int catId = content.getContentCategory().getCategoryID();
+            
+            CompletedContent completed = new CompletedContent(contentId, catId, user);
+            
+            completedContentDao.saveCompletedContent(completed);
+        }
+
+        // Redirect to the actual resource (YouTube/PDF)
+        return "redirect:" + content.getContentURL();
     }
 
     // Helper for Static Schedule
@@ -206,10 +240,19 @@ public class StudentController {
         String title = percentage <= 40 ? "Excellent" : (percentage <= 70 ? "Good" : "Attention Needed");
         String desc = percentage <= 40 ? "Managing well." : (percentage <= 70 ? "Doing okay." : "High stress.");
 
+        User user = (User) session.getAttribute("user");
+        AssessmentEntry entry = new AssessmentEntry();
+        entry.setUser(user);
+        entry.setTotalScore(totalScore);
+        entry.setSeverity(title); // Saving "Good", "Excellent", etc.
+        entry.setDate(LocalDateTime.now());
+        
+        assessmentDao.saveAssessment(entry);
         model.addAttribute("score", totalScore);
         model.addAttribute("percentage", percentage);
         model.addAttribute("severityTitle", title);
         model.addAttribute("severityDesc", desc);
+        model.addAttribute("maxScore", 25);
         return "Student-Assessment-Result";
     }
 
