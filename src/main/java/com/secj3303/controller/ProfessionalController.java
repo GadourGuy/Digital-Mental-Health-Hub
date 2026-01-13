@@ -1,5 +1,6 @@
 package com.secj3303.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.secj3303.controller.StudentController.WeeklyTaskDTO;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
+import com.secj3303.model.ActivityLog;
 import com.secj3303.model.Category;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
@@ -301,6 +304,31 @@ public class ProfessionalController {
         redirectAttributes.addFlashAttribute("success", "Resource updated successfully!");
         return "redirect:/professional/my-resources";
          
+    }
+
+
+    @GetMapping("/resources")
+    public String showResourcesPage(HttpSession session, Model model) {
+        if (!isProfessional(session)) return "redirect:/login";
+        
+        List<SubContent> allContent = contentDao.getAllSubContents(); 
+        List<SubContent> articles = new ArrayList<>();
+        List<SubContent> videos = new ArrayList<>();
+
+        if (allContent != null) {
+            for (SubContent c : allContent) {
+                if ("Approved".equalsIgnoreCase(c.getStatus())) {
+                    String type = c.getType() != null ? c.getType().toLowerCase() : "";
+                    if (type.contains("article")) articles.add(c);
+                    else if (type.contains("video")) videos.add(c);
+                }
+            }
+        }
+
+        model.addAttribute("articles", articles);
+        model.addAttribute("videos", videos);
+
+        return "Student-Activities";
     }
 
    

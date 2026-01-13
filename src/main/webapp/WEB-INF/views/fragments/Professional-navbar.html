@@ -34,18 +34,18 @@
             </a>
 
 
-            <a th:href="@{/professional/chatbot}" 
-               class="nav-item"
-               th:classappend="${activeTab == 'chatbot'} ? 'active' : ''">
-                <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
-                <span>AI Chatbot</span>
-            </a>
-
             <a th:href="@{/forum}" 
                class="nav-item"
                th:classappend="${activeTab == 'forum'} ? 'active' : ''">
                 <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
                 <span>Forum</span>
+            </a>
+
+            <a th:href="@{/professional/resources}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'activities'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-book-open"></i></div>
+                <span>Resources</span>
             </a>
 
             <a th:href="@{/student/emergency}" 
