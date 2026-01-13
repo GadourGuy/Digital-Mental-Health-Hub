@@ -16,14 +16,18 @@
     <div class="tab-content" id="pills-tabContent">
       
       <div class="tab-pane fade show active" id="pills-articles" role="tabpanel">
-        <div th:each="content : ${articles}" class="content-item">
+        <div th:each="content : ${articles}" class="content-item" style="position: relative;">
+          
+          <div th:if="${completedIds != null and completedIds.contains(content.contentID)}" 
+               style="position: absolute; top: 10px; right: 10px; color: #10b981; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <i class="fa-solid fa-circle-check" style="font-size: 20px;"></i>
+          </div>
           <div class="content-icon"><i class="fa-regular fa-file-lines"></i></div>
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Description</p>
             <div>
                 <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
-                
                 <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
                     <i class="fa-solid fa-user-doctor me-1"></i>
                     <span th:text="${content.professional.name}">Author</span>
@@ -37,19 +41,26 @@
              <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
           
-          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Read</a>
+          <a th:unless="${session.user.role == 'ADMIN'}" 
+             th:href="@{/student/resources/view(id=${content.contentID})}" 
+             target="_blank" class="btn-read">Read</a>
         </div>
       </div>
 
       <div class="tab-pane fade" id="pills-videos" role="tabpanel">
-        <div th:each="content : ${videos}" class="content-item">
+        <div th:each="content : ${videos}" class="content-item" style="position: relative;">
+          
+          <div th:if="${completedIds != null and completedIds.contains(content.contentID)}" 
+               style="position: absolute; top: 10px; right: 10px; color: #10b981; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <i class="fa-solid fa-circle-check" style="font-size: 20px;"></i>
+          </div>
+          
           <div class="content-icon" style="color: #ef4444; background: #fef2f2;"><i class="fa-solid fa-play"></i></div>
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
             <div>
                 <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
-                
                 <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
                     <i class="fa-solid fa-user-doctor me-1"></i>
                     <span th:text="${content.professional.name}">Author</span>
@@ -63,25 +74,31 @@
              <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
-          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Watch</a>
+          <a th:unless="${session.user.role == 'ADMIN'}" 
+             th:href="@{/student/resources/view(id=${content.contentID})}" 
+             target="_blank" class="btn-read">Watch</a>
         </div>
-        <div th:if="${videos.empty}" class="text-center py-4 text-muted"><small>No videos available yet.</small></div>
       </div>
 
       <div class="tab-pane fade" id="pills-help" role="tabpanel">
-        <div th:each="content : ${selfHelp}" class="content-item">
+        <div th:each="content : ${selfHelp}" class="content-item" style="position: relative;">
+          
+          <div th:if="${completedIds != null and completedIds.contains(content.contentID)}" 
+               style="position: absolute; top: 10px; right: 10px; color: #10b981; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <i class="fa-solid fa-circle-check" style="font-size: 20px;"></i>
+          </div>
+
           <div class="content-icon" style="color: #8b5cf6; background: #f5f3ff;"><i class="fa-solid fa-hands-holding-circle"></i></div>
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
             <div>
                 <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
-                
                 <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
                     <i class="fa-solid fa-user-doctor me-1"></i>
                     <span th:text="${content.professional.name}">Author</span>
                 </span>
-                </div>
+            </div>
           </div>
 
           <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
@@ -89,9 +106,10 @@
              <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
-          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Open</a>
+          <a th:unless="${session.user.role == 'ADMIN'}" 
+             th:href="@{/student/resources/view(id=${content.contentID})}" 
+             target="_blank" class="btn-read">Open</a>
         </div>
-        <div th:if="${selfHelp.empty}" class="text-center py-4 text-muted"><small>No self-help tools available yet.</small></div>
       </div>
 
     </div>
