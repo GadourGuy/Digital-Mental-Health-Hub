@@ -21,10 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.secj3303.dao.Mood.MoodDaoHibernate;
 import com.secj3303.dao.activity.ActivityDaoHibernate;
+import com.secj3303.dao.assessment.AssessmentDao;
 import com.secj3303.dao.content.ContentDaoHibernate;
 import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.user.UserDaoHibernate;
 import com.secj3303.model.ActivityLog;
+import com.secj3303.model.AssessmentEntry;
 import com.secj3303.model.Feedback;
 import com.secj3303.model.MoodEntry;
 import com.secj3303.model.SubContent;
@@ -39,6 +41,7 @@ public class StudentController {
     @Autowired private ActivityDaoHibernate activityDao;
     @Autowired private ContentDaoHibernate contentDao; 
     @Autowired private FeedbackDao feedbackDao;
+    @Autowired private AssessmentDao assessmentDao;
     // --- DASHBOARD ---
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
@@ -206,10 +209,19 @@ public class StudentController {
         String title = percentage <= 40 ? "Excellent" : (percentage <= 70 ? "Good" : "Attention Needed");
         String desc = percentage <= 40 ? "Managing well." : (percentage <= 70 ? "Doing okay." : "High stress.");
 
+        User user = (User) session.getAttribute("user");
+        AssessmentEntry entry = new AssessmentEntry();
+        entry.setUser(user);
+        entry.setTotalScore(totalScore);
+        entry.setSeverity(title); // Saving "Good", "Excellent", etc.
+        entry.setDate(LocalDateTime.now());
+        
+        assessmentDao.saveAssessment(entry);
         model.addAttribute("score", totalScore);
         model.addAttribute("percentage", percentage);
         model.addAttribute("severityTitle", title);
         model.addAttribute("severityDesc", desc);
+        model.addAttribute("maxScore", 25);
         return "Student-Assessment-Result";
     }
 
