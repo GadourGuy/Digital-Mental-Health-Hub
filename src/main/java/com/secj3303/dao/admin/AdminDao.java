@@ -2,6 +2,9 @@ package com.secj3303.dao.admin;
 
 import java.util.List;
 
+import com.secj3303.model.Feedback;
+import com.secj3303.model.ForumPost;
+import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
@@ -29,5 +32,30 @@ public interface AdminDao {
 
     // to get the content whose status is pending
     public List<SubContent> getAllPendingContent();
+
+    // USERS
+    // get all users in the system information
+    public List<User> getAllStudents();
+
+    // get user all posts in the system
+    public List<ForumPost> getUserPostByID(int userID);
+    
+
+    // get the total number of completed content
+    public int getCompletedResourcesCount(int userID);
+
+    // get all users latest mood entry
+    public List<MoodEntry> getUsersMood();
+
+    // get all mood entries of a user by id
+    public List<MoodEntry> getUserMoodsByID(int studentID);
+
+
+    // feedback
+    public List<Feedback> getAllFeedbacks();
+
+    // user specific feedbacks
+    public List<Feedback> getUserFeedback(int userID);
+
 
 }

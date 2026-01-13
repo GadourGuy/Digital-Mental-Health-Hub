@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mental Health Literacy Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin_monitor_students_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student_nav.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Admin-navbar :: navbar(activeTab='monitorSudents')"></div>
+    </div>
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Students</h1>
+                <p class="page-subtitle">Manage the students in the system</p>
+            </div>
+        </div>
+        <div class="resource-container">
+            <div th:if="${students == null or students.empty}" class="empty-state">
+                <i class="fas fa-folder-open empty-icon"></i>
+                <h3>No Results found</h3>
+                <p>There are no students in the system.</p>
+            </div>
+            
+            <div th:each="student : ${students}" class="resource-item">
+    
+    <div class="resource-info">
+        <div class="resource-icon-box icon-user">
+            <i class="fas fa-user"></i>
+        </div>
+    
+        <div class="resource-details">
+            <div class="resource-title" th:text="${student.name}">User Name</div>
+            <div class="resource-meta">
+                <span class="category-badge" th:text="${student.email}">email@example.com</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <form th:action="@{/admin/manage-student}" method="get" style="margin: 0;">
+            <input type="hidden" name="studentID" th:value="${student.userID}" />
+            <button type="submit" class="btn btn-view">
+                <i class="fas fa-eye"></i> View
+            </button>
+        </form>
+        </div>
+        </div>
+    </main>
+</body>
+</html>

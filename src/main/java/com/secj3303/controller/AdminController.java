@@ -1,6 +1,9 @@
 package com.secj3303.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,8 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
+import com.secj3303.dao.user.UserDao;
+import com.secj3303.model.ForumPost;
+import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.User;
+import com.secj3303.model.Feedback;
 import com.secj3303.model.SubContent;
 
 @Controller
@@ -25,7 +32,9 @@ import com.secj3303.model.SubContent;
 public class AdminController {
     @Autowired
     private ContentDao contentDao; 
-    
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private ProfessionalDao professionalDao;
@@ -158,18 +167,62 @@ public class AdminController {
         return "redirect:/admin/resources/manage?contentID=" + contentID;
     } 
 
-
-    @GetMapping("/forum")
-    public String showForum(HttpSession session) {
+// Monitor students
+    @GetMapping("/monitor/students")
+    public String showMonitorStudents(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
-        return "Admin-Forum"; 
+
+        List<User> students = adminDao.getAllStudents();
+
+        List<MoodEntry> studentsMoods = adminDao.getUsersMood();
+
+        Map<Integer, MoodEntry> moodMap = new HashMap<>();
+        for (MoodEntry mood : studentsMoods) {
+            moodMap.put(mood.getUser().getUserID(), mood);
+        }
+        List<MoodEntry> orderedStudentMoods = new ArrayList<>();
+        for (User student : students) {
+            MoodEntry mood = moodMap.get(student.getUserID());
+            orderedStudentMoods.add(mood);
+        }
+
+        model.addAttribute("students", students);
+        model.addAttribute("studentMoods", orderedStudentMoods);
+
+        return "admin-monitor-students"; 
     }
 
-    @GetMapping("/panel")
-    public String showAdminPanel(HttpSession session) {
+    @GetMapping("/manage-student")
+    String showStudentPage(HttpSession session, Model model, @RequestParam("studentID") int studentID) {
         if (!isAdmin(session)) return "redirect:/login";
-        return "Admin-adminPanel"; 
+        
+        User student = userDao.getUser(studentID);
+        List<ForumPost> userPosts = adminDao.getUserPostByID(studentID);
+        int completedResoucesCount = adminDao.getCompletedResourcesCount(studentID);
+        List<MoodEntry> userMood = adminDao.getUserMoodsByID(studentID);
+        List<Feedback> sutdentFeedbacks = adminDao.getUserFeedback(studentID);
+
+        model.addAttribute("student", student);
+        model.addAttribute("userPosts", userPosts);
+        model.addAttribute("userMood", userMood);
+        model.addAttribute("completedResoucesCount", completedResoucesCount);
+        model.addAttribute("feedbacks", sutdentFeedbacks);
+
+        return "admin-manage-students";
     }
+
+
+    
+    @GetMapping("/feedback")
+    public String showfeedbacks(HttpSession session, Model model) {
+        if (!isAdmin(session)) return "redirect:/login";
+
+        List<Feedback> feedbacks = adminDao.getAllFeedbacks();
+        model.addAttribute("feedbacks", feedbacks);
+
+        return "admin-feedback"; 
+    }
+
 
     // Helper to secure admin routes
     private boolean isAdmin(HttpSession session) {

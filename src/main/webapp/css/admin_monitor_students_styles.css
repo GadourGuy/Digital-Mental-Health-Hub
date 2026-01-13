@@ -1,0 +1,222 @@
+/* =========================================
+   Page Header
+   ========================================= */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-title { 
+    font-size: 24px; 
+    font-weight: bold; 
+    color: #1F2937; /* Dark Grey */
+    margin-bottom: 4px; 
+}
+
+.page-subtitle { 
+    color: #6B7280; /* Text Gray */
+    font-size: 14px; 
+}
+
+/* =========================================
+   Resource List Styling
+   ========================================= */
+.resource-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* User Icon Box */
+.icon-user {
+    background-color: #EFF6FF;
+    color: #3B82F6;
+}
+
+/* --- The Card/Row Item --- */
+.resource-item {
+    background: white;
+    border: 1px solid #E5E7EB; /* Light Grey Border */
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;                  /* Enable Flexbox */
+    align-items: center;            /* Vertical Center */
+    justify-content: space-between; /* Space between Info and Buttons */
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+}
+
+.resource-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    border-color: #BFDBFE; /* Blue-ish border on hover */
+}
+
+/* --- Left Side: Icon + Info --- */
+.resource-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;      /* Grow to fill available space */
+    min-width: 0; /* Critical for text truncation */
+}
+
+.resource-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0; /* Prevent icon from squishing */
+}
+
+.resource-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.resource-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #111827; /* Dark Text */
+    
+    /* Text Truncation if name is too long */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resource-meta {
+    font-size: 13px;
+    color: #6B7280; /* Gray Text */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* --- Badges --- */
+.category-badge {
+    background: #F3F4F6;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #374151;
+    font-weight: 600;
+}
+
+/* --- Right Side: Actions --- */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0; /* Prevent buttons from shrinking/disappearing */
+    margin-left: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+/* View Button - Fixed Colors */
+.btn-view {
+    background-color: white;
+    border: 1px solid #E5E7EB; /* Visible Border */
+    color: #374151;            /* Visible Text */
+}
+
+.btn-view:hover {
+    background-color: #F9FAFB;
+    border-color: #9CA3AF;
+    color: #111827;
+}
+
+/* --- Empty State --- */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #9CA3AF;
+}
+
+.empty-icon { 
+    font-size: 48px; 
+    margin-bottom: 16px; 
+    opacity: 0.5; 
+}
+
+
+/* Add this to your admin_monitor_students_styles.css */
+.resource-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.action-buttons {
+    display: flex !important;
+    margin-left: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+.btn-view {
+    display: inline-flex !important;
+    background-color: white !important;
+    border: 1px solid #E5E7EB !important;
+    color: #374151 !important;
+}
+
+
+/* =========================================
+   Responsive Design (Mobile)
+   ========================================= */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    
+    main { 
+        padding: 20px; 
+    }
+    
+    .resource-item {
+        flex-direction: column; /* Stack vertically */
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .resource-info { 
+        width: 100%; 
+    }
+    
+    .action-buttons { 
+        width: 100%; 
+        justify-content: space-between; 
+        border-top: 1px solid #f3f4f6; 
+        padding-top: 16px; 
+        margin-left: 0; /* Reset margin for stacked layout */
+    }
+    
+    .btn { 
+        flex: 1; 
+        justify-content: center; 
+    }
+}

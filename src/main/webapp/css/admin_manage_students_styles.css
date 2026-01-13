@@ -1,0 +1,175 @@
+/* =========================================
+   Student Profile & Details Styles
+   ========================================= */
+
+/* --- Profile Header --- */
+.profile-header {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #EFF6FF;
+    color: var(--primary-color, #2563EB);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0; /* Prevents shrinking on small screens */
+}
+
+.profile-info h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #1F2937;
+}
+
+.profile-info p {
+    margin: 4px 0 0;
+    color: #6B7280;
+}
+
+/* --- Stats Grid --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #111827;
+    margin-top: 8px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #6B7280;
+}
+
+/* --- Section Titles --- */
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #374151;
+}
+
+/* --- Data Tables (Moods) --- */
+.data-table {
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    border-collapse: collapse;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    margin-bottom: 32px;
+}
+
+.data-table th {
+    background: #F9FAFB;
+    text-align: left;
+    padding: 12px 24px;
+    font-size: 13px;
+    color: #6B7280;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 16px 24px;
+    border-top: 1px solid #E5E7EB;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* --- Posts / Feedback Cards --- */
+.post-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    margin-bottom: 16px;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.post-content {
+    color: #4B5563;
+    line-height: 1.5;
+}
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #9CA3AF;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #E5E7EB;
+}
+
+/* =========================================
+   Responsive Design (Mobile/Tablet)
+   ========================================= */
+@media (max-width: 768px) {
+    
+    /* 1. Stack the Profile Header */
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        gap: 12px;
+    }
+
+    .profile-info {
+        width: 100%;
+    }
+
+    /* 2. Force Stats Grid to Single Column */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* 3. Make Table Scrollable */
+    .data-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Prevent text wrapping inside table cells */
+    .data-table th, 
+    .data-table td {
+        white-space: nowrap;
+        padding: 12px 16px;
+    }
+
+    /* 4. Adjust Post Cards */
+    .post-card {
+        padding: 16px;
+    }
+}
