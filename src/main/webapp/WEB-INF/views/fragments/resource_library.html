@@ -10,6 +10,7 @@
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 		<li class="nav-item" role="presentation"><button class="nav-link" id="pills-help-tab" data-bs-toggle="pill" data-bs-target="#pills-help" type="button" role="tab">Articles</button></li>
       <li class="nav-item" role="presentation"><button class="nav-link" id="pills-videos-tab" data-bs-toggle="pill" data-bs-target="#pills-videos" type="button" role="tab">Videos</button></li>
+      
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
@@ -20,12 +21,20 @@
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Description</p>
-            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span><span class="read-time"><i class="fa-regular fa-clock me-1"></i> 5 min read</span></div>
+            <div>
+                <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
+                
+                <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
+                    <i class="fa-solid fa-user-doctor me-1"></i>
+                    <span th:text="${content.professional.name}">Author</span>
+                </span>
+                <span class="read-time"><i class="fa-regular fa-clock me-1"></i> 5 min read</span>
+            </div>
           </div>
           
           <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
-             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
-             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.contentID})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
           
           <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Read</a>
@@ -39,12 +48,20 @@
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
-            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span><span class="read-time"><i class="fa-regular fa-clock me-1"></i> Watch now</span></div>
+            <div>
+                <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
+                
+                <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
+                    <i class="fa-solid fa-user-doctor me-1"></i>
+                    <span th:text="${content.professional.name}">Author</span>
+                </span>
+                <span class="read-time"><i class="fa-regular fa-clock me-1"></i> Watch now</span>
+            </div>
           </div>
 
           <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
-             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
-             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.contentID})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
           <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Watch</a>
@@ -58,12 +75,19 @@
           <div style="flex: 1;">
             <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
             <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
-            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span></div>
+            <div>
+                <span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span>
+                
+                <span style="font-size: 11px; color: #6b7280; margin-left: 8px;" th:if="${content.professional != null}">
+                    <i class="fa-solid fa-user-doctor me-1"></i>
+                    <span th:text="${content.professional.name}">Author</span>
+                </span>
+                </div>
           </div>
 
           <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
-             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
-             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.contentID})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
           <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Open</a>
