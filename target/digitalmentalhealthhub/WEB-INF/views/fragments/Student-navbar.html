@@ -61,6 +61,14 @@
                 <span>Feedback</span>
             </a>
 
+            <a th:href="@{/student/become-professional}" 
+               class="nav-item"
+               th:classappend="${activeTab == 'becomeProfessional'} ? 'active' : ''">
+                <div class="icon-box"><i class="fa-solid fa-user-md"></i></div>
+                <span>Become Professional</span>
+            </a>
+
+
             <a th:href="@{/student/emergency}" 
                class="nav-item item-danger"
                th:classappend="${activeTab == 'emergency'} ? 'active' : ''">

@@ -23,10 +23,12 @@ import com.secj3303.dao.Mood.MoodDaoHibernate;
 import com.secj3303.dao.activity.ActivityDaoHibernate;
 import com.secj3303.dao.content.ContentDaoHibernate;
 import com.secj3303.dao.feedback.FeedbackDao;
+import com.secj3303.dao.student.StudentDao;
 import com.secj3303.dao.user.UserDaoHibernate;
 import com.secj3303.model.ActivityLog;
 import com.secj3303.model.Feedback;
 import com.secj3303.model.MoodEntry;
+import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
 
@@ -39,6 +41,7 @@ public class StudentController {
     @Autowired private ActivityDaoHibernate activityDao;
     @Autowired private ContentDaoHibernate contentDao; 
     @Autowired private FeedbackDao feedbackDao;
+    @Autowired private StudentDao studentDao;
     // --- DASHBOARD ---
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
@@ -229,24 +232,56 @@ public class StudentController {
     @GetMapping("/feedback")
     public String showFeedback(HttpSession session) { return isStudent(session) ? "Student-Feedback" : "redirect:/login"; }
 
+    
     @PostMapping("/feedback/submit")
     public String submitFeedback(HttpSession session,
-                                 @RequestParam("rating") int rating,
-                                 @RequestParam("category") String category,
-                                 @RequestParam("comments") String comments,
-                                 RedirectAttributes redirectAttributes) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
-        Feedback feedback = new Feedback();
-        feedback.setUser(user);
-        feedback.setRating(rating);
-        feedback.setCategory(category);
-        feedback.setComments(comments);
-        feedback.setDateSubmitted(LocalDateTime.now());
-        redirectAttributes.addFlashAttribute("successMessage", "Thank you! Your feedback helps us improve.");
-        feedbackDao.saveFeedback(feedback);
-        return "redirect:/student/feedback";
+        @RequestParam("rating") int rating,
+        @RequestParam("category") String category,
+        @RequestParam("comments") String comments,
+        RedirectAttributes redirectAttributes) {
+            User user = (User) session.getAttribute("user");
+            if (user == null) return "redirect:/login";
+            Feedback feedback = new Feedback();
+            feedback.setUser(user);
+            feedback.setRating(rating);
+            feedback.setCategory(category);
+            feedback.setComments(comments);
+            feedback.setDateSubmitted(LocalDateTime.now());
+            redirectAttributes.addFlashAttribute("successMessage", "Thank you! Your feedback helps us improve.");
+            feedbackDao.saveFeedback(feedback);
+            return "redirect:/student/feedback";
+        }
+    
+    @GetMapping("/become-professional")
+    public String showBecomeProfessional(HttpSession session, Model model) {
+        if(!isStudent(session)) return "redirect:/login";
+
+        User student = (User) session.getAttribute("user");
+
+        boolean hasPendingRequest = studentDao.checkUserRequestExists(student.getUserID());
+        model.addAttribute("userID", student.getUserID());
+        model.addAttribute("hasPendingRequest", hasPendingRequest);
+        return "student-become-professional"; 
     }
+
+    @PostMapping("/become-professional")
+    public String processRequest(@RequestParam("userID") int userID, 
+                             @RequestParam("cvLink") String cvLink,
+                             RedirectAttributes redirectAttributes) {
+
+    if (cvLink == null || cvLink.trim().isEmpty()) {
+        redirectAttributes.addFlashAttribute("error", "Invalid format.");
+        return "redirect:/student/become-professional";
+    }
+
+    User user = new User();
+    user.setUserID(userID);
+    ProfessionalRequest request = new ProfessionalRequest(user, cvLink);
+    studentDao.addProfessionalRequest(request);
+    redirectAttributes.addFlashAttribute("success", "Application submitted successfully!");
+    
+    return "redirect:/student/become-professional";
+}
 
     private boolean isStudent(HttpSession session) {
         User user = (User) session.getAttribute("user");
