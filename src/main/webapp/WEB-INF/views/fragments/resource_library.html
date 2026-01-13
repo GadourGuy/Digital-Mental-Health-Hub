@@ -39,7 +39,6 @@
           
           <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Read</a>
         </div>
-        <div th:if="${articles.empty}" class="text-center py-4 text-muted"><small>No articles available yet.</small></div>
       </div>
 
       <div class="tab-pane fade" id="pills-videos" role="tabpanel">
