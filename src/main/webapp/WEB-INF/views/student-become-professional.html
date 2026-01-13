@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mental Health Literacy Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student_become_professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student_nav.css}">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Student-navbar :: navbar(activeTab='becomeProfessional')"></div>
+    </div>
+
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">Professional Application</h1>
+            <p class="page-subtitle">Apply to become a verified Mental Health Professional on the platform.</p>
+        </div>
+
+        <div class="content-container">
+            <div th:if="${error}" class="alert alert-danger" style="background: #FEF2F2; color: #DC2626; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #FECACA;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}">Error message</span>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" style="background: #ECFDF5; color: #059669; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #A7F3D0;">
+                <i class="fa-solid fa-check-circle"></i> <span th:text="${success}">Success message</span>
+            </div>
+            
+            <div th:if="${hasPendingRequest}" class="status-card pending">
+                <div class="status-icon">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <h2>Request Under Process</h2>
+                <p>Thank you for your interest. Your application to become a Mental Health Professional has been received and is currently being reviewed by our administrators.</p>
+                <div class="status-badge">
+                    <i class="fa-solid fa-circle-info"></i> Pending Review
+                </div>
+            </div>
+
+            <div th:unless="${hasPendingRequest}" class="form-card">
+                <div class="form-header">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-user-md"></i>
+                    </div>
+                    <div>
+                        <h3>Submit Your Credentials</h3>
+                        <p>Please provide a link to your CV/Resume to verify your qualifications.</p>
+                    </div>
+                </div>
+
+                <form th:action="@{/student/become-professional}" method="post">
+                    
+                    <input type="hidden" name="userID" th:value="${session.user.userID}" />
+
+                    <div class="form-group">
+                        <label for="cvLink">Link to CV (PDF)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-link input-icon"></i>
+                            <input 
+                                type="url" 
+                                id="cvLink" 
+                                name="cvLink" 
+                                class="form-input" 
+                                placeholder="https://example.com/my-resume.pdf" 
+                                required 
+                                
+                            >
+                        </div>
+                        <small class="helper-text">
+                            <i class="fa-solid fa-circle-exclamation"></i> 
+                            The link must point to a file ending in <strong>.pdf</strong>
+                        </small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            Submit Application <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>
