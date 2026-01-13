@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+  <div th:fragment="library(articles, videos, selfHelp)" class="section-card">
+    
+    <h5 style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">Resource Library</h5>
+    <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 20px;">Browse educational materials on mental health topics</p>
+    
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation"><button class="nav-link active" id="pills-articles-tab" data-bs-toggle="pill" data-bs-target="#pills-articles" type="button" role="tab">Articles</button></li>
+      <li class="nav-item" role="presentation"><button class="nav-link" id="pills-videos-tab" data-bs-toggle="pill" data-bs-target="#pills-videos" type="button" role="tab">Videos</button></li>
+      <li class="nav-item" role="presentation"><button class="nav-link" id="pills-help-tab" data-bs-toggle="pill" data-bs-target="#pills-help" type="button" role="tab">Self-Help</button></li>
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+      
+      <div class="tab-pane fade show active" id="pills-articles" role="tabpanel">
+        <div th:each="content : ${articles}" class="content-item">
+          <div class="content-icon"><i class="fa-regular fa-file-lines"></i></div>
+          <div style="flex: 1;">
+            <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
+            <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Description</p>
+            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span><span class="read-time"><i class="fa-regular fa-clock me-1"></i> 5 min read</span></div>
+          </div>
+          
+          <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+          </div>
+          
+          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Read</a>
+        </div>
+        <div th:if="${articles.empty}" class="text-center py-4 text-muted"><small>No articles available yet.</small></div>
+      </div>
+
+      <div class="tab-pane fade" id="pills-videos" role="tabpanel">
+        <div th:each="content : ${videos}" class="content-item">
+          <div class="content-icon" style="color: #ef4444; background: #fef2f2;"><i class="fa-solid fa-play"></i></div>
+          <div style="flex: 1;">
+            <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
+            <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
+            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span><span class="read-time"><i class="fa-regular fa-clock me-1"></i> Watch now</span></div>
+          </div>
+
+          <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+          </div>
+
+          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Watch</a>
+        </div>
+        <div th:if="${videos.empty}" class="text-center py-4 text-muted"><small>No videos available yet.</small></div>
+      </div>
+
+      <div class="tab-pane fade" id="pills-help" role="tabpanel">
+        <div th:each="content : ${selfHelp}" class="content-item">
+          <div class="content-icon" style="color: #8b5cf6; background: #f5f3ff;"><i class="fa-solid fa-hands-holding-circle"></i></div>
+          <div style="flex: 1;">
+            <h6 style="font-weight: 700; font-size: 14px; margin: 0;" th:text="${content.contentTitle}">Title</h6>
+            <p style="font-size: 12px; color: var(--text-gray); margin: 4px 0;" th:text="${content.description}">Desc</p>
+            <div><span class="tag-badge" th:text="${content.contentCategory.contentTitle}">Category</span></div>
+          </div>
+
+          <div th:if="${session.user.role == 'ADMIN'}" class="d-flex gap-2">
+             <a th:href="@{/admin/resource/approve/{id}(id=${content.id})}" class="btn btn-sm btn-success text-white" style="font-size: 11px;"><i class="fa-solid fa-check"></i> Approve</a>
+             <a th:href="@{/admin/resource/reject/{id}(id=${content.id})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
+          </div>
+
+          <a th:unless="${session.user.role == 'ADMIN'}" th:href="${content.contentURL}" target="_blank" class="btn-read">Open</a>
+        </div>
+        <div th:if="${selfHelp.empty}" class="text-center py-4 text-muted"><small>No self-help tools available yet.</small></div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
