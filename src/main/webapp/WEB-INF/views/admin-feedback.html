@@ -42,7 +42,7 @@
 
                     <div class="feedback-date">
                         <i class="far fa-clock"></i>
-                        <span th:text="${#dates.format(fb.dateSubmitted, 'dd MMM yyyy, HH:mm')}">12 Jan 2026</span>
+                        <span th:text="${#temporals.format(fb.dateSubmitted, 'dd MMM yyyy, HH:mm')}">12 Jan 2026</span>
                     </div>
                 </div>
 

@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.secj3303.dao.Mood.MoodDao;
 import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
+import com.secj3303.dao.feedback.FeedbackDao;
+import com.secj3303.dao.forum.ForumPostDao;
 import com.secj3303.dao.professional.ProfessionalDao;
 import com.secj3303.dao.user.UserDao;
 import com.secj3303.model.Feedback;
@@ -41,6 +44,15 @@ public class AdminController {
 
     @Autowired
     private AdminDao adminDao;
+
+    @Autowired
+    private ForumPostDao forumPostDao;
+
+    @Autowired
+    private MoodDao moodDao;
+
+    @Autowired
+    private FeedbackDao feedbackDao;
 
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
@@ -197,10 +209,10 @@ public class AdminController {
         if (!isAdmin(session)) return "redirect:/login";
         
         User student = userDao.getUser(studentID);
-        List<ForumPost> userPosts = adminDao.getUserPostByID(studentID);
+        List<ForumPost> userPosts = forumPostDao.getPostsByUserId(studentID);
         int completedResoucesCount = adminDao.getCompletedResourcesCount(studentID);
-        List<MoodEntry> userMood = adminDao.getUserMoodsByID(studentID);
-        List<Feedback> sutdentFeedbacks = adminDao.getUserFeedback(studentID);
+        List<MoodEntry> userMood = moodDao.getRecentMoods(studentID);
+        List<Feedback> sutdentFeedbacks = feedbackDao.getUserFeedback(studentID);
 
         model.addAttribute("student", student);
         model.addAttribute("userPosts", userPosts);
@@ -217,7 +229,7 @@ public class AdminController {
     public String showfeedbacks(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
 
-        List<Feedback> feedbacks = adminDao.getAllFeedbacks();
+        List<Feedback> feedbacks = feedbackDao.getAllFeedbacks();
         model.addAttribute("feedbacks", feedbacks);
 
         return "admin-feedback"; 

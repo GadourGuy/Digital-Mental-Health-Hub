@@ -54,8 +54,5 @@ public interface AdminDao {
     // feedback
     public List<Feedback> getAllFeedbacks();
 
-    // user specific feedbacks
-    public List<Feedback> getUserFeedback(int userID);
-
 
 }

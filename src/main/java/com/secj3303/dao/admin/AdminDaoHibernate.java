@@ -300,23 +300,4 @@ public class AdminDaoHibernate implements AdminDao {
         }
         return list;
     }
-
-    @Override
-    public List<Feedback> getUserFeedback(int userID) {
-        Session session = sessionFactory.openSession();
-        List<Feedback> list = null;
-        try {
-            // Fetch feedback where user.userID matches the parameter
-            String hql = "FROM Feedback f WHERE f.user.userID = :uid ORDER BY f.dateSubmitted DESC";
-
-            list = session.createQuery(hql, Feedback.class)
-                          .setParameter("uid", userID)
-                          .list();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return list;
-    }
 }
