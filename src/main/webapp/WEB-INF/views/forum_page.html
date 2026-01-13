@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Community Forum</title>
@@ -23,8 +23,6 @@
       .sidebar { width: 260px; background: white; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; }
       .main-content { flex: 1; padding: 32px; overflow-y: auto; position: relative; }
 
-      /* Note: I removed the .content-card and related styles here because they are now in forum-card.css */
-      
       .nav-tabs .nav-link { color: var(--text-gray); border: none; font-weight: bold; margin-bottom: 15px; }
       .nav-tabs .nav-link.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: transparent; }
 
@@ -50,8 +48,18 @@
   </head>
   <body>
     <div class="dashboard-container">
-      <div th:replace="~{fragments/Student-navbar :: navbar(activeTab='forum')}"></div>
+      
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'STUDENT')}">
+          <div th:replace="~{fragments/Student-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
 
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'PROFESSIONAL')}">
+          <div th:replace="~{fragments/Professional-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
+
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'ADMIN')}">
+          <div th:replace="~{fragments/Admin-navbar :: navbar(activeTab='forum')}"></div>
+      </th:block>
       <main class="main-content">
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert" 
              style="position: absolute; top: 20px; right: 20px; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
