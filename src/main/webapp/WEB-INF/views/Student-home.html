@@ -4,340 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Dashboard</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-      /* =========================================
-           1. GLOBAL VARIABLES & RESET
-           ========================================= */
-      :root {
-        --primary: #155dfc;
-        --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%);
-        --text-dark: #0a0a0a;
-        --text-gray: #6a7282;
-        --danger: #e7000b;
-      }
-
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        font-family: "Arimo", sans-serif;
-        background: var(--bg-gradient);
-        height: 100%;
-      }
-
-      /* The Main Layout Container */
-      .dashboard-container {
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      /* =========================================
-           2. SIDEBAR STYLING
-           ========================================= */
-      .sidebar {
-        width: 260px;
-        background: white;
-        border-right: 1px solid #e5e7eb;
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-        height: 100vh;
-        transition: transform 0.3s ease;
-      }
-
-      .sidebar-header {
-        padding: 24px;
-        border-bottom: 1px solid #e5e7eb;
-      }
-      .brand-name {
-        color: var(--primary);
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
-      .user-welcome {
-        color: var(--text-gray);
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
-      .user-role-badge span {
-        background: #dbeafe;
-        color: #1447e6;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-      }
-
-      .nav-links {
-        flex: 1;
-        padding: 16px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      /* Helper for Icon Alignment */
-      .icon-box {
-        width: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-      }
-
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        border-radius: 10px;
-        text-decoration: none;
-        color: #364153;
-        font-size: 14px;
-        transition: all 0.2s ease;
-      }
-      .nav-item:hover {
-        background: #f3f4f6;
-        transform: translateX(5px);
-      }
-      .nav-item.active {
-        background: #dbeafe;
-        color: #1447e6;
-      }
-      .item-danger {
-        background: #fef2f2;
-        color: var(--danger);
-      }
-      .item-danger:hover {
-        background: #fee2e2;
-      }
-
-      .sidebar-footer {
-        padding: 16px;
-        border-top: 1px solid #e5e7eb;
-      }
-      .logout-btn {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 16px;
-        color: #0a0a0a;
-        text-decoration: none;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        transition: 0.2s;
-      }
-      .logout-btn:hover {
-        background: #f9fafb;
-        border-color: #d1d5db;
-      }
-
-      /* =========================================
-           3. MAIN CONTENT AREA
-           ========================================= */
-      .main-content {
-        flex: 1;
-        padding: 32px;
-        overflow-y: auto;
-        position: relative;
-      }
-
-      .welcome-banner {
-        background: linear-gradient(90deg, #2b7fff 0%, #4f39f6 100%);
-        border-radius: 14px;
-        padding: 32px;
-        color: white;
-        margin-bottom: 24px;
-        animation: fadeInDown 0.6s ease;
-      }
-      .welcome-title {
-        font-size: 24px;
-        margin-bottom: 8px;
-      }
-
-      .quote-banner {
-        background: #eff6ff;
-        border: 1px solid #bedbff;
-        border-radius: 14px;
-        padding: 24px;
-        text-align: center;
-        color: #1c398e;
-        font-style: italic;
-        margin-bottom: 32px;
-      }
-
-      .section-title {
-        font-size: 16px;
-        margin-bottom: 16px;
-        color: var(--text-dark);
-        font-weight: bold;
-      }
-
-      .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
-        margin-bottom: 32px;
-      }
-
-      .action-card {
-        background: white;
-        border-radius: 14px;
-        padding: 24px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100px;
-        text-decoration: none; /* For when we wrap it in <a> */
-        color: inherit;
-      }
-      .action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      }
-
-      .card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
-      .card-label {
-        font-size: 14px;
-        font-weight: bold;
-      }
-      .card-desc {
-        font-size: 14px;
-        color: var(--text-gray);
-      }
-
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-      }
-      @media (max-width: 1000px) {
-        .dashboard-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .content-card {
-        background: white;
-        border-radius: 14px;
-        padding: 24px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-      }
-
-      .progress-item {
-        margin-bottom: 16px;
-      }
-      .progress-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-        font-size: 14px;
-      }
-      .progress-track {
-        height: 8px;
-        background: rgba(3, 2, 19, 0.1);
-        border-radius: 4px;
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        border-radius: 4px;
-        transition: width 1s ease-in-out;
-      }
-
-      .activity-item {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #f3f4f6;
-      }
-      .activity-item:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-      }
-      .activity-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-
-      .fab {
-        position: fixed;
-        bottom: 32px;
-        right: 32px;
-        width: 56px;
-        height: 56px;
-        background: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        color: white;
-        cursor: pointer;
-        transition: transform 0.2s;
-        font-size: 24px;
-      }
-      .fab:hover {
-        transform: scale(1.1);
-      }
-
-      @keyframes fadeInDown {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .icon-box {
-        width: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-      }
-    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" th:href="@{/css/student/student-home.css}" />
   </head>
   <body>
     <div class="dashboard-container">
-      <div
-        th:replace="fragments/Student-navbar :: navbar(activeTab='home')"
-      ></div>
+      
+      <div th:replace="fragments/Student-navbar :: navbar(activeTab='home')"></div>
 
       <main class="main-content">
         <div class="welcome-banner">
-          <div
-            class="welcome-title"
-            th:text="'Welcome back, ' + ${session.user.name} + '! 👋'"
-          >
+          <div class="welcome-title" th:text="'Welcome back, ' + ${session.user.name} + '! 👋'">
             Welcome back!
           </div>
           <div>Continue your mental wellness journey today</div>
@@ -352,10 +32,7 @@
           <a th:href="@{/student/mood-tracker}" class="action-card">
             <div class="card-top">
               <span class="card-label">Track Your Mood</span>
-              <i
-                class="fa-solid fa-heart-pulse"
-                style="color: #f6339a; font-size: 20px"
-              ></i>
+              <i class="fa-solid fa-heart-pulse" style="color: #f6339a; font-size: 20px"></i>
             </div>
             <div class="card-desc">Log how you're feeling today</div>
           </a>
@@ -363,27 +40,15 @@
           <a th:href="@{/student/chatbot}" class="action-card">
             <div class="card-top">
               <span class="card-label">Chat with AI</span>
-              <i
-                class="fa-solid fa-robot"
-                style="color: #2b7fff; font-size: 20px"
-              ></i>
+              <i class="fa-solid fa-robot" style="color: #2b7fff; font-size: 20px"></i>
             </div>
             <div class="card-desc">Get instant support anytime</div>
           </a>
 
-          <a
-            th:href="@{/student/emergency}"
-            class="action-card"
-            style="background: #fef2f2; border-color: #ffc9c9"
-          >
+          <a th:href="@{/student/emergency}" class="action-card" style="background: #fef2f2; border-color: #ffc9c9">
             <div class="card-top">
-              <span class="card-label" style="color: #c10007"
-                >Emergency Help</span
-              >
-              <i
-                class="fa-solid fa-triangle-exclamation"
-                style="color: #e7000b; font-size: 20px"
-              ></i>
+              <span class="card-label" style="color: #c10007">Emergency Help</span>
+              <i class="fa-solid fa-triangle-exclamation" style="color: #e7000b; font-size: 20px"></i>
             </div>
             <div class="card-desc" style="color: #e7000b">
               Immediate assistance available
@@ -392,15 +57,10 @@
         </div>
 
         <div class="dashboard-grid">
+          
           <div class="content-card">
             <div class="section-title">Weekly Progress</div>
-            <div
-              style="
-                color: var(--text-gray);
-                font-size: 14px;
-                margin-bottom: 24px;
-              "
-            >
+            <div style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">
               Your wellness activities this week
             </div>
 
@@ -410,11 +70,8 @@
                 <span th:text="(${completedCount} ?: 0) + '/7'">0/7</span>
               </div>
               <div class="progress-track">
-                <div
-                  class="progress-fill"
-                  style="background: #030213"
-                  th:style="'width: ' + ((${completedCount} ?: 0) * 100 / 7) + '%; background: #0A0A0A;'"
-                ></div>
+                <div class="progress-fill" style="background: #030213"
+                     th:style="'width: ' + ((${completedCount} ?: 0) * 100 / 7) + '%; background: #0A0A0A;'"></div>
               </div>
             </div>
 
@@ -424,61 +81,32 @@
                 <span th:text="(${moodCount} ?: 0) + '/7'">0/7</span>
               </div>
               <div class="progress-track">
-                <div
-                  class="progress-fill"
-                  style="background: #030213"
-                  th:style="'width: ' + ((${moodCount} ?: 0) * 100 / 7) + '%; background: #0A0A0A;'"
-                ></div>
+                <div class="progress-fill" style="background: #030213"
+                     th:style="'width: ' + ((${moodCount} ?: 0) * 100 / 7) + '%; background: #0A0A0A;'"></div>
               </div>
             </div>
           </div>
 
           <div class="content-card">
             <div class="section-title">Recent Activities</div>
-            <div
-              style="
-                color: var(--text-gray);
-                font-size: 14px;
-                margin-bottom: 24px;
-              "
-            >
+            <div style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">
               Your latest interactions
             </div>
 
             <div class="activity-list">
-              <div
-                class="activity-item"
-                th:each="activity : ${recentActivities}"
-              >
-                <div
-                  class="activity-icon"
-                  th:style="${activity.type == 'MOOD'} ? 'background: #FCE7F3; color: #E60076;' : 
-                                      (${activity.type == 'EXERCISE'} ? 'background: #DCFCE7; color: #00A63E;' : 'background: #DBEAFE; color: #155DFC;')"
-                >
-                  <i
-                    th:if="${activity.type == 'MOOD'}"
-                    class="fa-solid fa-face-smile"
-                  ></i>
-                  <i
-                    th:if="${activity.type == 'EXERCISE'}"
-                    class="fa-solid fa-person-walking"
-                  ></i>
-                  <i
-                    th:if="${activity.type != 'MOOD' and activity.type != 'EXERCISE'}"
-                    class="fa-solid fa-book-open"
-                  ></i>
+              <div class="activity-item" th:each="activity : ${recentActivities}">
+                <div class="activity-icon"
+                     th:style="${activity.type == 'MOOD'} ? 'background: #FCE7F3; color: #E60076;' : 
+                               (${activity.type == 'EXERCISE'} ? 'background: #DCFCE7; color: #00A63E;' : 'background: #DBEAFE; color: #155DFC;')">
+                  <i th:if="${activity.type == 'MOOD'}" class="fa-solid fa-face-smile"></i>
+                  <i th:if="${activity.type == 'EXERCISE'}" class="fa-solid fa-person-walking"></i>
+                  <i th:if="${activity.type != 'MOOD' and activity.type != 'EXERCISE'}" class="fa-solid fa-book-open"></i>
                 </div>
                 <div>
-                  <div
-                    style="font-size: 14px; font-weight: bold; color: #0a0a0a"
-                    th:text="${activity.title}"
-                  >
+                  <div style="font-size: 14px; font-weight: bold; color: #0a0a0a" th:text="${activity.title}">
                     Logged mood: Happy
                   </div>
-                  <div
-                    style="font-size: 12px; color: var(--text-gray)"
-                    th:text="${activity.timeAgo}"
-                  >
+                  <div style="font-size: 12px; color: var(--text-gray)" th:text="${activity.timeAgo}">
                     2 hours ago
                   </div>
                 </div>
@@ -488,11 +116,7 @@
         </div>
       </main>
 
-      <a
-        th:href="@{/student/chatbot}"
-        class="fab"
-        style="text-decoration: none"
-      >
+      <a th:href="@{/student/chatbot}" class="fab" style="text-decoration: none">
         <i class="fa-solid fa-robot"></i>
       </a>
     </div>
