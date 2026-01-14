@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.secj3303.model.Feedback;
 import com.secj3303.model.ForumPost;
-import com.secj3303.model.MoodEntry;
 import com.secj3303.model.ProfessionalRequest;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;

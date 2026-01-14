@@ -41,7 +41,6 @@ public class ProfessionalController {
     // along with engagement rate that shows out of all the students in the system, how many of them engaged in the content uploaded by the professional
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
-        if (!isProfessional(session)) return "redirect:/login";
         // get the info from the session
         User professional = (User) session.getAttribute("user");
         int id = professional.getUserID();
@@ -64,13 +63,11 @@ public class ProfessionalController {
 
     @GetMapping("/forum")
     public String showForum(HttpSession session) {
-        if (!isProfessional(session)) return "redirect:/login";
         return "student-forum"; 
     }
 
     @GetMapping("/my-resources")
     public String showResources(HttpSession session, Model model) {
-        if (!isProfessional(session)) return "redirect:/login";
         User professional = (User) session.getAttribute("user");
         int id = professional.getUserID();
         List<SubContent> professionalContent = contentDao.getUploadedResources(id);
@@ -81,7 +78,6 @@ public class ProfessionalController {
 
     @PostMapping("/my-resources/delete")
     public String deleteContent(HttpSession session, Model model, @RequestParam("contentID") int contentID, RedirectAttributes redirectAttributes) {
-        if (!isProfessional(session)) return "redirect:/login";
         User professional = (User) session.getAttribute("user");
         SubContent subContent = contentDao.getSubContentByID(contentID);
         if(subContent.getProfessional().getUserID() != professional.getUserID()) return "redirect:/professional/home";
@@ -92,9 +88,7 @@ public class ProfessionalController {
     }
 
     @GetMapping("/my-resources/view")
-    public String showSingleContent (HttpSession session, Model model, @RequestParam("contentID") int contentID) {
-        if (!isProfessional(session)) return "redirect:/login";
-        
+    public String showSingleContent (HttpSession session, Model model, @RequestParam("contentID") int contentID) { 
         User professional = (User) session.getAttribute("user");
         SubContent subContent = contentDao.getSubContentByID(contentID);
 
@@ -106,9 +100,7 @@ public class ProfessionalController {
 
 
     @GetMapping("/resources/upload")
-    public String showUploadResources(HttpSession session, Model model) {
-        if (!isProfessional(session)) return "redirect:/login";
-        
+    public String showUploadResources(HttpSession session, Model model) { 
         // return the list of categories to the page
         List<Category> categories = contentDao.getContentCategories();
         User professional = (User) session.getAttribute("user");
@@ -141,8 +133,6 @@ public class ProfessionalController {
         Model model,
         RedirectAttributes redirectAttributes
             ) {
-
-        if (!isProfessional(session)) return "redirect:/login";
                 
         Map<String, String> errors = new HashMap<>();
                 
@@ -195,8 +185,6 @@ public class ProfessionalController {
         categoryObj.setCategoryID(Integer.parseInt(category));
         // int categoryID = contentDao.getCategoryID(category);
         SubContent newSubContent = new SubContent(title, categoryObj, description, url, professional, type);
-        
-        
         contentDao.addContent(newSubContent);
         redirectAttributes.addFlashAttribute("success", "Resource uploaded successfully!");
         return "redirect:/professional/home";
@@ -207,9 +195,6 @@ public class ProfessionalController {
     // editing the resources
     @GetMapping("/resources/edit")
     public String showEditResources(HttpSession session, Model model, @RequestParam("contentID") int contentID) {
-        if (!isProfessional(session)) return "redirect:/login";
-        
-        // return the list of categories to the page
         List<Category> categories = contentDao.getContentCategories();
         User professional = (User) session.getAttribute("user");
         SubContent subContent = contentDao.getSubContentByID(contentID);
@@ -243,9 +228,7 @@ public class ProfessionalController {
         Model model,
         RedirectAttributes redirectAttributes
             ) {
-
-        if (!isProfessional(session)) return "redirect:/login";
-                
+        
         Map<String, String> errors = new HashMap<>();
                 
         // Validate resourceType
@@ -308,8 +291,6 @@ public class ProfessionalController {
 
     @GetMapping("/resources")
     public String showResourcesPage(HttpSession session, Model model) {
-        if (!isProfessional(session)) return "redirect:/login";
-        
         List<SubContent> allContent = contentDao.getAllSubContents(); 
         List<SubContent> articles = new ArrayList<>();
         List<SubContent> videos = new ArrayList<>();
@@ -331,13 +312,5 @@ public class ProfessionalController {
         model.addAttribute("selfHelp", selfHelp);
 
         return "Student-Activities";
-    }
-
-   
-
-    // Helper to secure professional routes
-    private boolean isProfessional(HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        return "PROFESSIONAL".equalsIgnoreCase(role);
     }
 }

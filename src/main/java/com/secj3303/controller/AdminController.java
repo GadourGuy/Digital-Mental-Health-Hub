@@ -60,9 +60,8 @@ public class AdminController {
 
     @GetMapping("/home")
     public String showHome(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
         User admin = (User) session.getAttribute("user");
-        int id = admin.getUserID();
+        // int id = admin.getUserID();
 
         int pendingContent = contentDao.getAllPendingContent();
         int numberOfProfessionals = professionalDao.getAllProfessionals();
@@ -94,8 +93,6 @@ public class AdminController {
 
     @GetMapping("/professional-requests")
     public String viewResourcesUploads(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
-        
         List<ProfessionalRequest> requests = professionalDao.getAllPendingProfessionalRequests();
         model.addAttribute("requests", requests);
 
@@ -105,7 +102,6 @@ public class AdminController {
 
     @GetMapping("/manage-request")
     public String getUserRequest(HttpSession session, Model model, @RequestParam("requestID") int requestID) {
-        if (!isAdmin(session)) return "redirect:/login";
         ProfessionalRequest request = professionalDao.getSingleProfessionalRequest(requestID);
         model.addAttribute("req", request);
         return "admin-manage-professional-request";
@@ -117,7 +113,6 @@ public class AdminController {
             @RequestParam(value = "message", required = false) String message,
             HttpSession session, 
             RedirectAttributes redirectAttributes) {
-        if (!isAdmin(session)) return "redirect:/login";
 
         if ("rejected".equalsIgnoreCase(status)) {
             if (message == null || message.trim().isEmpty()) {
@@ -140,8 +135,6 @@ public class AdminController {
     // Resources
     @GetMapping("/resources-requests")
     public String getPendingResources(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
-
         List<SubContent> uploadedContent = adminDao.getAllPendingContent();
         model.addAttribute("uploadedContent", uploadedContent);
 
@@ -151,7 +144,6 @@ public class AdminController {
     // one resource
     @GetMapping("/resources/manage")
     public String getSingleResource(HttpSession session, Model model, @RequestParam("contentID") int contentID) {
-        if (!isAdmin(session)) return "redirect:/login";
         SubContent content = contentDao.getSubContentByID(contentID);
 
         model.addAttribute("content", content);
@@ -164,19 +156,15 @@ public class AdminController {
             @RequestParam(value = "message", required = false) String message,
             HttpSession session, 
             RedirectAttributes redirectAttributes) {
-        if (!isAdmin(session)) return "redirect:/login";
 
         if ("rejected".equalsIgnoreCase(status)) {
             if (message == null || message.trim().isEmpty()) {
-                
                 redirectAttributes.addFlashAttribute("error", "Rejection reason is required when rejecting a request.");
-                
                 return "redirect:/admin/resources/manage?contentID=" + contentID;
             }
         }
 
         contentDao.changeProfessionalContentStatus(contentID, status, message);
-
         redirectAttributes.addFlashAttribute("success", "Request successfully " + status + ".");
 
         return "redirect:/admin/resources/manage?contentID=" + contentID;
@@ -185,10 +173,7 @@ public class AdminController {
 // Monitor students
     @GetMapping("/monitor/students")
     public String showMonitorStudents(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
-
         List<User> students = studentDao.getAllStudents();
-
         List<MoodEntry> studentsMoods = moodDao.getUsersMood();
 
         Map<Integer, MoodEntry> moodMap = new HashMap<>();
@@ -208,9 +193,7 @@ public class AdminController {
     }
 
     @GetMapping("/manage-student")
-    String showStudentPage(HttpSession session, Model model, @RequestParam("studentID") int studentID) {
-        if (!isAdmin(session)) return "redirect:/login";
-        
+    String showStudentPage(HttpSession session, Model model, @RequestParam("studentID") int studentID) {        
         User student = userDao.getUser(studentID);
         List<ForumPost> userPosts = forumPostDao.getPostsByUserId(studentID);
         int completedResoucesCount = adminDao.getCompletedResourcesCount(studentID);
@@ -230,8 +213,6 @@ public class AdminController {
     
     @GetMapping("/feedback")
     public String showfeedbacks(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
-
         List<Feedback> feedbacks = feedbackDao.getAllFeedbacks();
         model.addAttribute("feedbacks", feedbacks);
 
@@ -240,9 +221,6 @@ public class AdminController {
 
     @GetMapping("/resources")
     public String showResources(HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/login";
-
-        // 2. Resource Library
         List<SubContent> allContent = contentDao.getAllSubContents(); 
         List<SubContent> articles = new ArrayList<>();
         List<SubContent> videos = new ArrayList<>();
@@ -264,12 +242,5 @@ public class AdminController {
         model.addAttribute("selfHelp", selfHelp);
 
         return "Student-Activities";
-    }
-
-
-    // Helper to secure admin routes
-    private boolean isAdmin(HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        return "ADMIN".equalsIgnoreCase(role);
     }
 }

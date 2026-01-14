@@ -26,7 +26,6 @@ import com.secj3303.dao.content.CompletedContentDao;
 import com.secj3303.dao.content.ContentDaoHibernate;
 import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.student.StudentDao;
-import com.secj3303.dao.user.UserDaoHibernate;
 import com.secj3303.model.ActivityLog;
 import com.secj3303.model.AssessmentEntry;
 import com.secj3303.model.CompletedContent;
@@ -40,7 +39,6 @@ import com.secj3303.model.User;
 @RequestMapping("/student")
 public class StudentController {
 
-    @Autowired private UserDaoHibernate userDao;
     @Autowired private MoodDaoHibernate moodDao;
     @Autowired private ActivityDaoHibernate activityDao;
     @Autowired private ContentDaoHibernate contentDao; 
@@ -262,7 +260,7 @@ public class StudentController {
     @GetMapping("/emergency")
     public String showEmergency(HttpSession session, Model model) {
         if (!isStudent(session)) return "redirect:/login";
-        List<User> dbUsers = userDao.findUsersByRole("PROFESSIONAL");
+        // List<User> dbUsers = userDao.findUsersByRole("PROFESSIONAL");
         List<Map<String, Object>> doctors = new ArrayList<>();
         // ... (Keep your existing doctor mapping logic if you want) ...
         model.addAttribute("doctors", doctors);
