@@ -40,7 +40,6 @@ public class ChatController {
     @PostMapping("/api/chat")
     @ResponseBody
     public ChatResponse chat(@RequestBody ChatRequest request) {
-        // Print to the VS Code Output console
         System.out.println("DEBUG: Chat request received! Message: " + request.getMessage());
 
         String userMessage = request.getMessage();
@@ -55,15 +54,21 @@ public class ChatController {
         try {
             RestTemplate restTemplate = new RestTemplate();
             
-            // Headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + API_KEY); // Uses the variable at the top
+            headers.set("Authorization", "Bearer " + API_KEY);
 
-            // AI Persona (System Message)
+
             Map<String, String> systemMsg = new HashMap<>();
             systemMsg.put("role", "system");
-            systemMsg.put("content", "You are a helpful mental health assistant. Be brief and kind.");
+            systemMsg.put("content", 
+                "You are a dedicated Mental Health Support Assistant. " +
+                "Your ONLY scope is mental health, emotional support, and wellness. " +
+                "STRICT RULES: " +
+                "1. If a user asks about anything NOT related to mental health (e.g., math, coding, general facts, history, or sports), " +
+                "politely refuse and state that you are only designed to discuss mental health and emotional well-being. " +
+                "2. Be empathetic, kind, and brief. " +
+                "3. If a user mentions self-harm, prioritize suggesting professional help immediately.");
 
             // User Message
             Map<String, String> userMsg = new HashMap<>();
@@ -72,7 +77,7 @@ public class ChatController {
 
             // Request Body
             Map<String, Object> body = new HashMap<>();
-           body.put("model", "llama-3.3-70b-versatile"); // Free Model
+            body.put("model", "llama-3.3-70b-versatile"); 
             body.put("messages", List.of(systemMsg, userMsg));
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
@@ -92,7 +97,7 @@ public class ChatController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error connecting to AI. Please check your internet connection.";
+            return "Error connecting to AI. Please check your connection.";
         }
     }
 }
