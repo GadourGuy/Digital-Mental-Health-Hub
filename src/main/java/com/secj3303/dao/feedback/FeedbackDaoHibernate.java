@@ -17,14 +17,12 @@ public class FeedbackDaoHibernate implements FeedbackDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    // Helper method to open a new session manually, just like your MoodDao
     private Session openSession() {
         return sessionFactory.openSession();
     }
 
     @Override
     public void saveFeedback(Feedback feedback) {
-        // MANUAL TRANSACTION MANAGEMENT (Matches MoodDao reference)
         try (Session session = openSession()) {
             session.beginTransaction();
             session.save(feedback);
@@ -52,7 +50,6 @@ public class FeedbackDaoHibernate implements FeedbackDao {
         Session session = sessionFactory.openSession();
         List<Feedback> list = null;
         try {
-            // Fetch feedback where user.userID matches the parameter
             String hql = "FROM Feedback f WHERE f.user.userID = :uid ORDER BY f.dateSubmitted DESC";
 
             list = session.createQuery(hql, Feedback.class)
