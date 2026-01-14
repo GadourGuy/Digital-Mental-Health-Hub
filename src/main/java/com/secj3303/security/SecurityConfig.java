@@ -32,7 +32,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         // Simple, standard BCrypt encoder. 
-        // No maps, no delegation, no plain text support.
         return new BCryptPasswordEncoder();
     }
     
@@ -90,7 +89,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // --- THE FIXED SUCCESS HANDLER ---
     @Bean
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
@@ -105,9 +103,8 @@ public class SecurityConfig {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             
-            // --- THIS IS THE MISSING LINE FIXING YOUR CONTROLLERS ---
+            
             session.setAttribute("role", user.getRole()); 
-            // -------------------------------------------------------
 
             // 4. Redirect based on Role
             for (GrantedAuthority auth : authentication.getAuthorities()) {
