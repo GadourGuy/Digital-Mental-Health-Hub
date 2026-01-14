@@ -150,8 +150,7 @@ body, html {
    3. ASSESSMENT PAGE STYLES
    ============================ */
 .main-content { 
-    flex: 1; 
-    margin-left: 260px; 
+    flex: 1;
     padding: 40px; 
     overflow-y: auto; 
     display: flex; 

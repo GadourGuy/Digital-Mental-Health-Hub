@@ -143,8 +143,7 @@ body, html {
    3. EMERGENCY PAGE SPECIFIC
    ============================ */
 .main-content {
-    flex: 1;
-    margin-left: 260px; 
+    flex: 1; 
     padding: 40px;
     background: var(--bg-gradient);
     min-height: 100vh;

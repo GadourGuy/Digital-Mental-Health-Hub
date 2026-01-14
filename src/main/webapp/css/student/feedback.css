@@ -146,7 +146,6 @@ body, html {
    ============================ */
 .main-content { 
     flex: 1; 
-    margin-left: 260px; 
     padding: 40px; 
     overflow-y: auto; 
 }

@@ -24,7 +24,7 @@ public class ChatController {
 
     // --- PASTE YOUR GROQ KEY HERE DIRECTLY ---
     // (Get this from https://console.groq.com)
-    private static final String API_KEY = "ENTER API KEY HERE"; 
+    private static final String API_KEY = ""; 
     
     // Groq API URL
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";

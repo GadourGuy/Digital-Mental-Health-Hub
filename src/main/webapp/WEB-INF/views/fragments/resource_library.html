@@ -74,9 +74,11 @@
              <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
-          <a th:unless="${session.user.role == 'ADMIN'}" 
-             th:href="@{/student/resources/view(id=${content.contentID})}" 
-             target="_blank" class="btn-read">Watch</a>
+          <a th:href="${session.user.role == 'student'} 
+            ? @{/student/resources/view(id=${content.contentID})} 
+            : ${content.contentURL}"
+            target="_blank" 
+          class="btn-read">Watch</a>
         </div>
       </div>
 
@@ -106,8 +108,9 @@
              <a th:href="@{/admin/resource/reject/{id}(id=${content.contentID})}" class="btn btn-sm btn-danger text-white" style="font-size: 11px;"><i class="fa-solid fa-xmark"></i> Reject</a>
           </div>
 
-          <a th:unless="${session.user.role == 'ADMIN'}" 
-             th:href="@{/student/resources/view(id=${content.contentID})}" 
+          <a th:href="${session.user.role == 'student'} 
+            ? @{/student/resources/view(id=${content.contentID})} 
+            : ${content.contentURL}"
              target="_blank" class="btn-read">Open</a>
         </div>
       </div>

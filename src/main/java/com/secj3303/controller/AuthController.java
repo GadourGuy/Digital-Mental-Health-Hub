@@ -58,7 +58,7 @@ public class AuthController {
         newUser.setPassword(encodedPassword);
         
         // 4. AUTOMATICALLY set role to STUDENT
-        newUser.setRole("STUDENT");
+        newUser.setRole("student");
 
         // 5. Save to Database
         userDao.insertUser(newUser);

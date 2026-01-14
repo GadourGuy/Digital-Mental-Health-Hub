@@ -15,15 +15,15 @@
   <body>
     <div class="dashboard-container">
       
-      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'STUDENT')}">
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'student')}">
           <div th:replace="~{fragments/Student-navbar :: navbar(activeTab='activities')}"></div>
       </th:block>
 
-      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'PROFESSIONAL')}">
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'professional')}">
           <div th:replace="~{fragments/Professional-navbar :: navbar(activeTab='activities')}"></div>
       </th:block>
 
-      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'ADMIN')}">
+      <th:block th:if="${session.role != null and #strings.equalsIgnoreCase(session.role, 'admin')}">
           <div th:replace="~{fragments/Admin-navbar :: navbar(activeTab='activities')}"></div>
       </th:block>
 
@@ -31,7 +31,7 @@
         <h2>Resources & Weekly Activities</h2>
         <p class="subtitle">Educational materials and wellness activities to support your mental health</p>
 
-        <div class="section-card" th:if="${session.user.role == 'STUDENT'}">
+        <div class="section-card" th:if="${session.user.role == 'student'}">
           <div class="mb-4">
             <h5 style="font-weight: 700; font-size: 16px;">This Week's Wellness Challenge</h5>
             <p style="font-size: 13px; color: var(--text-gray);">Complete daily activities to build healthy habits</p>

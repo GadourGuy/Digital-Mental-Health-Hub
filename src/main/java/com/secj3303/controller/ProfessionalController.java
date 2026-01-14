@@ -71,9 +71,6 @@ public class ProfessionalController {
         User professional = (User) session.getAttribute("user");
         int id = professional.getUserID();
         List<SubContent> professionalContent = contentDao.getUploadedResources(id);
-        System.out.println("==========================================");
-        System.out.println(professionalContent.get(0).getRejectionReason());
-        System.out.println("==========================================");
         model.addAttribute("uploadedContent", professionalContent);
         return "Professional-resources";
     }
@@ -86,7 +83,7 @@ public class ProfessionalController {
         contentDao.deleteContentByID(contentID);
 
         redirectAttributes.addFlashAttribute("success", "Resource deleted successfully!");
-        return "redirect:/professional/my-resources";
+        return "redirect:/professional/my-resources/view";
     }
 
     @GetMapping("/my-resources/view")
