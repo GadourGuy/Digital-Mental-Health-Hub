@@ -1,0 +1,105 @@
+/* =========================================
+   GLOBAL VARIABLES & RESET
+   ========================================= */
+:root {
+    --primary: #155dfc;
+    --primary-hover: #1447e6;
+    --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%);
+    --text-dark: #0a0a0a;
+    --text-gray: #6a7282;
+    --danger: #e7000b;
+    --white: #ffffff;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: "Arimo", sans-serif;
+    background: var(--bg-gradient);
+    height: 100%;
+}
+
+/* =========================================
+   ERROR PAGE SPECIFIC STYLING
+   ========================================= */
+.error-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.error-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 48px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    max-width: 500px;
+    width: 90%;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    display: block;
+}
+
+.error-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.error-desc {
+    color: var(--text-gray);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.quote-banner {
+    background: #eff6ff;
+    border: 1px solid #bedbff;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    color: #1c398e;
+    font-style: italic;
+    margin-bottom: 24px;
+}
+
+/* Updated Button to match Dashboard styling */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 32px;
+    background-color: var(--primary);
+    color: var(--white) !important;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(21, 93, 252, 0.2);
+}
+
+/* Ghost Animation */
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}

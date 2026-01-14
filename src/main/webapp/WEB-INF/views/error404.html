@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Page Not Found</title>
+    <link rel="stylesheet" th:href="@{/css/error/error-style.css}">
+    
+  </head>
+  <body>
+    <div class="error-wrapper">
+      <div class="content-card error-card-custom">
+        <span class="error-icon">👻</span>
+
+        <h2 class="section-title" style="font-size: 24px">
+          Page Not Found (404)
+        </h2>
+
+        <div class="quote-banner">
+          "Oops! It seems you've ventured into the unknown."
+        </div>
+
+        <p style="color: var(--text-gray); margin-bottom: 30px">
+          The page you are looking for might have been removed, had its name
+          changed, or is temporarily unavailable.
+        </p>
+
+        <a
+          href="/"
+          th:href="@{/}"
+          class="logout-btn"
+        >
+          Take me home
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
