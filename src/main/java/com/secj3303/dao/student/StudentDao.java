@@ -7,4 +7,7 @@ public interface StudentDao {
     public boolean checkUserRequestExists(int userID);
     
     public void addProfessionalRequest(ProfessionalRequest professionalRequest);
+
+    // to return a num  of students
+    public int getNumOfStudents();
 }

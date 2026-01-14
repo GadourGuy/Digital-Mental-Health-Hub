@@ -24,9 +24,7 @@ public interface ContentDao {
     // returns the total number of contents that has been completed
     public int getCompletedContentNumbers();
 
-    // returns the number of content completions based on the professional id provided
-    // it returns the total nuumber of completed content uploaded by the professional in the id
-    public int GetProfessionalCompletedContent(int professionalID);
+    
 
     // get the number of contents where status is false based on the professional id
     public int getPendingContent(int professionalID);

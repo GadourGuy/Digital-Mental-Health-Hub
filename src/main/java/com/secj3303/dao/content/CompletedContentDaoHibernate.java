@@ -57,4 +57,29 @@ public class CompletedContentDaoHibernate implements CompletedContentDao {
             return Collections.emptyList();
         }
     }
+
+
+    @Override
+    public int GetProfessionalCompletedContent(int professionalID) {
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            
+            String sql = "SELECT COUNT(*) FROM completed_content WHERE contentID IN " +
+                         "(SELECT contentID FROM sub_contents WHERE professionalID = :profId)";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .setParameter("profId", professionalID)
+                                            .getSingleResult();
+            
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
+    }
 }

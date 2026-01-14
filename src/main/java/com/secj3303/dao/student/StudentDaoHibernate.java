@@ -58,4 +58,27 @@ public class StudentDaoHibernate implements StudentDao {
             session.close();
         }
     }
+    
+
+    @Override
+    public int getNumOfStudents() {
+        Session session = sessionFactory.openSession();
+        int count = 0;
+        try {
+            // Count rows in 'users' table where the 'role' column is explicitly 'student'
+            String sql = "SELECT COUNT(*) FROM users WHERE role = 'student'";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
+    }
 }

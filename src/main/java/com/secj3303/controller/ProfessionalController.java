@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.secj3303.dao.content.CompletedContentDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.professional.ProfessionalDao;
+import com.secj3303.dao.student.StudentDao;
 import com.secj3303.model.Category;
 import com.secj3303.model.SubContent;
 import com.secj3303.model.User;
@@ -33,6 +35,12 @@ public class ProfessionalController {
     @Autowired
     private ProfessionalDao professionalDao;
 
+    @Autowired
+    private StudentDao studentDao;
+
+    @Autowired
+    private CompletedContentDao completedContentDao;
+
     // this route will return the home page that returns the professional object, along with number of pending resources to update..
 
     // along with engagement rate that shows out of all the students in the system, how many of them engaged in the content uploaded by the professional
@@ -44,8 +52,8 @@ public class ProfessionalController {
         int id = professional.getUserID();
 
         int pendingContent = contentDao.getPendingContent(id);
-        int contentCompleted = contentDao.GetProfessionalCompletedContent(id);
-        int numOfStudents = professionalDao.getStudents();
+        int contentCompleted = completedContentDao.GetProfessionalCompletedContent(id);
+        int numOfStudents = studentDao.getNumOfStudents();
 
         // to return:
         model.addAttribute("professional", professional);
