@@ -57,7 +57,6 @@ public class MoodDaoHibernate implements MoodDao {
     public List<MoodEntry> getRecentMoods(int userId) {
         try (Session session = openSession()) {
             // Get last 10 moods
-            // Note: Changed m.user.id to m.user.userID to match your User model usually
             String hql = "FROM MoodEntry m WHERE m.user.userID = :uid ORDER BY m.date DESC";
             Query<MoodEntry> query = session.createQuery(hql, MoodEntry.class);
             query.setParameter("uid", userId);
