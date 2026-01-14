@@ -32,7 +32,6 @@ public class CompletedContentDaoHibernate implements CompletedContentDao {
     @Override
     public boolean hasUserCompleted(int userId, int contentId) {
         try (Session session = sessionFactory.openSession()) {
-            // Note: 'c.users' refers to the 'private User users' field in your model
             String hql = "SELECT count(c) FROM CompletedContent c WHERE c.users.userID = :uid AND c.contentID = :cid";
             Query<Long> query = session.createQuery(hql, Long.class);
             query.setParameter("uid", userId);
@@ -47,7 +46,7 @@ public class CompletedContentDaoHibernate implements CompletedContentDao {
 	@Override
     public List<Integer> getCompletedContentIds(int userId) {
         try (Session session = sessionFactory.openSession()) {
-            // We only need the IDs, not the full objects
+           
             String hql = "SELECT c.contentID FROM CompletedContent c WHERE c.users.userID = :uid";
             Query<Integer> query = session.createQuery(hql, Integer.class);
             query.setParameter("uid", userId);
