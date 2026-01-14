@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mental Health Literacy Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/professional/professional_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin_review_resource_page_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/student/student_nav.css}">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div th:replace="fragments/Admin-navbar :: navbar(activeTab='pendingResources')"></div>
+    </div>
+
+    <div class="main-content">
+        
+        <div th:if="${success}" class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-error">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+        </div>
+
+        <div class="resource-container">
+            <h2 style="margin-bottom: 1rem;">Review Content</h2>
+
+            <div class="meta-info">
+                <div>
+                    <p><span class="label">Posted By:</span> <span th:text="${content.professional.name}">John Doe</span></p>
+                    
+                    <p><span class="label">Type:</span> <span th:text="${content.type}">Video</span></p>
+                </div>
+                <div>
+                    <p><span class="label">Title:</span> <span th:text="${content.contentTitle}">Understanding Anxiety</span></p>
+                    
+                    <p><span class="label">Category:</span> <span th:text="${content.getContentCategory().getContentTitle()}">General</span></p>
+                </div>
+            </div>
+
+            <div>
+                <span class="label">Description:</span>
+                <p th:text="${content.contentDescription}" style="margin-top: 0.5rem; color: #333; line-height: 1.5;">
+                    Description content goes here...
+                </p>
+            </div>
+
+            <div class="media-viewer">
+                
+                <th:block th:if="${#strings.containsIgnoreCase(content.type, 'pdf')}">
+                    <iframe th:src="@{${content.contentURL}}" width="100%" height="100%" style="border:none;">
+                        This browser does not support PDFs. Please download the PDF to view it.
+                    </iframe>
+                </th:block>
+
+                <th:block th:if="${#strings.containsIgnoreCase(content.type, 'video')}">
+                    <iframe id="videoPlayer" 
+                            th:data-url="${content.contentURL}"
+                            width="100%" height="100%" 
+                            title="YouTube video player" frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </th:block>
+                
+                <th:block th:if="${!#strings.containsIgnoreCase(content.type, 'pdf') and !#strings.containsIgnoreCase(content.type, 'video')}">
+                    <div style="padding: 20px; text-align: center; color: #666;">
+                        <i class="fas fa-file-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <p>Preview not available for this file type.</p>
+                        <a th:href="@{${content.contentURL}}" target="_blank" class="btn btn-view" style="display:inline-block; margin-top:10px;">Download File</a>
+                    </div>
+                </th:block>
+            </div>
+
+            <div class="action-area">
+                <form th:action="@{/admin/resources/manage}" method="post" id="reviewForm">
+                    
+                    <input type="hidden" name="id" th:value="${content.contentID}">
+                    
+                    <label for="message" class="label">Feedback / Rejection Reason:</label>
+                    <textarea name="message" id="message" rows="3" class="rejection-box" 
+                              placeholder="Enter reason if rejecting (Required for Rejection)..."></textarea>
+
+                    <div class="btn-group">
+                        <button type="submit" name="status" value="approved" class="btn btn-accept">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+
+                        <button type="submit" name="status" value="rejected" class="btn btn-reject">
+                            <i class="fa-solid fa-xmark"></i> Reject
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const videoFrame = document.getElementById('videoPlayer');
+            if (videoFrame) {
+                let rawUrl = videoFrame.getAttribute('data-url');
+                // Basic check to see if it's a YouTube link needing embed conversion
+                if (rawUrl && (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be"))) {
+                    let videoId = "";
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                    const match = rawUrl.match(regExp);
+                    if (match && match[2].length === 11) {
+                        videoId = match[2];
+                        videoFrame.src = "https://www.youtube.com/embed/" + videoId;
+                    } else {
+                        videoFrame.src = rawUrl;
+                    }
+                } else if (rawUrl) {
+                    videoFrame.src = rawUrl;
+                }
+            }
+        });
+
+        function validateReject() {
+            const messageBox = document.getElementById('message');
+            if (messageBox.value.trim() === "") {
+                alert("Please provide a reason for rejection in the text box.");
+                messageBox.focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

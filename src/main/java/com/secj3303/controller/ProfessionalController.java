@@ -71,7 +71,9 @@ public class ProfessionalController {
         User professional = (User) session.getAttribute("user");
         int id = professional.getUserID();
         List<SubContent> professionalContent = contentDao.getUploadedResources(id);
-        
+        System.out.println("==========================================");
+        System.out.println(professionalContent.get(0).getRejectionReason());
+        System.out.println("==========================================");
         model.addAttribute("uploadedContent", professionalContent);
         return "Professional-resources";
     }

@@ -1,13 +1,3 @@
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.page-title { font-size: 24px; font-weight: bold; margin-bottom: 4px; }
-.page-subtitle { color: var(--text-gray); font-size: 14px; }
-
 /* --- Resource List Styling --- */
 .resource-container {
     display: flex;
@@ -15,15 +5,14 @@
     gap: 16px;
 }
 
-/* The Card/Row Item */
+/* The Main Card - Now a Vertical Stack */
 .resource-item {
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 20px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column; /* Key Change: Stacks rows vertically */
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
@@ -34,6 +23,14 @@
     border-color: #BFDBFE;
 }
 
+/* New Wrapper for Top Row (Info + Buttons) */
+.resource-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 /* Left Side: Icon + Info */
 .resource-info {
     display: flex;
@@ -41,6 +38,7 @@
     gap: 20px;
     flex: 1;
 }
+
 .resource-icon-box {
     width: 50px;
     height: 50px;
@@ -52,9 +50,9 @@
     flex-shrink: 0;
 }
 
-/* Icon Colors based on type */
-.icon-pdf { background-color: #FEF2F2; color: #EF4444; } /* Red for PDF */
-.icon-video { background-color: #EFF6FF; color: var(--primary); } /* Blue for Video */
+/* Icon Colors */
+.icon-pdf { background-color: #FEF2F2; color: #EF4444; }
+.icon-video { background-color: #EFF6FF; color: var(--primary); }
 
 .resource-details {
     display: flex;
@@ -76,40 +74,11 @@
     gap: 12px;
 }
 
-.category-badge {
-    background: #F3F4F6;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    color: #374151;
-    font-weight: 600;
-}
-
-.approved-badge {
-    background-color: #d4edda;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    color: #155724;
-    font-weight: 600;
-}
-.pending-badge {
-    background-color: #FFF3CD;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    color: #856404;
-    font-weight: 600;
-}
-
-.rejected-badge {
-    background-color: #F8D7DA;
-    color: #721C24;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-}
+/* Badges */
+.category-badge { background: #F3F4F6; padding: 2px 8px; border-radius: 6px; font-size: 12px; color: #374151; font-weight: 600; }
+.approved-badge { background-color: #d4edda; padding: 2px 8px; border-radius: 6px; font-size: 12px; color: #155724; font-weight: 600; }
+.pending-badge { background-color: #FFF3CD; padding: 2px 8px; border-radius: 6px; font-size: 12px; color: #856404; font-weight: 600; }
+.rejected-badge { background-color: #F8D7DA; color: #721C24; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 
 /* Right Side: Actions */
 .action-buttons {
@@ -132,107 +101,41 @@
     transition: 0.2s;
 }
 
-/* View Button */
-.btn-view {
-    background-color: white;
-    border-color: var(--border-color);
-    color: var(--text-dark);
-}
-.btn-view:hover {
-    background-color: #F9FAFB;
-    border-color: #9CA3AF;
+.btn-view { background-color: white; border-color: var(--border-color); color: var(--text-dark); }
+.btn-view:hover { background-color: #F9FAFB; border-color: #9CA3AF; }
+
+.btn-delete { background-color: #FEF2F2; color: #DC2626; border: none; }
+.btn-delete:hover { background-color: #FEE2E2; color: #B91C1C; }
+
+/* Rejection Feedback Box */
+.rejection-feedback {
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    padding: 12px;
+    margin-top: 15px; /* Creates the separation */
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
-/* Delete Button */
-.btn-delete {
-    background-color: #FEF2F2;
-    color: #DC2626; /* Darker red text */
-    border: none;
-}
-.btn-delete:hover {
-    background-color: #FEE2E2;
-    color: #B91C1C;
-}
+.rejection-feedback i { font-size: 16px; margin-top: 1px; }
+
+/* Page Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.page-title { font-size: 24px; font-weight: bold; margin-bottom: 4px; }
+.page-subtitle { color: var(--text-gray); font-size: 14px; }
+
 /* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 60px;
-    color: var(--text-gray);
-}
+.empty-state { text-align: center; padding: 60px; color: var(--text-gray); }
 .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
 
-/* --- Responsive Design --- */
+/* Responsive */
 @media (max-width: 768px) {
-    
-    /* Hide Sidebar on mobile (assuming you have a top navbar for mobile) */
-    .sidebar {
-        display: none; 
-    }
-    
-    /* Add padding to main content */
-    main { 
-        padding: 16px; 
-        margin-left: 0; /* Remove sidebar margin */
-    }
-
-    /* Stack the Flexbox Container */
-    .resource-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-        position: relative; /* For button positioning if needed */
-    }
-
-    /* Ensure the Info section takes full width */
-    .resource-info {
-        width: 100%;
-        align-items: flex-start; /* Align icon to top-left of text */
-    }
-
-    /* Adjust Icon Size slightly for mobile */
-    .resource-icon-box {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-
-    /* Stack Meta Info (Category, Status) nicely */
-    .resource-meta {
-        flex-wrap: wrap; /* Allow badges to wrap to next line */
-        gap: 8px;
-        margin-top: 4px;
-    }
-    
-    /* Hide the little dots on mobile if they cause clutter */
-    .resource-meta span:not([class]) {
-        display: none; 
-    }
-
-    /* Make Action Buttons Full Width */
-    .action-buttons {
-        width: 100%;
-        display: flex;
-        border-top: 1px solid #f3f4f6;
-        padding-top: 12px;
-        margin-top: 4px;
-    }
-
-    /* Make the 'View' button stretch */
-    .btn {
-        flex: 1; /* Stretch to fill width */
-        justify-content: center;
-        padding: 10px;
-    }
-}
-
-.alert {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    .resource-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .action-buttons { width: 100%; border-top: 1px solid #f3f4f6; padding-top: 12px; }
+    .btn { flex: 1; justify-content: center; }
 }
