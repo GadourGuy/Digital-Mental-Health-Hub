@@ -145,9 +145,8 @@ public class AdminController {
     @GetMapping("/resources/manage")
     public String getSingleResource(HttpSession session, Model model, @RequestParam("contentID") int contentID) {
         SubContent content = contentDao.getSubContentByID(contentID);
-
         model.addAttribute("content", content);
-        return "resource page";
+        return "admin-review-resource-page";
     }
     
     @PostMapping("/resources/manage")
