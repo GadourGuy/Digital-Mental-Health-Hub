@@ -68,4 +68,22 @@ public class MoodDaoHibernate implements MoodDao {
             return Collections.emptyList(); 
         }
     }
+
+    @Override
+    public List<MoodEntry> getUsersMood() {
+        Session session = sessionFactory.openSession();
+        List<MoodEntry> list = null;
+        try {
+            String hql = "FROM MoodEntry m WHERE m.id IN " +
+                         "(SELECT MAX(m2.id) FROM MoodEntry m2 GROUP BY m2.user)";
+
+            list = session.createQuery(hql, MoodEntry.class).list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
 }

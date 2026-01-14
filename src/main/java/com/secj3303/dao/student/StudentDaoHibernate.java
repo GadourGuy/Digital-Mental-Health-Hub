@@ -1,11 +1,14 @@
 package com.secj3303.dao.student;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.secj3303.model.ProfessionalRequest;
+import com.secj3303.model.User;
 
 @Repository
 public class StudentDaoHibernate implements StudentDao {
@@ -80,5 +83,21 @@ public class StudentDaoHibernate implements StudentDao {
             session.close();
         }
         return count;
+    }
+
+
+    @Override
+    public List<User> getAllStudents() {
+        Session session = sessionFactory.openSession();
+        List<User> list = null;
+        try {
+            String hql = "SELECT new User(u.userID, u.name, u.email) FROM User u WHERE u.role = 'student'";
+            list = session.createQuery(hql, User.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
     }
 }

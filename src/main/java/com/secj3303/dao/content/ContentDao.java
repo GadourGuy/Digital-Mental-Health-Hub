@@ -56,4 +56,7 @@ public interface ContentDao {
 
     // to add content to the sub_content table
     public void addContent(SubContent subContent);
+
+    // approve professional's content based on content id
+    public void changeProfessionalContentStatus(int id, String status, String message);
 }

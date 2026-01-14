@@ -21,6 +21,7 @@ import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.forum.ForumPostDao;
+import com.secj3303.dao.professional.ProfessionalDao;
 import com.secj3303.dao.student.StudentDao;
 import com.secj3303.dao.user.UserDao;
 import com.secj3303.model.Feedback;
@@ -39,6 +40,8 @@ public class AdminController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private ProfessionalDao professionalDao;
 
     @Autowired
     private AdminDao adminDao;
@@ -62,10 +65,9 @@ public class AdminController {
         int id = admin.getUserID();
 
         int pendingContent = contentDao.getAllPendingContent();
-        int numberOfProfessionals = adminDao.getAllProfessionals();
+        int numberOfProfessionals = professionalDao.getAllProfessionals();
         int numOfStudents = studentDao.getNumOfStudents();
-
-        int pendingProfessional = adminDao.getProfessionalRequests();
+        int pendingProfessional = professionalDao.getProfessionalRequests();
 
 // *****************************************************************
 // to do: add counters to num of posts
@@ -94,7 +96,7 @@ public class AdminController {
     public String viewResourcesUploads(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
         
-        List<ProfessionalRequest> requests = adminDao.getAllPendingProfessionalRequests();
+        List<ProfessionalRequest> requests = professionalDao.getAllPendingProfessionalRequests();
         model.addAttribute("requests", requests);
 
         return "admin-view-professional-requests";
@@ -104,7 +106,7 @@ public class AdminController {
     @GetMapping("/manage-request")
     public String getUserRequest(HttpSession session, Model model, @RequestParam("requestID") int requestID) {
         if (!isAdmin(session)) return "redirect:/login";
-        ProfessionalRequest request = adminDao.getSingleProfessionalRequest(requestID);
+        ProfessionalRequest request = professionalDao.getSingleProfessionalRequest(requestID);
         model.addAttribute("req", request);
         return "admin-manage-professional-request";
     }
@@ -173,7 +175,7 @@ public class AdminController {
             }
         }
 
-        adminDao.changeProfessionalContentStatus(contentID, status, message);
+        contentDao.changeProfessionalContentStatus(contentID, status, message);
 
         redirectAttributes.addFlashAttribute("success", "Request successfully " + status + ".");
 
@@ -185,9 +187,9 @@ public class AdminController {
     public String showMonitorStudents(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
 
-        List<User> students = adminDao.getAllStudents();
+        List<User> students = studentDao.getAllStudents();
 
-        List<MoodEntry> studentsMoods = adminDao.getUsersMood();
+        List<MoodEntry> studentsMoods = moodDao.getUsersMood();
 
         Map<Integer, MoodEntry> moodMap = new HashMap<>();
         for (MoodEntry mood : studentsMoods) {

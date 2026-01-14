@@ -247,5 +247,26 @@ public class ContentDaoHibernate implements ContentDao{
             session.close();
         }
     }
+
+    @Override
+    public void changeProfessionalContentStatus(int id, String status, String message) {
+        Session session = sessionFactory.openSession();
+        try {
+            SubContent content = session.get(SubContent.class, id);
+            
+            if (content != null) {
+                content.setStatus(status);
+                if (message != null && !message.isEmpty()) {
+                    content.setRejectionReason(message); 
+                }
+                session.update(content);
+                session.beginTransaction().commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
     
 }
