@@ -72,7 +72,7 @@ public class ContentDaoHibernate implements ContentDao{
         int count = 0;
         try {
             
-            String sql = "SELECT COUNT(*) FROM completed_contents WHERE contentID IN " +
+            String sql = "SELECT COUNT(*) FROM completed_content WHERE contentID IN " +
                          "(SELECT contentID FROM sub_contents WHERE professionalID = :profId)";
 
             Number result = (Number) session.createNativeQuery(sql)

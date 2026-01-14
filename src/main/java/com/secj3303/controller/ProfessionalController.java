@@ -47,14 +47,12 @@ public class ProfessionalController {
         int contentCompleted = contentDao.GetProfessionalCompletedContent(id);
         int numOfStudents = professionalDao.getStudents();
 
-        double contentCompletedPercentage = ((contentCompleted * 1.0) / numOfStudents) * 100;
-
         // to return:
         model.addAttribute("professional", professional);
         // pending content
         model.addAttribute("pendingContent", pendingContent);
         // contentCompletedPercentage
-        model.addAttribute("completedPercentage", contentCompletedPercentage);
+        model.addAttribute("contentCompleted", contentCompleted);
         
         // number of students
         model.addAttribute("numberOfStudents", numOfStudents);

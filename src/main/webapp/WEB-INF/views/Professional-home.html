@@ -35,7 +35,7 @@
 
         <div id="actions">
             <h4>Quick Actions</h4>
-            <div class="card pointer">
+            <div class="card pointer" th:onclick="|window.location.href='@{/professional/my-resources}'|">
                 <div class="title">
                     <P>Access Resources</P>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,13 +73,13 @@
 
          <div class="card">
                 <div class="title">
-                    <P>Engagement Rate</P>
+                    <P>Number of Completions</P>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                 </div>
-                <p class="number"> <span th:text="${completedPercentage}">0</span>%</p>
-                <p class="subcontent">Percentage of students accessed resources uploaded by you.</p>
+                <p class="number"> <span th:text="${contentCompleted}">0</span></p>
+                <p class="subcontent">number of completions of resources uploaded by you.</p>
             </div>
     
     </main>
