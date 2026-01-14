@@ -21,7 +21,7 @@ import com.secj3303.dao.admin.AdminDao;
 import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.feedback.FeedbackDao;
 import com.secj3303.dao.forum.ForumPostDao;
-import com.secj3303.dao.professional.ProfessionalDao;
+import com.secj3303.dao.student.StudentDao;
 import com.secj3303.dao.user.UserDao;
 import com.secj3303.model.Feedback;
 import com.secj3303.model.ForumPost;
@@ -39,11 +39,12 @@ public class AdminController {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private ProfessionalDao professionalDao;
 
     @Autowired
     private AdminDao adminDao;
+
+    @Autowired
+    private StudentDao studentDao;
 
     @Autowired
     private ForumPostDao forumPostDao;
@@ -62,7 +63,7 @@ public class AdminController {
 
         int pendingContent = contentDao.getAllPendingContent();
         int numberOfProfessionals = adminDao.getAllProfessionals();
-        int numOfStudents = professionalDao.getStudents();
+        int numOfStudents = studentDao.getNumOfStudents();
 
         int pendingProfessional = adminDao.getProfessionalRequests();
 

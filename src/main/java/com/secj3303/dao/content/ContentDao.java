@@ -47,4 +47,13 @@ public interface ContentDao {
 
     // delete the content based on its id
     public void deleteContentByID(int contentID);
+
+    // Get uploaded resources based on professional id
+    public List<SubContent> getUploadedResources(int professionalID);
+
+    // edit existing content
+    public void editContent(SubContent subContent);
+
+    // to add content to the sub_content table
+    public void addContent(SubContent subContent);
 }

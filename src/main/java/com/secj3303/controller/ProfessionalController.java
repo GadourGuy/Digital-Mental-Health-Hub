@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.secj3303.dao.content.CompletedContentDao;
 import com.secj3303.dao.content.ContentDao;
-import com.secj3303.dao.professional.ProfessionalDao;
 import com.secj3303.dao.student.StudentDao;
 import com.secj3303.model.Category;
 import com.secj3303.model.SubContent;
@@ -30,10 +29,6 @@ public class ProfessionalController {
 
     @Autowired
     private ContentDao contentDao; 
-    
-
-    @Autowired
-    private ProfessionalDao professionalDao;
 
     @Autowired
     private StudentDao studentDao;
@@ -78,7 +73,7 @@ public class ProfessionalController {
         if (!isProfessional(session)) return "redirect:/login";
         User professional = (User) session.getAttribute("user");
         int id = professional.getUserID();
-        List<SubContent> professionalContent = professionalDao.getUploadedResources(id);
+        List<SubContent> professionalContent = contentDao.getUploadedResources(id);
         
         model.addAttribute("uploadedContent", professionalContent);
         return "Professional-resources";
@@ -202,7 +197,7 @@ public class ProfessionalController {
         SubContent newSubContent = new SubContent(title, categoryObj, description, url, professional, type);
         
         
-        professionalDao.addContent(newSubContent);
+        contentDao.addContent(newSubContent);
         redirectAttributes.addFlashAttribute("success", "Resource uploaded successfully!");
         return "redirect:/professional/home";
          
@@ -304,7 +299,7 @@ public class ProfessionalController {
         SubContent updatedSubContent = new SubContent(title, categoryObj, description, url, professional, type, "pending", true, null);
         updatedSubContent.setContentID(Integer.parseInt(contentID));
         
-        professionalDao.editContent(updatedSubContent);
+        contentDao.editContent(updatedSubContent);
         redirectAttributes.addFlashAttribute("success", "Resource updated successfully!");
         return "redirect:/professional/my-resources";
          
