@@ -24,9 +24,7 @@ public interface ContentDao {
     // returns the total number of contents that has been completed
     public int getCompletedContentNumbers();
 
-    // returns the number of content completions based on the professional id provided
-    // it returns the total nuumber of completed content uploaded by the professional in the id
-    public int GetProfessionalCompletedContent(int professionalID);
+    
 
     // get the number of contents where status is false based on the professional id
     public int getPendingContent(int professionalID);
@@ -49,4 +47,16 @@ public interface ContentDao {
 
     // delete the content based on its id
     public void deleteContentByID(int contentID);
+
+    // Get uploaded resources based on professional id
+    public List<SubContent> getUploadedResources(int professionalID);
+
+    // edit existing content
+    public void editContent(SubContent subContent);
+
+    // to add content to the sub_content table
+    public void addContent(SubContent subContent);
+
+    // approve professional's content based on content id
+    public void changeProfessionalContentStatus(int id, String status, String message);
 }

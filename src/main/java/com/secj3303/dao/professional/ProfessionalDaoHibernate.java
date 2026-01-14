@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.secj3303.model.SubContent;
+import com.secj3303.model.ProfessionalRequest;
 
 
 @Repository
@@ -17,12 +17,12 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
     private SessionFactory sessionFactory;
 
     @Override
-    public int getStudents() {
+    public int getAllProfessionals() {
         Session session = sessionFactory.openSession();
         int count = 0;
         try {
             // Count rows in 'users' table where the 'role' column is explicitly 'student'
-            String sql = "SELECT COUNT(*) FROM users WHERE role = 'student'";
+            String sql = "SELECT COUNT(*) FROM users WHERE role = 'professional'";
 
             Number result = (Number) session.createNativeQuery(sql)
                                             .getSingleResult();
@@ -39,31 +39,32 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
     }
 
     @Override
-    public void addContent(SubContent subContent) {
+    public int getProfessionalRequests() {
         Session session = sessionFactory.openSession();
-        
+        int count = 0;
         try {
-            session.beginTransaction();
-            session.save(subContent);
-            session.getTransaction().commit();
+            String sql = "SELECT COUNT(*) FROM professional_requests WHERE status = 'pending'";
+
+            Number result = (Number) session.createNativeQuery(sql)
+                                            .getSingleResult();
+
+            if (result != null) {
+                count = result.intValue();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
+        return count;
     }
 
-    @Override
-    public List<SubContent> getUploadedResources(int professionalID) {
+    public List<ProfessionalRequest> getAllPendingProfessionalRequests() {
         Session session = sessionFactory.openSession();
-        List<SubContent> list = null;
+        List<ProfessionalRequest> list = null;
         try {
-            String sql = "SELECT * FROM sub_contents WHERE professionalID = :profId";
-            
-            list = session.createNativeQuery(sql, SubContent.class)
-                          .setParameter("profId", professionalID)
-                          .list();
-                          
+            String sql = "FROM ProfessionalRequest pr JOIN FETCH pr.user WHERE pr.status = 'pending'";
+            list = session.createQuery(sql, ProfessionalRequest.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -73,29 +74,25 @@ public class ProfessionalDaoHibernate implements ProfessionalDao{
     }
 
     @Override
-    public void editContent(SubContent subContent) {
+    public ProfessionalRequest getSingleProfessionalRequest(int requestID) {
         Session session = sessionFactory.openSession();
-    try {
-        SubContent existingContent = session.get(SubContent.class, subContent.getContentID());
-
-        if (existingContent != null) {
-            // 2. Update ONLY the fields allowed to be edited
-            existingContent.setContentTitle(subContent.getContentTitle());
-            existingContent.setContentURL(subContent.getContentURL());
-            existingContent.setType(subContent.getType());
-            existingContent.setContentCategory(subContent.getContentCategory());
-            existingContent.setDescription(subContent.getDescription()); 
-            existingContent.setStatus("pending");            
-            existingContent.setEdited(true); 
+        ProfessionalRequest request = null;
+        try {
+            // JOIN FETCH loads the 'user' object immediately with the request.
+            // .uniqueResult() returns just one object instead of a list.
+            String hql = "FROM ProfessionalRequest pr JOIN FETCH pr.user WHERE pr.requestID = :id";
             
-            session.update(existingContent);
-            session.beginTransaction().commit();
+            request = session.createQuery(hql, ProfessionalRequest.class)
+                             .setParameter("id", requestID)
+                             .uniqueResult();
+                             
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        session.close();
+        return request;
     }
-    }
+    
     
 }

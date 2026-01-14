@@ -2,18 +2,19 @@ package com.secj3303.dao.professional;
 
 import java.util.List;
 
-import com.secj3303.model.SubContent;
+import com.secj3303.model.ProfessionalRequest;
 
 public interface ProfessionalDao {
-    // to return a list of students
-    public int getStudents();
 
-    // to add content to the sub_content table
-    public void addContent(SubContent subContent);
+    // get number of professionals in the system
+    public int getAllProfessionals();
 
-    // edit existing content
-    public void editContent(SubContent subContent);
+    // get the number of users request for being professional
+    public int getProfessionalRequests();
 
-    public List<SubContent> getUploadedResources(int professionalID);
+    // get all pending requests
+    public List<ProfessionalRequest> getAllPendingProfessionalRequests();
+
+    public ProfessionalRequest getSingleProfessionalRequest(int requestID);
 
 }
