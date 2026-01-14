@@ -17,33 +17,26 @@ public class StudentDaoHibernate implements StudentDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public boolean checkUserRequestExists(int userID) {
+    public ProfessionalRequest checkUserRequestExists(int userID) {
         Session session = sessionFactory.openSession();
-        boolean exists = false;
+        ProfessionalRequest request = null;
         try {
-            // HQL Query to count rows where the user ID matches
-            String hql = "SELECT COUNT(r) FROM ProfessionalRequest r WHERE r.user.userID = :uid";
-            
-            Long count = (Long) session.createQuery(hql)
-                                       .setParameter("uid", userID)
-                                       .uniqueResult();
-            
-            
-            exists = (count != null && count > 0);
-            
+            String hql = "FROM ProfessionalRequest r WHERE r.user.userID = :uid";
+            request = (ProfessionalRequest) session.createQuery(hql)
+                                                   .setParameter("uid", userID)
+                                                   .uniqueResult();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return exists;
+        return request;
     }
 
     @Override
     public void addProfessionalRequest(ProfessionalRequest professionalRequest) {
-        Session session = sessionFactory.openSession();
-        
-        
+        Session session = sessionFactory.openSession(); 
         try {
             
             session.save(professionalRequest);
@@ -99,5 +92,20 @@ public class StudentDaoHibernate implements StudentDao {
             session.close();
         }
         return list;
+    }
+
+    @Override
+    public void updateProfessionalRequest(ProfessionalRequest professionalRequest) {
+        Session session = sessionFactory.openSession();
+        
+        try {
+            session.update(professionalRequest);
+            session.beginTransaction().commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }    
     }
 }

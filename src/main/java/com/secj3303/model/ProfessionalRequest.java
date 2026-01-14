@@ -32,7 +32,7 @@ public class ProfessionalRequest {
     public ProfessionalRequest(User user, String cvLink) {
         this.user = user;
         this.cvLink = cvLink;
-        this.status = "pending"; // Default status
+        this.status = "pending";
         this.rejectionReason = null;
     }
 

@@ -299,15 +299,17 @@ public class StudentController {
 
         User student = (User) session.getAttribute("user");
 
-        boolean hasPendingRequest = studentDao.checkUserRequestExists(student.getUserID());
+        ProfessionalRequest studentRequest = studentDao.checkUserRequestExists(student.getUserID());
         model.addAttribute("userID", student.getUserID());
-        model.addAttribute("hasPendingRequest", hasPendingRequest);
+        model.addAttribute("existingRequest", studentRequest);
         return "student-become-professional"; 
     }
 
     @PostMapping("/become-professional")
     public String processRequest(@RequestParam("userID") int userID, 
                              @RequestParam("cvLink") String cvLink,
+                             @RequestParam("status") String status,
+                             @RequestParam(value = "requestID", required = false) Integer requestID,
                              RedirectAttributes redirectAttributes) {
 
     if (cvLink == null || cvLink.trim().isEmpty()) {
@@ -318,8 +320,20 @@ public class StudentController {
     User user = new User();
     user.setUserID(userID);
     ProfessionalRequest request = new ProfessionalRequest(user, cvLink);
-    studentDao.addProfessionalRequest(request);
-    redirectAttributes.addFlashAttribute("success", "Application submitted successfully!");
+    if(status == null || status.isEmpty()) {
+        studentDao.addProfessionalRequest(request);
+        redirectAttributes.addFlashAttribute("success", "Application submitted successfully!");
+    }
+
+    else {
+        if (requestID != null) {
+            request.setRequestID(requestID);
+        }
+        request.setStatus("pending");
+        request.setRejectionReason(null);
+        studentDao.updateProfessionalRequest(request);
+        redirectAttributes.addFlashAttribute("success", "Application re submitted successfully!");
+    }
     
     return "redirect:/student/become-professional";
 }
