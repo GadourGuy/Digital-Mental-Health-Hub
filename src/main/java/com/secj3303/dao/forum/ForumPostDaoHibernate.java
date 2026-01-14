@@ -26,7 +26,7 @@ public class ForumPostDaoHibernate implements ForumPostDao {
         return sessionFactory.openSession();
     }
 
-    // Helper to load lazy data (replacing your initializePosts method)
+    // Helper to load data 
     private void initializePostData(ForumPost p) {
         Hibernate.initialize(p.getUsers());
         Hibernate.initialize(p.getLikes());

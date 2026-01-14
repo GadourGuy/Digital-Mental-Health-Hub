@@ -27,7 +27,7 @@ public class PostComment {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    // IMPORTANT: Must be named 'users' to match User.java mappedBy="users"
+    
     @ManyToOne
     @JoinColumn(name = "userID")
     private User users;

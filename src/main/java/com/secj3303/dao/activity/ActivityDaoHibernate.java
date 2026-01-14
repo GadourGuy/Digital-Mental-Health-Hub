@@ -53,7 +53,7 @@ public class ActivityDaoHibernate implements ActivityDao {
         }
     }
 
-    // --- NEW METHOD: Get ALL logs for the week (needed for the checklist) ---
+    
     @Override
     public List<ActivityLog> getWeeklyLogs(int userId) {
         try (Session session = openSession()) {
@@ -69,7 +69,7 @@ public class ActivityDaoHibernate implements ActivityDao {
         }
     }
     
-    // --- Helper to save logs (if not using a separate service) ---
+    // Helper to save logs 
     public void save(ActivityLog log) {
         try (Session session = openSession()) {
             Transaction tx = session.beginTransaction();

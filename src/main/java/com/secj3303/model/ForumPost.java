@@ -31,7 +31,7 @@ public class ForumPost {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
     
-    // --- NEW FIELD ---
+    
     @Column(name = "category")
     private String category; // e.g., "General", "Support", "Success Story"
     

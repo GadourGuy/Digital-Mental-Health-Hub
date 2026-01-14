@@ -1,0 +1,303 @@
+:root { 
+    --primary: #155dfc; 
+    --bg-light: #f8fafc; 
+    --text-dark: #1e293b; 
+    --text-gray: #64748b; 
+    --card-border: #e2e8f0; 
+    --success-green: #22c55e; 
+    --danger: #ef4444; /* Added generic danger color if needed for item-danger */
+}
+
+body { 
+    font-family: 'Arimo', sans-serif; 
+    background-color: var(--bg-light); 
+    margin: 0; 
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+.dashboard-container { 
+    display: flex; 
+    height: 100vh; 
+}
+
+.main-content { 
+    flex: 1; 
+    padding: 32px 40px; 
+    overflow-y: auto; 
+    background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%); 
+}
+
+h2 { 
+    font-weight: 700; 
+    color: var(--text-dark); 
+    font-size: 24px; 
+}
+
+p.subtitle { 
+    color: var(--text-gray); 
+    font-size: 14px; 
+    margin-bottom: 24px; 
+}
+
+.section-card { 
+    background: white; 
+    border-radius: 16px; 
+    padding: 24px; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+    border: 1px solid var(--card-border); 
+    margin-bottom: 32px; 
+}
+
+.progress-label { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 12px; 
+    font-weight: 600; 
+    color: var(--text-dark); 
+    margin-bottom: 8px; 
+}
+
+.progress { 
+    height: 8px; 
+    background-color: #e2e8f0; 
+    border-radius: 4px; 
+}
+
+.progress-bar { 
+    background-color: var(--text-dark); 
+    border-radius: 4px; 
+}
+
+.task-card { 
+    background: #ffffff; 
+    border: 1px solid var(--card-border); 
+    border-radius: 12px; 
+    padding: 16px; 
+    margin-bottom: 16px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: start; 
+    transition: all 0.2s; 
+}
+
+.task-card.completed { 
+    background-color: #f0fdf4; 
+    border-color: #bbf7d0; 
+}
+
+.day-badge { 
+    font-size: 11px; 
+    font-weight: 700; 
+    color: var(--primary); 
+    background: #dbeafe; 
+    padding: 4px 10px; 
+    border-radius: 6px; 
+    display: inline-block; 
+    margin-bottom: 8px; 
+}
+
+.task-title { 
+    font-weight: 700; 
+    font-size: 14px; 
+    color: var(--text-dark); 
+    margin: 0; 
+}
+
+.task-desc { 
+    font-size: 12px; 
+    color: var(--text-gray); 
+    margin-top: 4px; 
+}
+
+.check-icon { 
+    font-size: 20px; 
+    color: #cbd5e1; 
+}
+
+.task-card.completed .check-icon { 
+    color: var(--success-green); 
+}
+
+.nav-pills { 
+    background: #f1f5f9; 
+    padding: 4px; 
+    border-radius: 12px; 
+    display: inline-flex; 
+    margin-bottom: 24px; 
+}
+
+.nav-pills .nav-link { 
+    border-radius: 8px; 
+    color: var(--text-gray); 
+    font-size: 13px; 
+    font-weight: 600; 
+    padding: 8px 24px; 
+}
+
+.nav-pills .nav-link.active { 
+    background-color: white; 
+    color: var(--text-dark); 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+}
+
+.content-item { 
+    border-top: 1px solid var(--card-border); 
+    padding: 20px 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 16px; 
+}
+
+.content-item:first-child { 
+    border-top: none; 
+}
+
+.content-icon { 
+    width: 40px; 
+    height: 40px; 
+    background: #eff6ff; 
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--primary); 
+}
+
+.tag-badge { 
+    background: #f1f5f9; 
+    color: var(--text-gray); 
+    font-size: 11px; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    margin-right: 8px; 
+}
+
+.read-time { 
+    font-size: 11px; 
+    color: var(--text-gray); 
+}
+
+.btn-read { 
+    background: #0f172a; 
+    color: white; 
+    font-size: 12px; 
+    padding: 6px 16px; 
+    border-radius: 6px; 
+    text-decoration: none; 
+}
+
+.btn-read:hover { 
+    background: #334155; 
+    color: white; 
+}
+
+/* Sidebar CSS */
+.sidebar { 
+    width: 260px; 
+    background: white; 
+    border-right: 1px solid #e5e7eb; 
+    display: flex; 
+    flex-direction: column; 
+    flex-shrink: 0; 
+    height: 100vh; 
+    transition: transform 0.3s ease; 
+    /* Combined properties from the first definition */
+    overflow-y: auto;
+}
+
+.sidebar-header { 
+    padding: 24px; 
+    border-bottom: 1px solid #e5e7eb; 
+}
+
+.brand-name { 
+    color: var(--primary); 
+    font-size: 16px; 
+    font-weight: bold; 
+    margin-bottom: 8px; 
+}
+
+.user-welcome { 
+    color: var(--text-gray); 
+    font-size: 14px; 
+    margin-bottom: 8px; 
+}
+
+.user-role-badge span { 
+    background: #dbeafe; 
+    color: #1447e6; 
+    padding: 4px 12px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+}
+
+.nav-links { 
+    flex: 1; 
+    padding: 16px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+}
+
+.icon-box { 
+    width: 24px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 18px; 
+}
+
+.nav-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 12px 16px; 
+    border-radius: 10px; 
+    text-decoration: none; 
+    color: #364153; 
+    font-size: 14px; 
+    transition: all 0.2s ease; 
+}
+
+.nav-item:hover { 
+    background: #f3f4f6; 
+    transform: translateX(5px); 
+}
+
+.nav-item.active { 
+    background: #dbeafe; 
+    color: #1447e6; 
+}
+
+.item-danger { 
+    background: #fef2f2; 
+    color: var(--danger); 
+}
+
+.item-danger:hover { 
+    background: #fee2e2; 
+}
+
+.sidebar-footer { 
+    padding: 16px; 
+    border-top: 1px solid #e5e7eb; 
+}
+
+.logout-btn { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 10px 16px; 
+    color: #0a0a0a; 
+    text-decoration: none; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 8px; 
+    transition: 0.2s; 
+}
+
+.logout-btn:hover { 
+    background: #f9fafb; 
+    border-color: #d1d5db; 
+}

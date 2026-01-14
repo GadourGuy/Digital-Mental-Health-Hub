@@ -126,7 +126,7 @@ public class StudentController {
         return "Student-Activities";
     }
 
-    // --- NEW ACTION: Click to Complete Task ---
+    // Click to Complete Task 
     @GetMapping("/activities/complete")
     public String completeTask(HttpSession session, @RequestParam("title") String title) {
         if (!isStudent(session)) return "redirect:/login";
@@ -158,7 +158,6 @@ public class StudentController {
         boolean alreadyDone = completedContentDao.hasUserCompleted(user.getUserID(), contentId);
         
         if (!alreadyDone) {
-            // Create using your specific Constructor: (int contentID, int contentCategoryID, User users)
             int catId = content.getContentCategory().getCategoryID();
             
             CompletedContent completed = new CompletedContent(contentId, catId, user);
@@ -260,10 +259,7 @@ public class StudentController {
     @GetMapping("/emergency")
     public String showEmergency(HttpSession session, Model model) {
         if (!isStudent(session)) return "redirect:/login";
-        // List<User> dbUsers = userDao.findUsersByRole("PROFESSIONAL");
-        List<Map<String, Object>> doctors = new ArrayList<>();
-        // ... (Keep your existing doctor mapping logic if you want) ...
-        model.addAttribute("doctors", doctors);
+        
         return "Student-Emergency-Help";
     }
     
