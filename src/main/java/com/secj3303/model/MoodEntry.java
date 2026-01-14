@@ -17,7 +17,7 @@ public class MoodEntry {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // Ensure this matches your DB column
+    @JoinColumn(name = "user_id")
     private User user;
 
     private String mood; // e.g., "Excellent", "Bad"
