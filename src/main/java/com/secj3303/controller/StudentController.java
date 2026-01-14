@@ -259,10 +259,7 @@ public class StudentController {
     @GetMapping("/emergency")
     public String showEmergency(HttpSession session, Model model) {
         if (!isStudent(session)) return "redirect:/login";
-        List<User> dbUsers = userDao.findUsersByRole("PROFESSIONAL");
-        List<Map<String, Object>> doctors = new ArrayList<>();
-        // ... (Keep your existing doctor mapping logic if you want) ...
-        model.addAttribute("doctors", doctors);
+        
         return "Student-Emergency-Help";
     }
     
