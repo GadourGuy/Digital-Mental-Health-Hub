@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" th:href="@{/css/globals.css}">
-    
     <link rel="stylesheet" th:href="@{/css/professional_styles.css}">
     <link rel="stylesheet" th:href="@{/css/student/student_become_professional_styles.css}">
     <link rel="stylesheet" th:href="@{/css/student/student_nav.css}">
@@ -35,7 +34,7 @@
                 <i class="fa-solid fa-check-circle"></i> <span th:text="${success}">Success message</span>
             </div>
             
-            <div th:if="${hasPendingRequest}" class="status-card pending">
+            <div th:if="${existingRequest != null and existingRequest.status == 'pending'}" class="status-card pending">
                 <div class="status-icon">
                     <i class="fa-solid fa-hourglass-half"></i>
                 </div>
@@ -46,7 +45,19 @@
                 </div>
             </div>
 
-            <div th:unless="${hasPendingRequest}" class="form-card">
+            <div th:if="${existingRequest == null or existingRequest.status == 'rejected'}" class="form-card">
+                
+                <div th:if="${existingRequest != null and existingRequest.status == 'rejected'}" 
+                     class="alert alert-danger" 
+                     style="background: #FEF2F2; color: #DC2626; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #FECACA;">
+                    <h4 style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold;">
+                        <i class="fa-solid fa-circle-xmark"></i> Application Rejected
+                    </h4>
+                    <p style="margin: 0; font-size: 14px;">
+                        Reason: <span th:text="${existingRequest.rejectionReason}">Reason text</span>
+                    </p>
+                </div>
+
                 <div class="form-header">
                     <div class="icon-box">
                         <i class="fa-solid fa-user-md"></i>
@@ -61,6 +72,8 @@
                     
                     <input type="hidden" name="userID" th:value="${session.user.userID}" />
 
+                    <input type="hidden" name="requestID" th:value="${existingRequest != null ? existingRequest.requestID : ''}" />
+                    <input type="hidden" name="status" th:value="${existingRequest != null ? existingRequest.status : null}" />
                     <div class="form-group">
                         <label for="cvLink">Link to CV (PDF)</label>
                         <div class="input-wrapper">
@@ -72,7 +85,7 @@
                                 class="form-input" 
                                 placeholder="https://example.com/my-resume.pdf" 
                                 required 
-                                
+                                th:value="${existingRequest != null ? existingRequest.cvLink : ''}"
                             >
                         </div>
                         <small class="helper-text">
@@ -83,7 +96,8 @@
 
                     <div class="form-actions">
                         <button type="submit" class="btn-primary">
-                            Submit Application <i class="fa-solid fa-paper-plane"></i>
+                            <span th:text="${existingRequest != null and existingRequest.status == 'rejected' ? 'Resubmit Application' : 'Submit Application'}">Submit Application</span>
+                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
                 </form>

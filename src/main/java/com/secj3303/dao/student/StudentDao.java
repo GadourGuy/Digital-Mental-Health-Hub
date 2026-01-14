@@ -7,9 +7,10 @@ import com.secj3303.model.User;
 
 public interface StudentDao {
 
-    public boolean checkUserRequestExists(int userID);
+    public ProfessionalRequest checkUserRequestExists(int userID);
     
     public void addProfessionalRequest(ProfessionalRequest professionalRequest);
+    public void updateProfessionalRequest(ProfessionalRequest professionalRequest);
 
     // to return a num  of students
     public int getNumOfStudents();
