@@ -12,6 +12,7 @@
     
     <link rel="stylesheet" th:href="@{/css/forum/forum-card.css}" />
     <link rel="stylesheet" th:href="@{/css/forum/forum.css}" />
+    <link rel="stylesheet" th:href="@{/css/student/student_nav.css}" />
   </head>
   <body>
     <div class="dashboard-container">
@@ -92,14 +93,15 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+              
               <div class="mb-3">
                 <label class="form-label fw-bold">Category</label>
                 <select class="form-select" name="category" required>
-                    <option value="General" selected>General</option>
-                    <option value="Support">Support</option>
-                    <option value="Success Story">Success Story</option>
-                    <option value="Question">Question</option>
-                    <option value="Wellness Tips">Wellness Tips</option>
+                    <option value="" disabled selected>Select a Category</option>
+                    <option th:each="cat : ${categories}" 
+                            th:value="${cat.contentTitle}" 
+                            th:text="${cat.contentTitle}">
+                    </option>
                 </select>
               </div>
               

@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.secj3303.dao.content.ContentDao;
 import com.secj3303.dao.forum.ForumPostDao;
+import com.secj3303.model.Category;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.User;
 
@@ -26,6 +28,9 @@ public class ForumController {
     @Autowired
     private ForumPostDao forumDao;
 
+    @Autowired
+    private ContentDao contentDao;
+
     // 1. DISPLAY FORUM
     @GetMapping
     public String showForum(Model model, HttpSession session) {
@@ -34,7 +39,11 @@ public class ForumController {
 
         List<ForumPost> allPosts = forumDao.getAllPosts();
         List<ForumPost> myPosts = forumDao.getPostsByUserId(currentUser.getUserID());
+        
 
+        List<Category> categories = contentDao.getContentCategories();
+        
+        model.addAttribute("categories", categories);
         model.addAttribute("allPosts", allPosts);
         model.addAttribute("myPosts", myPosts);
         model.addAttribute("currentUser", currentUser);
@@ -93,7 +102,12 @@ public class ForumController {
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) return "redirect:/login";
 
-        boolean success = forumDao.updatePost(updatedPost.getPostID(), currentUser.getUserID(), updatedPost.getContent());
+        boolean success = forumDao.updatePost(
+            updatedPost.getPostID(), 
+            currentUser.getUserID(), 
+            updatedPost.getContent(), 
+            updatedPost.getCategory() 
+        );
 
         if (success) {
             redirectAttributes.addFlashAttribute("successMessage", "Post updated successfully!");

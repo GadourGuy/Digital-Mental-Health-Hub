@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,6 @@ public class ForumPostDaoHibernate implements ForumPostDao {
         return sessionFactory.openSession();
     }
 
-    // Helper to load data 
     private void initializePostData(ForumPost p) {
         Hibernate.initialize(p.getUsers());
         Hibernate.initialize(p.getLikes());
@@ -43,6 +43,19 @@ public class ForumPostDaoHibernate implements ForumPostDao {
             List<ForumPost> posts = query.list();
             posts.forEach(this::initializePostData);
             return posts;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        try (Session session = openSession()) {
+            String sql = "SELECT content_title FROM post_category"; 
+            
+            NativeQuery<String> query = session.createNativeQuery(sql);
+            return query.list();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -110,13 +123,14 @@ public class ForumPostDaoHibernate implements ForumPostDao {
     }
 
     @Override
-    public boolean updatePost(int postId, int userId, String newContent) {
+    public boolean updatePost(int postId, int userId, String newContent, String category) {
         try (Session session = openSession()) {
             Transaction tx = session.beginTransaction();
             ForumPost post = session.get(ForumPost.class, postId);
             
             if (post != null && post.getUsers().getUserID() == userId) {
                 post.setContent(newContent);
+                post.setCategory(category); 
                 session.update(post);
                 tx.commit();
                 return true;
